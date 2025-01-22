@@ -6,10 +6,16 @@ from django.db import models
 class VenueCategory(models.Model):
     name = models.CharField(max_length=20)
 
+    class Meta:
+        verbose_name_plural = "Venue categories"
+
 
 class VenueSubCategory(models.Model):
     name = models.CharField(max_length=20)
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Venue subcategories"
 
 
 class Venue(models.Model):
@@ -34,6 +40,9 @@ class RatingCategory(models.Model):
     name = models.CharField(max_length=20)
     # TODO: add to ER diagram
     description = models.TextField()
+
+    class Meta:
+        verbose_name_plural = "Rating categories"
 
 
 class Rating(models.Model):
