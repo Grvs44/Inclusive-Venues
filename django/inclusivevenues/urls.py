@@ -18,4 +18,6 @@ router.register(r'rating', views.RatingViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('api/login/', views.LoginView.as_view()),
+    path('api/logout/', views.LogoutView.as_view()),
 ]
