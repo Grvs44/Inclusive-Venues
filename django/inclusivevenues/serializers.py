@@ -31,17 +31,17 @@ class VenueSerializer(ModelSerializer):
 
 class ReviewSerializer(ModelSerializer):
     class Meta:
-        model = models.VenueCategory
+        model = models.Review
         fields = ['id', 'author', 'venue', 'body']
 
 
 class RatingCategorySerializer(ModelSerializer):
     class Meta:
-        model = models.VenueCategory
+        model = models.RatingCategory
         fields = ['id', 'name', 'description']
 
 
 class RatingSerializer(ModelSerializer):
     class Meta:
-        model = models.VenueCategory
+        model = models.Rating
         fields = ['id', 'category', 'review', 'value']
