@@ -3,16 +3,16 @@ from django.core import validators
 from django.db import models
 
 
-class VenueCategory:
+class VenueCategory(models.Model):
     name = models.CharField()
 
 
-class VenueSubCategory:
+class VenueSubCategory(models.Model):
     name = models.CharField()
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
 
 
-class Venue:
+class Venue(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     added_by = models.ForeignKey(
@@ -23,20 +23,20 @@ class Venue:
     subcategory = models.ForeignKey(VenueSubCategory, on_delete=models.CASCADE)
 
 
-class Review:
+class Review(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
 
 
-class RatingCategory:
+class RatingCategory(models.Model):
     name = models.CharField()
     # TODO: add to ER diagram
     description = models.TextField()
 
 
-class Rating:
+class Rating(models.Model):
     category = models.ForeignKey(RatingCategory, on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     value = models.PositiveSmallIntegerField(validators=[
