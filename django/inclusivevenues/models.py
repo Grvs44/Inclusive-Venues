@@ -7,7 +7,7 @@ class VenueCategory:
     name = models.CharField()
 
 
-class VenueSubategory:
+class VenueSubCategory:
     name = models.CharField()
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
 
@@ -20,7 +20,7 @@ class Venue:
     longitude = models.DecimalField()
     latitude = models.DecimalField()
     address = models.TextField(null=True, blank=True)
-    subcategory = models.ForeignKey(VenueSubategory, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(VenueSubCategory, on_delete=models.CASCADE)
 
 
 class Review:
