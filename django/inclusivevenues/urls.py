@@ -2,8 +2,10 @@
 Routing for Inclusive Venues Django app
 Router documentation: https://www.django-rest-framework.org/api-guide/routers/
 '''
-from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
+from django.urls import include, path
+
 from . import views
 
 router = DefaultRouter()
