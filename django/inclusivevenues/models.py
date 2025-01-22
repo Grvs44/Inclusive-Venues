@@ -4,11 +4,11 @@ from django.db import models
 
 
 class VenueCategory(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=20)
 
 
 class VenueSubCategory(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=20)
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
 
 
@@ -17,8 +17,8 @@ class Venue(models.Model):
     description = models.TextField(null=True, blank=True)
     added_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    longitude = models.DecimalField()
-    latitude = models.DecimalField()
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.TextField(null=True, blank=True)
     subcategory = models.ForeignKey(VenueSubCategory, on_delete=models.CASCADE)
 
@@ -31,7 +31,7 @@ class Review(models.Model):
 
 
 class RatingCategory(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=20)
     # TODO: add to ER diagram
     description = models.TextField()
 
