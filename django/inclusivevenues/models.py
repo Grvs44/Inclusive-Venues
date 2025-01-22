@@ -10,7 +10,7 @@ class VenueCategory(models.Model):
         verbose_name_plural = "Venue categories"
 
 
-class VenueSubCategory(models.Model):
+class VenueSubcategory(models.Model):
     name = models.CharField(max_length=20)
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
 
@@ -26,7 +26,7 @@ class Venue(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.TextField(null=True, blank=True)
-    subcategory = models.ForeignKey(VenueSubCategory, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(VenueSubcategory, on_delete=models.CASCADE)
 
 
 class Review(models.Model):

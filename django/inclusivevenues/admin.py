@@ -12,8 +12,8 @@ class VenueCategoryAdmin(ModelAdmin):
     list_display = ['name']
 
 
-@admin.register(models.VenueSubCategory)
-class VenueSubCategoryAdmin(ModelAdmin):
+@admin.register(models.VenueSubcategory)
+class VenueSubcategoryAdmin(ModelAdmin):
     list_display = ['category__name', 'name']
 
 
