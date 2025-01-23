@@ -68,7 +68,11 @@ class LoginView(APIView):
         if user is None:
             return Response({'detail': 'Incorrect username or password'}, status.HTTP_401_UNAUTHORIZED)
         login(request, user)
-        return Response(None, status.HTTP_204_NO_CONTENT)
+        return Response({
+            'firstName': request.user.first_name,
+            'lastName': request.user.last_name,
+            'username': request.user.username
+        })
 
 
 class LogoutView(APIView):

@@ -12,12 +12,11 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['user'],
+  tagTypes: [],
   endpoints: (builder) => ({
     // Authentication
     getUserDetails: builder.query<User, void>({
       query: () => 'user',
-      providesTags: () => [{ type: 'user' }],
     }),
     login: builder.mutation<void, UserLogin>({
       query: (body) => ({
@@ -25,14 +24,32 @@ export const apiSlice = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: () => [{ type: 'user' }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.updateQueryData(
+            'getUserDetails',
+            undefined,
+            () => query.data,
+          ),
+        )
+      },
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
         url: 'logout',
         method: 'POST',
       }),
-      invalidatesTags: () => [{ type: 'user' }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        await queryFulfilled
+        dispatch(
+          apiSlice.util.updateQueryData(
+            'getUserDetails',
+            undefined,
+            () => null,
+          ),
+        )
+      },
     }),
   }),
 })
