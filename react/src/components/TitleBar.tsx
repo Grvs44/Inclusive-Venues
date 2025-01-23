@@ -8,24 +8,24 @@ export default function TitleBar() {
     navigator.windowControlsOverlay?.getTitlebarAreaRect(),
   )
 
-  if ('windowControlsOverlay' in navigator) {
+  if (navigator.windowControlsOverlay) {
     navigator.windowControlsOverlay.addEventListener(
       'geometrychange',
-      debounce((e) => {
-        setArea(navigator.windowControlsOverlay.getTitlebarAreaRect())
+      debounce(() => {
+        setArea(navigator.windowControlsOverlay?.getTitlebarAreaRect())
       }),
     )
-
-    return (
-      <div
-        style={{
-          height: area.height * 0.4,
-          width: area.width,
-          WebkitAppRegion: 'drag',
-        }}
-      />
-    )
-  } else {
-    return <></>
   }
+
+  return area ? (
+    <div
+      style={{
+        height: area.height * 0.4,
+        width: area.width,
+        WebkitAppRegion: 'drag',
+      }}
+    />
+  ) : (
+    <></>
+  )
 }
