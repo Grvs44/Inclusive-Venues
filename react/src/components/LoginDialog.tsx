@@ -4,6 +4,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import TextField from '@mui/material/TextField'
 import { UserLogin } from '../redux/types'
 
 export type LoginDialogProps = {
@@ -12,40 +13,51 @@ export type LoginDialogProps = {
   onLogin: (details: UserLogin) => void
 }
 
+// Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function LoginDialog(props: LoginDialogProps) {
-  const usernameRef = React.useRef<HTMLInputElement>(null)
-  const passwordRef = React.useRef<HTMLInputElement>(null)
-
-  const login: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
-    const username = usernameRef.current?.value
-    const password = passwordRef.current?.value
-    if (username && password) props.onLogin({ username, password })
+    const formData = new FormData(event.currentTarget)
+    const data = Object.fromEntries(formData.entries())
+    if (data.username && data.password) props.onLogin(data as UserLogin)
+    props.onClose()
   }
 
   return (
-    <Dialog open={props.open} onClose={props.onClose}>
-      <form onSubmit={login}>
-        <DialogTitle>Account</DialogTitle>
-        <DialogContent>
-          <label>
-            Username:{' '}
-            <input type="text" name="username" ref={usernameRef} required />
-          </label>
-          <label>
-            Password:{' '}
-            <input type="password" name="password" ref={passwordRef} required />
-          </label>
-        </DialogContent>
-        <DialogActions>
-          <Button type="button" onClick={props.onClose}>
-            Close
-          </Button>
-          <Button type="submit" variant="contained">
-            Logout
-          </Button>
-        </DialogActions>
-      </form>
+    <Dialog
+      open={props.open}
+      onClose={props.onClose}
+      slotProps={{ paper: { component: 'form', onSubmit } }}
+    >
+      <DialogTitle>Log in</DialogTitle>
+      <DialogContent>
+        <TextField
+          name="username"
+          label="Username"
+          autoFocus
+          required
+          variant="standard"
+          fullWidth
+          margin="dense"
+        />
+        <TextField
+          name="password"
+          label="Password"
+          type="password"
+          required
+          variant="standard"
+          fullWidth
+          margin="dense"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" onClick={props.onClose}>
+          Close
+        </Button>
+        <Button type="submit" variant="contained">
+          Logout
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }
