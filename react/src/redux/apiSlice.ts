@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
+import { User, UserLogin } from './types'
 
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/apiSlice.ts
 export const apiSlice = createApi({
@@ -11,5 +12,33 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  endpoints: (builder) => ({}),
+  tagTypes: ['user'],
+  endpoints: (builder) => ({
+    // Authentication
+    getUserDetails: builder.query<User, void>({
+      query: () => 'user',
+      providesTags: () => [{ type: 'user' }],
+    }),
+    login: builder.mutation<void, UserLogin>({
+      query: (body) => ({
+        url: 'login',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: () => [{ type: 'user' }],
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: 'logout',
+        method: 'POST',
+      }),
+      invalidatesTags: () => [{ type: 'user' }],
+    }),
+  }),
 })
+
+export const {
+  useGetUserDetailsQuery,
+  useLoginMutation,
+  useLogoutMutation,
+} = apiSlice

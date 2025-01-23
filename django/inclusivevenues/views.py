@@ -41,6 +41,18 @@ class RatingViewSet(ModelViewSet):
     serializer_class = serializers.RatingSerializer
 
 
+class UserView(APIView):
+    '''API endpoint for viewing current user details'''
+
+    def get(self, request):
+        '''Handle GET request'''
+        return Response({
+            'firstName': request.user.first_name,
+            'lastName': request.user.last_name,
+            'username': request.user.username
+        } if request.user.is_authenticated else None)
+
+
 # LoginView and LogoutView adapted from
 # https://github.com/Grvs44/Grvs-Account/blob/main/grvsaccount/views.py
 class LoginView(APIView):

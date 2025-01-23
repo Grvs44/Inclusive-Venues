@@ -8,7 +8,7 @@ from django.urls import include, path
 
 from . import views
 
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register(r'venuecat', views.VenueCategoryViewSet)
 router.register(r'venuesub', views.VenueSubcategoryViewSet)
 router.register(r'venue', views.VenueViewSet)
@@ -18,6 +18,7 @@ router.register(r'rating', views.RatingViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('api/login/', views.LoginView.as_view()),
-    path('api/logout/', views.LogoutView.as_view()),
+    path('api/user', views.UserView.as_view()),
+    path('api/login', views.LoginView.as_view()),
+    path('api/logout', views.LogoutView.as_view()),
 ]
