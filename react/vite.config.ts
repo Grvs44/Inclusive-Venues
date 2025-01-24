@@ -11,9 +11,6 @@ export default defineConfig({
     jsconfigPaths(),
     VitePWA({
       injectRegister: 'inline',
-      strategies: 'injectManifest',
-      srcDir: 'src',
-      filename: 'service-worker.js',
       manifest: false,
     }),
     createHtmlPlugin({ minify: true }),
