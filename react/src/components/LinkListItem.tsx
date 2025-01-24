@@ -9,13 +9,12 @@ import { Link } from 'react-router-dom'
 export type LinkListItemProps = { to: string } & ListItemButtonProps
 
 export default function LinkListItem(props: LinkListItemProps) {
-  const path = props.to == '' ? '' : '/' + props.to
   return (
     <ListItem>
       <ListItemButton
         component={Link}
         {...props}
-        to={import.meta.env.BASE_URL + path}
+        to={import.meta.env.BASE_URL + props.to}
       />
     </ListItem>
   )

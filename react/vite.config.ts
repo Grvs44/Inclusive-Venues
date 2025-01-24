@@ -15,12 +15,10 @@ export default defineConfig({
     }),
     createHtmlPlugin({ minify: true }),
   ],
-  base: '/inclusivevenues',
   server: {
-    open: '/inclusivevenues',
     port: 3000,
     proxy: {
-      '/inclusivevenues/api': {
+      '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
