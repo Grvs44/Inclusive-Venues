@@ -10,7 +10,6 @@ export default function App() {
 
   // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/App.tsx
   window.addEventListener('beforeinstallprompt', (event: Event) => {
-    event.preventDefault()
     dispatch(setShow(true))
     dispatch(setDeferredPrompt(event))
   })
