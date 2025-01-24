@@ -4,7 +4,6 @@ import { InstallState } from './types'
 
 const initialState: InstallState = {
   show: false,
-  deferredPrompt: null,
 }
 
 export const installSlice = createSlice({
@@ -14,7 +13,7 @@ export const installSlice = createSlice({
     setShow(state, action: { payload: boolean }) {
       state.show = action.payload
     },
-    setDeferredPrompt(state, action) {
+    setDeferredPrompt(state, action: { payload: Event }) {
       state.deferredPrompt = action.payload
     },
   },
