@@ -23,3 +23,7 @@ export type UserLogin = {
   username: string
   password: string
 }
+
+export interface Entity {
+  id: number
+}

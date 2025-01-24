@@ -1,0 +1,62 @@
+// From https://mui.com/material-ui/react-autocomplete
+// and https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/components/DropDown.jsx
+import React from 'react'
+import Autocomplete from '@mui/material/Autocomplete'
+import CircularProgress from '@mui/material/CircularProgress'
+import TextField from '@mui/material/TextField'
+import { Entity } from '../redux/types'
+
+export type DropDownProps<T extends Entity> = {
+  defaultValue?: T | null
+  label: string
+  required?: boolean
+  disabled?: boolean
+  onChange: (value: T | null) => void
+  getLabel: (value: T) => string
+  data: T[]
+  isLoading: boolean
+}
+
+export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
+  const [open, setOpen] = React.useState(false)
+  const [input, setInput] = React.useState('')
+  const loading = open && props.isLoading
+
+  return (
+    <Autocomplete
+      filterOptions={(x) => x}
+      defaultValue={props.defaultValue}
+      disabled={props.disabled}
+      sx={{ width: 300 }}
+      open={open}
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      getOptionKey={(option) => option.id}
+      getOptionLabel={(option) => props.getLabel(option)}
+      onChange={(event, value) => props.onChange(value)}
+      onInputChange={(event, value) => setInput(value)}
+      options={props.data ? props.data : []}
+      loading={loading}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={props.label}
+          required={props.required}
+          value={input}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+        />
+      )}
+    />
+  )
+}
