@@ -9,13 +9,16 @@ import { User } from '../redux/types'
 import AccountDialog from './AccountDialog'
 import LoginDialog from './LoginDialog'
 
-export type AccountListItemProps = { user: User }
+export type AccountListItemProps = {
+  user?: User
+}
 
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/components/AccountListItem.tsx
 const AccountListItem = (props: AccountListItemProps) => {
   const [login] = useLoginMutation()
   const [logout] = useLogoutMutation()
   const [open, setOpen] = React.useState<boolean>(false)
+
   return (
     <ListItem>
       <ListItemButton onClick={() => setOpen(true)}>
@@ -33,7 +36,7 @@ const AccountListItem = (props: AccountListItemProps) => {
         />
       ) : (
         <LoginDialog
-          open={false}
+          open={open}
           onClose={() => setOpen(false)}
           onLogin={login}
         />

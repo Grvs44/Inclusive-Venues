@@ -40,7 +40,7 @@ export default function TopBar() {
         open={open}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
-        user={user}
+        user={user.data}
       />
     </>
   )

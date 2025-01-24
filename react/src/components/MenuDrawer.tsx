@@ -16,7 +16,9 @@ import AccountListItem from './AccountListItem'
 import InstallPwaListItem from './InstallPwaListItem'
 import LinkListItem from './LinkListItem'
 
-export type MenuDrawerProps = SwipeableDrawerProps & { user: User }
+export type MenuDrawerProps = SwipeableDrawerProps & {
+  user?: User
+}
 
 export default function MenuDrawer(props: MenuDrawerProps) {
   return (

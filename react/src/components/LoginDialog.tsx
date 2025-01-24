@@ -55,7 +55,7 @@ export default function LoginDialog(props: LoginDialogProps) {
           Close
         </Button>
         <Button type="submit" variant="contained">
-          Logout
+          Login
         </Button>
       </DialogActions>
     </Dialog>
