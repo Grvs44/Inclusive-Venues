@@ -23,25 +23,20 @@ jobs:
           python-version: '3.12'
 
       - name: Create and start virtual environment
+        working-directory: ./django
         run: |
-          cd django
-          pwd
           python -m venv venv
           source venv/bin/activate
       
       - name: Install dependencies
-        run: |
-          cd django
-          pwd
-          pip install -r requirements.txt
+        working-directory: ./django
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
-        run: |
-          cd django
-          pwd
-          zip release.zip ./* -r
+        working-directory: ./django
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
@@ -66,6 +61,8 @@ jobs:
         with:
           name: python-app
 
+      - name: Check zip contents
+        run: unzip -l release.zip
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
