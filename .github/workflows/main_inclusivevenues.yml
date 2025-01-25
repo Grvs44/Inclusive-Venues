@@ -48,8 +48,8 @@ jobs:
         with:
           name: python-app
           path: |
-            django/release.zip
-            !django/venv/
+            release.zip
+            !venv/
 
   deploy:
     runs-on: ubuntu-latest
