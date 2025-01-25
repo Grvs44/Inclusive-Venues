@@ -33,7 +33,7 @@ jobs:
         run: |
           cd django
           pwd
-          pip install -r production_requirements.txt
+          pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
