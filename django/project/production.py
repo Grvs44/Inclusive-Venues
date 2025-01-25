@@ -17,6 +17,8 @@ DEBUG = False
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+
 # WhiteNoise configuration
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
