@@ -26,7 +26,6 @@
    cd react
    npm run build
    ```
-3. Move `react/build` to `react/build/inclusivevenues`
 
 ### Run
 
