@@ -18,8 +18,12 @@ const data: { id: number; name: string }[] = [
 ]
 
 export default function SearchBox() {
+  const [location, setLocation] = React.useState<string>('')
   const getLocation = () => {
-    console.log('location')
+    if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(({ coords }) =>
+        setLocation(`${coords.latitude},${coords.longitude}`),
+      )
   }
 
   return (
@@ -31,6 +35,8 @@ export default function SearchBox() {
         <TextField
           name="location"
           label="Location"
+          value={location}
+          onChange={(event) => setLocation(event.currentTarget.value)}
           // Adapted from https://mui.com/material-ui/react-text-field/#icons
           slotProps={{
             input: {
