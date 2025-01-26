@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Stack, Typography } from '@mui/material'
 import { useDispatch } from 'react-redux'
-import SearchBox from '../containers/SearchBox'
+import SearchCard from '../containers/SearchCard'
 import { useGetUserDetailsQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import { getDisplayName } from '../redux/utils'
@@ -20,7 +20,7 @@ export default function HomePage() {
         <Typography variant="h3" component="h2">
           {user.data ? `Welcome, ${getDisplayName(user.data)}!` : 'Welcome!'}
         </Typography>
-        <SearchBox />
+        <SearchCard />
       </Stack>
     </Container>
   )

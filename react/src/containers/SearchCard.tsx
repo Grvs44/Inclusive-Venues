@@ -18,7 +18,7 @@ const data: { id: number; name: string }[] = [
   { id: 4, name: 'filter4' },
 ]
 
-export default function SearchBox() {
+export default function SearchCard() {
   const [location, setLocation] = React.useState<string>('')
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false)
 
