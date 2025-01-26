@@ -2,7 +2,7 @@ import React from 'react'
 import Container from '@mui/material/Container'
 import { useDispatch, useSelector } from 'react-redux'
 import MapResultsView from '../containers/MapResultsView'
-import { setMap } from '../redux/resultsSlice'
+import { setShowMap } from '../redux/resultsSlice'
 import { setTitle } from '../redux/titleSlice'
 import { State } from '../redux/types'
 
@@ -12,7 +12,7 @@ export default function VenueResultsPage() {
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
-    dispatch(setMap(true))
+    dispatch(setShowMap(true))
   }, [])
 
   return (

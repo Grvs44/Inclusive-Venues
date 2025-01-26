@@ -10,12 +10,12 @@ export const resultsSlice = createSlice({
   name: 'results',
   initialState,
   reducers: {
-    setMap: (state, action: { payload: boolean }) => {
+    setShowMap: (state, action: { payload: boolean }) => {
       state.showMap = action.payload
     },
   },
 })
 
-export const { setMap } = resultsSlice.actions
+export const { setShowMap } = resultsSlice.actions
 
 export default resultsSlice.reducer
