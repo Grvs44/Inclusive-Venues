@@ -40,11 +40,11 @@ export default function SearchBox() {
           // Adapted from https://mui.com/material-ui/react-text-field/#icons
           slotProps={{
             input: {
-              endAdornment: (
+              endAdornment: navigator.geolocation ? (
                 <InputAdornment position="end" onClick={getLocation}>
                   <LocationSearchingIcon />
                 </InputAdornment>
-              ),
+              ) : undefined,
             },
           }}
         />
