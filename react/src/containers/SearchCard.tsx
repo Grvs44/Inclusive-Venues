@@ -1,15 +1,12 @@
 import React from 'react'
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
 import {
   Button,
   Card,
-  CircularProgress,
-  InputAdornment,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material'
 import DropDown from '../components/DropDown'
+import LocationInput from '../components/LocationInput'
 
 const data: { id: number; name: string }[] = [
   { id: 1, name: 'filter1' },
@@ -19,18 +16,7 @@ const data: { id: number; name: string }[] = [
 ]
 
 export default function SearchCard() {
-  const [location, setLocation] = React.useState<string>('')
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false)
-
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      setLocationLoading(true)
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        setLocationLoading(false)
-        setLocation(`${coords.latitude},${coords.longitude}`)
-      })
-    }
-  }
 
   return (
     <Card>
@@ -38,33 +24,7 @@ export default function SearchCard() {
         <Typography component="h3" variant="h4">
           Search
         </Typography>
-        <TextField
-          name="location"
-          label="Location"
-          value={location}
-          onChange={(event) => setLocation(event.currentTarget.value)}
-          disabled={locationLoading}
-          // Adapted from https://mui.com/material-ui/react-text-field/#icons
-          slotProps={{
-            input: {
-              endAdornment: navigator.geolocation ? (
-                <InputAdornment position="end">
-                  <Button
-                    onClick={getLocation}
-                    disabled={locationLoading}
-                    title="Get location"
-                  >
-                    {locationLoading ? (
-                      <CircularProgress />
-                    ) : (
-                      <LocationSearchingIcon />
-                    )}
-                  </Button>
-                </InputAdornment>
-              ) : undefined,
-            },
-          }}
-        />
+        <LocationInput onLoadChange={setLocationLoading} />
         <DropDown
           label="Filters"
           data={data}
