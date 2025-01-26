@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { apiSlice } from './apiSlice'
 import installReducer from './installSlice'
-import { resultsSlice } from './resultsSlice'
+import resultsReducer from './resultsSlice'
 import titleReducer from './titleSlice'
 
 export default configureStore({
   reducer: {
     install: installReducer,
-    results: resultsSlice,
+    results: resultsReducer,
     title: titleReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
