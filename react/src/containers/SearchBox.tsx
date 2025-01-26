@@ -1,6 +1,13 @@
 import React from 'react'
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
-import { Box, Button, InputAdornment, TextField } from '@mui/material'
+import {
+  Button,
+  Card,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import DropDown from '../components/DropDown'
 
 const data: { id: number; name: string }[] = [
@@ -11,34 +18,39 @@ const data: { id: number; name: string }[] = [
 ]
 
 export default function SearchBox() {
-  const getLocation = () =>{
+  const getLocation = () => {
     console.log('location')
   }
 
   return (
-    <Box>
-      <TextField
-        name="location"
-        label="Location"
-        // Adapted from https://mui.com/material-ui/react-text-field/#icons
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end" onClick={getLocation}>
-                <LocationSearchingIcon />
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
-      <DropDown
-        label="Filters"
-        data={data}
-        isLoading={false}
-        onChange={() => console.log('changed')}
-        getLabel={(x) => x.name}
-      />
-      <Button variant="contained">Search</Button>
-    </Box>
+    <Card>
+      <Stack sx={{ alignItems: 'center' }} spacing={2}>
+        <Typography component="h3" variant="h4">
+          Search
+        </Typography>
+        <TextField
+          name="location"
+          label="Location"
+          // Adapted from https://mui.com/material-ui/react-text-field/#icons
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end" onClick={getLocation}>
+                  <LocationSearchingIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+        <DropDown
+          label="Filters"
+          data={data}
+          isLoading={false}
+          onChange={() => console.log('changed')}
+          getLabel={(x) => x.name}
+        />
+        <Button variant="contained">Search</Button>
+      </Stack>
+    </Card>
   )
 }
