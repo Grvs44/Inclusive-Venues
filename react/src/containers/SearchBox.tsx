@@ -3,6 +3,7 @@ import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
 import {
   Button,
   Card,
+  CircularProgress,
   InputAdornment,
   Stack,
   TextField,
@@ -19,11 +20,16 @@ const data: { id: number; name: string }[] = [
 
 export default function SearchBox() {
   const [location, setLocation] = React.useState<string>('')
+  const [locationLoading, setLocationLoading] = React.useState<boolean>(false)
+
   const getLocation = () => {
-    if (navigator.geolocation)
-      navigator.geolocation.getCurrentPosition(({ coords }) =>
-        setLocation(`${coords.latitude},${coords.longitude}`),
-      )
+    if (navigator.geolocation) {
+      setLocationLoading(true)
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        setLocationLoading(false)
+        setLocation(`${coords.latitude},${coords.longitude}`)
+      })
+    }
   }
 
   return (
@@ -37,12 +43,23 @@ export default function SearchBox() {
           label="Location"
           value={location}
           onChange={(event) => setLocation(event.currentTarget.value)}
+          disabled={locationLoading}
           // Adapted from https://mui.com/material-ui/react-text-field/#icons
           slotProps={{
             input: {
               endAdornment: navigator.geolocation ? (
-                <InputAdornment position="end" onClick={getLocation}>
-                  <LocationSearchingIcon />
+                <InputAdornment position="end">
+                  <Button
+                    onClick={getLocation}
+                    disabled={locationLoading}
+                    title="Get location"
+                  >
+                    {locationLoading ? (
+                      <CircularProgress />
+                    ) : (
+                      <LocationSearchingIcon />
+                    )}
+                  </Button>
                 </InputAdornment>
               ) : undefined,
             },
@@ -55,7 +72,9 @@ export default function SearchBox() {
           onChange={() => console.log('changed')}
           getLabel={(x) => x.name}
         />
-        <Button variant="contained">Search</Button>
+        <Button variant="contained" disabled={locationLoading}>
+          Search
+        </Button>
       </Stack>
     </Card>
   )
