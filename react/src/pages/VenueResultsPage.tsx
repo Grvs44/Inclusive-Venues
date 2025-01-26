@@ -6,7 +6,7 @@ import { State } from '../redux/types'
 
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
-  const { map } = useSelector((state: State) => state.results)
+  const { showMap } = useSelector((state: State) => state.results)
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
@@ -15,7 +15,7 @@ export default function VenueResultsPage() {
   return (
     <Container>
       //Filters
-      {map ? <p>Map</p> : <p>List</p>}
+      {showMap ? <p>Map</p> : <p>List</p>}
     </Container>
   )
 }

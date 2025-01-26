@@ -12,7 +12,7 @@ export type TitleState = {
 }
 
 export type ResultsState = {
-  map: boolean
+  showMap: boolean
 }
 
 export type LoggedInUser = {

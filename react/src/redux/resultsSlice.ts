@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { ResultsState } from './types'
 
 const initialState: ResultsState = {
-  map: false,
+  showMap: false,
   // TODO: initial filters
 }
 
@@ -11,7 +11,7 @@ export const resultsSlice = createSlice({
   initialState,
   reducers: {
     setMap: (state, action: { payload: boolean }) => {
-      state.map = action.payload
+      state.showMap = action.payload
     },
   },
 })
