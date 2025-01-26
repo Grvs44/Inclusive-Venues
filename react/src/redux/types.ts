@@ -11,6 +11,10 @@ export type TitleState = {
   title: string
 }
 
+export type ResultsState = {
+  map: boolean
+}
+
 export type LoggedInUser = {
   firstName: string
   lastName: string
