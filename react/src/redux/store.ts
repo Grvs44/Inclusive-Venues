@@ -4,7 +4,6 @@ import installReducer from './installSlice'
 import { resultsSlice } from './resultsSlice'
 import titleReducer from './titleSlice'
 
-// Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/store.ts
 export default configureStore({
   reducer: {
     install: installReducer,
@@ -12,6 +11,7 @@ export default configureStore({
     title: titleReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
+  // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/store.ts
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
