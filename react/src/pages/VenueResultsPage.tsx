@@ -1,5 +1,6 @@
 import React from 'react'
 import Container from '@mui/material/Container'
+import { AzureMapsProvider } from 'react-azure-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import MapResultsView from '../containers/MapResultsView'
 import { setShowMap } from '../redux/resultsSlice'
@@ -18,7 +19,13 @@ export default function VenueResultsPage() {
   return (
     <Container>
       //Filters
-      {showMap ? <MapResultsView /> : <p>List</p>}
+      {showMap ? (
+        <AzureMapsProvider>
+          <MapResultsView />
+        </AzureMapsProvider>
+      ) : (
+        <p>List</p>
+      )}
     </Container>
   )
 }
