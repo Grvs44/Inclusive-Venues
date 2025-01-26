@@ -23,7 +23,7 @@ export default function LocationInput(props: LocationInputProps) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         setLoading(false)
         props.onLoadChange(false)
-        setLocation(`${coords.latitude},${coords.longitude}`)
+        setLocation(`${coords.longitude},${coords.latitude}`)
       })
     }
   }
