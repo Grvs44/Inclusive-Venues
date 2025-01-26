@@ -1,6 +1,8 @@
 import React from 'react'
 import Container from '@mui/material/Container'
 import { useDispatch, useSelector } from 'react-redux'
+import MapResultsView from '../containers/MapResultsView'
+import { setMap } from '../redux/resultsSlice'
 import { setTitle } from '../redux/titleSlice'
 import { State } from '../redux/types'
 
@@ -10,12 +12,13 @@ export default function VenueResultsPage() {
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
+    dispatch(setMap(true))
   }, [])
 
   return (
     <Container>
       //Filters
-      {showMap ? <p>Map</p> : <p>List</p>}
+      {showMap ? <MapResultsView /> : <p>List</p>}
     </Container>
   )
 }
