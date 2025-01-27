@@ -15,15 +15,13 @@ export type MapPopupProps = {
 }
 
 export default function MapPopup({ state }: MapPopupProps) {
-  const open = state != undefined
+  console.log(state)
   return (
     <AzureMapPopup
-      isVisible={open}
-      options={{ position: state?.position }}
+      isVisible={state != undefined}
+      options={{ position: state?.position,closeButton:false }}
       popupContent={
-        <Popper open={open}>
           <Typography component="p">{state?.venue.name}</Typography>
-        </Popper>
       }
     />
   )
