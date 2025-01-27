@@ -31,3 +31,11 @@ export type UserLogin = {
 export interface Entity {
   id: number
 }
+
+export type ListVenue = {
+  id: number
+  name: string
+  longitude: number
+  latitude: number
+  rating?: number
+}
