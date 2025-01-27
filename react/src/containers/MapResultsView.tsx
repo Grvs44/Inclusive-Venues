@@ -5,7 +5,6 @@ import { AzureMap, useAzureMaps } from 'react-azure-maps'
 import LocationMarker from '../components/LocationMarker'
 import VenueMarker from '../components/VenueMarker'
 import mapOptions from '../config/mapOptions'
-import MapTooltipProvider from '../providers/MapTooltipProvider'
 import { ListVenue } from '../redux/types'
 
 // Test data
@@ -55,19 +54,17 @@ export default function MapResultsView() {
   const { mapRef, isMapReady } = useAzureMaps()
   return (
     <div style={{ height: '300px' }}>
-      <MapTooltipProvider>
-        <AzureMap
-          options={mapOptions}
-          styleOptions={{ showLogo: false, showFeedbackLink: false }}
-        >
-          <>
-            <LocationMarker />
-            {data.map((venue) => (
-              <VenueMarker key={venue.id} venue={venue} />
-            ))}
-          </>
-        </AzureMap>
-      </MapTooltipProvider>
+      <AzureMap
+        options={mapOptions}
+        styleOptions={{ showLogo: false, showFeedbackLink: false }}
+      >
+        <>
+          <LocationMarker />
+          {data.map((venue) => (
+            <VenueMarker key={venue.id} venue={venue} />
+          ))}
+        </>
+      </AzureMap>
       {isMapReady ? null : <CircularProgress />}
     </div>
   )
