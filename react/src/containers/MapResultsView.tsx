@@ -3,7 +3,6 @@ import 'azure-maps-control/dist/atlas.min.css'
 import { CircularProgress } from '@mui/material'
 import { AzureMap, useAzureMaps } from 'react-azure-maps'
 import LocationMarker from '../components/LocationMarker'
-import MapPopup, { PopupState } from '../components/MapPopup'
 import VenueMarker from '../components/VenueMarker'
 import mapOptions from '../config/mapOptions'
 import { ListVenue } from '../redux/types'
@@ -53,7 +52,6 @@ const data: ListVenue[] = [
 
 export default function MapResultsView() {
   const { mapRef, isMapReady } = useAzureMaps()
-  const [popup, setPopup] = React.useState<PopupState>(undefined)
   return (
     <div style={{ height: '300px' }}>
       <AzureMap
@@ -63,9 +61,8 @@ export default function MapResultsView() {
         <>
           <LocationMarker />
           {data.map((venue) => (
-            <VenueMarker key={venue.id} venue={venue} setPopup={setPopup} />
+            <VenueMarker key={venue.id} venue={venue} />
           ))}
-          <MapPopup state={popup} />
         </>
       </AzureMap>
       {isMapReady ? null : <CircularProgress />}

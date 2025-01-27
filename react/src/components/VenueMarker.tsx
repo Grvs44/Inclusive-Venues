@@ -1,32 +1,31 @@
 import React from 'react'
-import { AzureMapHtmlMarker } from 'react-azure-maps'
+import Typography from '@mui/material/Typography'
+import { AzureMapHtmlMarker, AzureMapPopup } from 'react-azure-maps'
 import { ListVenue } from '../redux/types'
-import { PopupState } from './MapPopup'
 
 export type VenueMarkerProps = {
   venue: ListVenue
-  setPopup: (state: PopupState) => void
 }
 
-export default function VenueMarker({ venue, setPopup }: VenueMarkerProps) {
+export default function VenueMarker({ venue }: VenueMarkerProps) {
+  const [open, setOpen] = React.useState<boolean>(false)
   const position = [venue.longitude, venue.latitude]
-  const onClick = () => {
-    console.log('Clicked')
-  }
+
   return (
-    <AzureMapHtmlMarker
-      events={[
-        { eventName: 'click', callback: onClick },
-        {
-          eventName: 'mouseenter',
-          callback: () => setPopup({ position, venue }),
-        },
-        { eventName: 'mouseleave', callback: () => setPopup(undefined) },
-      ]}
-      options={{
-        text: venue.rating?.toFixed(1),
-        position,
-      }}
-    />
+    <>
+      <AzureMapHtmlMarker
+        events={[{ eventName: 'click', callback: () => setOpen(true) }]}
+        options={{
+          text: venue.rating?.toFixed(1),
+          position,
+        }}
+      />
+      <AzureMapPopup
+        isVisible={open}
+        options={{ position }}
+        events={[{ eventName: 'close', callback: () => setOpen(false) }]}
+        popupContent={<Typography component="p">{venue.name}</Typography>}
+      />
+    </>
   )
 }
