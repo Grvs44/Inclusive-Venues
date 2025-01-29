@@ -11,6 +11,10 @@ export type TitleState = {
   title: string
 }
 
+export type ResultsState = {
+  showMap: boolean
+}
+
 export type LoggedInUser = {
   firstName: string
   lastName: string
@@ -26,4 +30,12 @@ export type UserLogin = {
 
 export interface Entity {
   id: number
+}
+
+export type ListVenue = {
+  id: number
+  name: string
+  longitude: number
+  latitude: number
+  score?: number
 }
