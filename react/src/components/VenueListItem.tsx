@@ -1,10 +1,9 @@
 import React from 'react'
 import NavigationIcon from '@mui/icons-material/Navigation'
-import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { ListVenue } from '../redux/types'
+import LinkListItem from './LinkListItem'
 import StarBox from './StarBox'
 
 export type VenueListItemProps = {
@@ -13,7 +12,7 @@ export type VenueListItemProps = {
 
 export default function VenueListItem({ venue }: VenueListItemProps) {
   return (
-    <ListItem>
+    <LinkListItem to={`venue/${venue.id}`}>
       <ListItemText
         primary={
           <Stack direction="row" spacing={4}>
@@ -28,6 +27,6 @@ export default function VenueListItem({ venue }: VenueListItemProps) {
           </>
         }
       />
-    </ListItem>
+    </LinkListItem>
   )
 }
