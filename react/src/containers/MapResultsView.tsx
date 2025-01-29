@@ -8,7 +8,7 @@ import mapOptions from '../config/mapOptions'
 import { ListVenue } from '../redux/types'
 
 // Test data
-const data: ListVenue[] = [
+export const data: ListVenue[] = [
   {
     id: 1,
     name: 'The Hobbit',
