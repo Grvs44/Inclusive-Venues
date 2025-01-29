@@ -37,5 +37,5 @@ export type ListVenue = {
   name: string
   longitude: number
   latitude: number
-  rating?: number
+  score?: number
 }

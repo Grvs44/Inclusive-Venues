@@ -16,7 +16,7 @@ export default function VenueMarker({ venue }: VenueMarkerProps) {
       <AzureMapHtmlMarker
         events={[{ eventName: 'click', callback: () => setOpen(true) }]}
         options={{
-          text: venue.rating?.toFixed(1),
+          text: venue.score?.toFixed(1),
           position,
         }}
       />
