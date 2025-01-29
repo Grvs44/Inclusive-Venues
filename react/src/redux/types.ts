@@ -39,3 +39,7 @@ export type ListVenue = {
   latitude: number
   score?: number
 }
+
+export type Venue = ListVenue & {
+  // TODO: add other fields
+}
