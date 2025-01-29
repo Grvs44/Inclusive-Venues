@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import HomePage from './pages/HomePage'
 import LoginTestPage from './pages/LoginTestPage'
+import VenueDetailPage from './pages/VenueDetailPage'
 import VenueResultsPage from './pages/VenueResultsPage'
 
 export default createBrowserRouter([
@@ -17,6 +18,10 @@ export default createBrowserRouter([
       {
         path: 'venue',
         element: <VenueResultsPage />,
+      },
+      {
+        path: 'venue/:id',
+        element: <VenueDetailPage />,
       },
       {
         path: 'logintest',
