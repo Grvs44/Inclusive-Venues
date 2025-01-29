@@ -3,7 +3,7 @@ import Container from '@mui/material/Container'
 import { AzureMapsProvider } from 'react-azure-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import MapResultsView from '../containers/MapResultsView'
-import { setShowMap } from '../redux/resultsSlice'
+import ResultsFilters from '../containers/ResultsFilters'
 import { setTitle } from '../redux/titleSlice'
 import { State } from '../redux/types'
 
@@ -13,12 +13,11 @@ export default function VenueResultsPage() {
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
-    dispatch(setShowMap(true))
   }, [])
 
   return (
     <Container>
-      //Filters
+      <ResultsFilters />
       {showMap ? (
         <AzureMapsProvider>
           <MapResultsView />
