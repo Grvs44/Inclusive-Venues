@@ -7,12 +7,11 @@ export type StarBoxProps = {
 }
 
 export default function StarBox({ value }: StarBoxProps) {
-  console.log(value)
-  return (
-    <Box>
-      {new Array(value?value:0).map((_v, index) => {console.log(index);return(
-        <Star key={index} />
-      )})}
-    </Box>
-  )
+  const stars = []
+  if (value) {
+    for (let i = 0; i < value; i++) {
+      stars.push(<Star key={i} />)
+    }
+  }
+  return <Box>{stars}</Box>
 }
