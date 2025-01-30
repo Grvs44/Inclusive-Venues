@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 import jsconfigPaths from 'vite-jsconfig-paths'
-import { VitePWA } from 'vite-plugin-pwa'
 import { createHtmlPlugin } from 'vite-plugin-html'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/vite.config.js
 export default defineConfig({
@@ -28,5 +28,11 @@ export default defineConfig({
     manifest: true,
     outDir: 'build',
     assetsDir: 'static',
+    rollupOptions: {
+      output: {
+        preserveModules: true,
+      },
+      preserveEntrySignatures: 'exports-only',
+    },
   },
 })
