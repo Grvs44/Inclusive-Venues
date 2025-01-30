@@ -27,6 +27,7 @@ class Venue(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.TextField(null=True, blank=True)
     subcategory = models.ForeignKey(VenueSubcategory, on_delete=models.CASCADE)
+    score = models.PositiveSmallIntegerField(null=True)
 
 
 class Review(models.Model):
@@ -52,3 +53,8 @@ class Rating(models.Model):
         validators.MinValueValidator(1),
         validators.MaxValueValidator(5),
     ])
+
+
+class Image(models.Model):
+    venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
+    order = models.PositiveSmallIntegerField()
