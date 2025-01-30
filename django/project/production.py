@@ -37,15 +37,3 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'DATABASE': os.environ['AZURE_MYSQL_DATABASE'],
-        'HOST': os.environ['AZURE_MYSQL_HOST'],
-        'USER': os.environ['AZURE_MYSQL_USER'],
-        'PASSWORD': os.environ['AZURE_MYSQL_PASSWORD'],
-        'PORT': os.environ['AZURE_MYSQL_PORT'],
-        'SSL_MODE': 'REQUIRED',
-    }
-}
