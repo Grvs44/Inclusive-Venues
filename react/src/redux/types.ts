@@ -41,5 +41,14 @@ export type ListVenue = {
 }
 
 export type Venue = ListVenue & {
-  // TODO: add other fields
+  description:string
+  address?:string
+  subcategory:number
+  images?:Image[]
+}
+
+export type Image = {
+  id:number
+  alt:string
+  src:string
 }
