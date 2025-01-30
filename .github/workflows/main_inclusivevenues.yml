@@ -21,7 +21,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
+        
+      - name: Install dependencies
+        working-directory: ./django
+        run: pip install -r requirements.txt
+  
       - name: Zip artifact for deployment
         working-directory: ./django
         run: zip release.zip ./* -r -x@.funcignore
