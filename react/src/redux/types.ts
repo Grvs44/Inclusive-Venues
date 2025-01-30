@@ -41,14 +41,14 @@ export type ListVenue = {
 }
 
 export type Venue = ListVenue & {
-  description:string
-  address?:string
-  subcategory:number
-  images?:Image[]
+  description: string
+  address?: string
+  subcategory: number
+  images?: Image[]
 }
 
 export type Image = {
-  id:number
-  alt:string
-  src:string
+  id: number
+  alt: string
+  src: string
 }
