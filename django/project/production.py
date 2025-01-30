@@ -16,6 +16,7 @@ DEBUG = 'DEBUG' in os.environ
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+INSTALLED_APPS.append('whitenoise')
 INSTALLED_APPS.append('storages')
 
 # WhiteNoise configuration
