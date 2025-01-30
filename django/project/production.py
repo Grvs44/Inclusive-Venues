@@ -33,8 +33,8 @@ MIDDLEWARE = [
 AZURE_ACCOUNT_NAME = 'inclusivevenues'
 AZURE_ACCOUNT_KEY = os.getenv('AZURE_STORAGE_KEY')
 AZURE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION')
-STATIC_ROOT = 'https://inclusivevenues.file.core.windows.net/media/'
-MEDIA_URL = 'https://inclusivevenues.file.core.windows.net/media/'
+STATIC_ROOT = 'https://inclusivevenues.blob.core.windows.net/static/'
+MEDIA_URL = 'https://inclusivevenues.blob.core.windows.net/media/'
 STORAGES = {
     'default': {
         'BACKEND': 'storages.backends.azure_storage.AzureStorage',
