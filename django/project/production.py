@@ -16,7 +16,7 @@ DEBUG = 'DEBUG' in os.environ
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+INSTALLED_APPS.append('storages')
 
 # WhiteNoise configuration
 MIDDLEWARE = [
@@ -31,11 +31,34 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Adapted from https://medium.com/@hellenwain_54279/uploading-django-static-and-media-files-to-azure-blob-storage-9f5e1e33725f
+AZURE_ACCOUNT_NAME = 'inclusivevenues'
+AZURE_ACCOUNT_KEY = os.getenv('AZURE_STORAGE_KEY')
+AZURE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION')
+STATIC_ROOT = 'https://inclusivevenues.file.core.windows.net/media/'
+MEDIA_URL = 'https://inclusivevenues.file.core.windows.net/media/'
+STORAGES = {
+    'default': {
+        'BACKEND': 'storages.backends.azure_storage.AzureStorage',
+        'OPTIONS': {
+            'azure_container': 'media',
+            'account_name': AZURE_ACCOUNT_NAME,
+            'account_key': AZURE_ACCOUNT_KEY,
+            'connection_string': AZURE_CONNECTION_STRING,
+        },
+    },
+    'staticfiles': {
+        'BACKEND': 'storages.backends.azure_storage.AzureStorage',
+        'OPTIONS': {
+            'azure_container': 'static',
+            'account_name': AZURE_ACCOUNT_NAME,
+            'account_key': AZURE_ACCOUNT_KEY,
+            'connection_string': AZURE_CONNECTION_STRING,
+        }
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 DATABASES = {
     'default': {
