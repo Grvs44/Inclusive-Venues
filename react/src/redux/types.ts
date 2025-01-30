@@ -39,3 +39,16 @@ export type ListVenue = {
   latitude: number
   score?: number
 }
+
+export type Venue = ListVenue & {
+  description:string
+  address?:string
+  subcategory:number
+  images?:Image[]
+}
+
+export type Image = {
+  id:number
+  alt:string
+  src:string
+}
