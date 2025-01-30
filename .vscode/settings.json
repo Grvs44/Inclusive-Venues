@@ -1,4 +1,6 @@
 {
+  "appService.defaultWebAppToDeploy": "/subscriptions/ffee9776-b287-4ddc-bc16-6a40bf6d5a4f/resourceGroups/inclusivevenues/providers/Microsoft.Web/sites/inclusivevenues",
+  "appService.deploySubpath": "django",
   "python.terminal.activateEnvironment": false,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.typeCheckingMode": "basic"
