@@ -1,0 +1,7 @@
+__pycache__
+.gitignore
+Pipfile
+Pipfile.lock
+tests.py
+*.cnf
+*.sqlite3
