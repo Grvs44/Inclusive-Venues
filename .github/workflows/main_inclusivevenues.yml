@@ -22,16 +22,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Create and start virtual environment
-        working-directory: ./django
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-
-      - name: Install dependencies
-        working-directory: ./django
-        run: pip install -r requirements.txt
-
       - name: Zip artifact for deployment
         working-directory: ./django
         run: zip release.zip ./* -r -x@.funcignore
@@ -57,6 +47,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
 
       - name: Login to Azure
         uses: azure/login@v2
