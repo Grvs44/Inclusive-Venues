@@ -22,21 +22,9 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Create and start virtual environment
-        working-directory: ./django
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-      
-      - name: Install dependencies
-        working-directory: ./django
-        run: pip install -r requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-
       - name: Zip artifact for deployment
         working-directory: ./django
-        run: zip release.zip ./* -r -x venv
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
