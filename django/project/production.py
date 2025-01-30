@@ -16,14 +16,11 @@ DEBUG = 'DEBUG' in os.environ
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-INSTALLED_APPS.append('whitenoise')
 INSTALLED_APPS.append('storages')
 
 # WhiteNoise configuration
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # Add whitenoise middleware after the security middleware
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
