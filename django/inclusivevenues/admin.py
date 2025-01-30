@@ -35,3 +35,8 @@ class RatingCategoryAdmin(ModelAdmin):
 @admin.register(models.Rating)
 class RatingAdmin(ModelAdmin):
     list_display = ['review__venue__name', 'category__name', 'value']
+
+
+@admin.register(models.Image)
+class ImageAdmin(ModelAdmin):
+    list_display = ['venue__name', 'order']

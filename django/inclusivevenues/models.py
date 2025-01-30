@@ -58,3 +58,5 @@ class Rating(models.Model):
 class Image(models.Model):
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
+    alt = models.CharField(max_length=100)
+    src = models.ImageField()
