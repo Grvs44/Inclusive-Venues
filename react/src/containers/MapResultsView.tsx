@@ -1,10 +1,10 @@
 import React from 'react'
 import 'azure-maps-control/dist/atlas.min.css'
 import { CircularProgress } from '@mui/material'
-import { AzureMap, useAzureMaps } from 'react-azure-maps'
+import { useAzureMaps } from 'react-azure-maps'
 import LocationMarker from '../components/LocationMarker'
+import Map from '../components/Map'
 import VenueMarker from '../components/VenueMarker'
-import mapOptions from '../config/mapOptions'
 import { ListVenue } from '../redux/types'
 
 // Test data
@@ -54,17 +54,14 @@ export default function MapResultsView() {
   const { mapRef, isMapReady } = useAzureMaps()
   return (
     <div style={{ height: '300px' }}>
-      <AzureMap
-        options={mapOptions}
-        styleOptions={{ showLogo: false, showFeedbackLink: false }}
-      >
+      <Map>
         <>
           <LocationMarker />
           {data.map((venue) => (
             <VenueMarker key={venue.id} venue={venue} />
           ))}
         </>
-      </AzureMap>
+      </Map>
       {isMapReady ? null : <CircularProgress />}
     </div>
   )
