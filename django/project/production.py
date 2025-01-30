@@ -46,6 +46,6 @@ DATABASES = {
         'USER': os.environ['AZURE_MYSQL_USER'],
         'PASSWORD': os.environ['AZURE_MYSQL_PASSWORD'],
         'PORT': os.environ['AZURE_MYSQL_PORT'],
-        'SSL-MODE': 'REQUIRE',
+        'SSL_MODE': 'REQUIRED',
     }
 }
