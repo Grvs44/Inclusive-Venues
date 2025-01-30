@@ -22,6 +22,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Create and start virtual environment
+        working-directory: ./django
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+
       - name: Install dependencies
         working-directory: ./django
         run: pip install -r requirements.txt
