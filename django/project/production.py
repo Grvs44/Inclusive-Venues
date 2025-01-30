@@ -5,7 +5,6 @@ Adapted from https://github.com/Azure-Samples/msdocs-django-postgresql-sample-ap
 import os
 
 from .settings import *  # noqa
-from .settings import BASE_DIR
 
 # Configure the domain name using the environment variable
 # that Azure automatically creates for us.
@@ -37,3 +36,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/home/site/db.sqlite3',
+    }
+}
