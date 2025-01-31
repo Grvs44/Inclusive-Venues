@@ -4,6 +4,7 @@ import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import { Venue } from '../redux/types'
+import { openMaps } from '../redux/utils'
 
 export default function VenueLocation({ venue }: { venue: Venue }) {
   const [map, setMap] = React.useState<boolean>(false)
@@ -15,8 +16,8 @@ export default function VenueLocation({ venue }: { venue: Venue }) {
         <Button onClick={() => setMap(true)}>Show map</Button>
       )}
       {venue.address ? <Typography>{venue.address}</Typography> : null}
-      <Button variant="contained">
-        Directions
+      <Button variant="contained" onClick={() => openMaps(venue)}>
+        Open in Maps
         <OpenInNewIcon fontSize="inherit" />
       </Button>
     </Card>
