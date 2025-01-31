@@ -6,7 +6,7 @@ export default function Map(props: Parameters<typeof AzureMap>[0]) {
   return (
     <AzureMap
       {...props}
-      options={mapOptions}
+      options={{ ...mapOptions, ...props.options }}
       styleOptions={{ showLogo: false, showFeedbackLink: false }}
     />
   )
