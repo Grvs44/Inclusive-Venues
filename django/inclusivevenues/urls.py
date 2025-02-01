@@ -15,6 +15,7 @@ router.register(r'venue', views.VenueViewSet)
 router.register(r'review', views.ReviewViewSet)
 router.register(r'ratingcat', views.RatingCategoryViewSet)
 router.register(r'rating', views.RatingViewSet)
+router.register(r'image', views.ImageViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),

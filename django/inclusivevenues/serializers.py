@@ -15,7 +15,15 @@ class VenueSubcategorySerializer(ModelSerializer):
         fields = ['id', 'name', 'category']
 
 
+class VenueImageSerializer(ModelSerializer):
+    class Meta:
+        model = models.Image
+        fields = ['alt', 'src']
+
+
 class VenueSerializer(ModelSerializer):
+    images = VenueImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = models.Venue
         fields = [
@@ -26,6 +34,7 @@ class VenueSerializer(ModelSerializer):
             'latitude',
             'address',
             'subcategory',
+            'images',
         ]
 
 
@@ -45,3 +54,9 @@ class RatingSerializer(ModelSerializer):
     class Meta:
         model = models.Rating
         fields = ['id', 'category', 'review', 'value']
+
+
+class ImageSerializer(ModelSerializer):
+    class Meta:
+        model = models.Image
+        fields = ['id', 'venue', 'order', 'alt', 'src']

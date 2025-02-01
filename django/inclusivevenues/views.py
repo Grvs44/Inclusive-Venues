@@ -41,6 +41,11 @@ class RatingViewSet(ModelViewSet):
     serializer_class = serializers.RatingSerializer
 
 
+class ImageViewSet(ModelViewSet):
+    queryset = models.Image.objects
+    serializer_class = serializers.ImageSerializer
+
+
 class UserView(APIView):
     '''API endpoint for viewing current user details'''
 

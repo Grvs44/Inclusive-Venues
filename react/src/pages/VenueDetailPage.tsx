@@ -11,14 +11,6 @@ import VenueReviews from '../containers/VenueReviews'
 import { useGetVenueQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 
-//Test data
-const images = [
-  { id: 1, src: '/image1.jpg', alt: 'Image 1 alt' },
-  { id: 2, src: '/image2.jpeg', alt: 'Image 2 alt' },
-  { id: 3, src: '/image3.jpeg', alt: 'Image 3 alt' },
-  { id: 4, src: '/image1.jpg', alt: 'Image 4 alt' },
-]
-
 export default function VenueDetailPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -35,7 +27,7 @@ export default function VenueDetailPage() {
         <CircularProgress />
       ) : data ? (
         <Paper>
-          <VenueImageList images={images} />
+          <VenueImageList images={data.images} />
           <VenueInfo venue={data} />
           <VenueReviews />
           <VenueLocation venue={data} />
