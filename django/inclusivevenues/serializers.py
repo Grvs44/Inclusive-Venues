@@ -18,7 +18,8 @@ class VenueSubcategorySerializer(ModelSerializer):
 class VenueImageSerializer(ModelSerializer):
     class Meta:
         model = models.Image
-        fields = ['alt', 'src']
+        fields = ['id', 'alt', 'src']
+        # TODO: order by order
 
 
 class VenueSerializer(ModelSerializer):
@@ -34,7 +35,21 @@ class VenueSerializer(ModelSerializer):
             'latitude',
             'address',
             'subcategory',
+            'score',
             'images',
+        ]
+
+
+class VenueListSerializer(ModelSerializer):
+    class Meta:
+        model = models.Venue
+        fields = [
+            'id',
+            'name',
+            'longitude',
+            'latitude',
+            'subcategory',
+            'score',
         ]
 
 

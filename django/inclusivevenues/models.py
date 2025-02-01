@@ -27,7 +27,7 @@ class Venue(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.TextField(null=True, blank=True)
     subcategory = models.ForeignKey(VenueSubcategory, on_delete=models.CASCADE)
-    score = models.PositiveSmallIntegerField(null=True)
+    score = models.PositiveSmallIntegerField(null=True, blank=True)
 
 
 class Review(models.Model):

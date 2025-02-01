@@ -32,6 +32,13 @@ export interface Entity {
   id: number
 }
 
+// Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/types.ts
+export interface PageState<T> {
+  results: T[]
+  count: number
+  next: string | null
+}
+
 export type ListVenue = {
   id: number
   name: string
@@ -45,6 +52,11 @@ export type Venue = ListVenue & {
   address?: string
   subcategory: number
   images?: Image[]
+}
+
+export type VenueQuery = {
+  page?: number
+  // TODO: other filters
 }
 
 export type Image = {

@@ -5,64 +5,23 @@ import { useAzureMaps } from 'react-azure-maps'
 import LocationMarker from '../components/LocationMarker'
 import Map from '../components/Map'
 import VenueMarker from '../components/VenueMarker'
-import { ListVenue } from '../redux/types'
-
-// Test data
-export const data: ListVenue[] = [
-  {
-    id: 1,
-    name: 'The Hobbit',
-    latitude: 50.918812,
-    longitude: -1.395331,
-  },
-  {
-    id: 2,
-    name: 'Jesters',
-    latitude: 50.918276,
-    longitude: -1.395412,
-    score: 3,
-  },
-  {
-    id: 3,
-    name: 'Building 32',
-    latitude: 50.936716,
-    longitude: -1.395974,
-    score: 5,
-  },
-  {
-    id: 4,
-    name: 'Building 16',
-    latitude: 50.937632,
-    longitude: -1.395651,
-    score: 4,
-  },
-  {
-    id: 5,
-    name: 'Building 46',
-    latitude: 50.934672,
-    longitude: -1.399775,
-  },
-  {
-    id: 6,
-    name: "The Stag's",
-    latitude: 50.934629,
-    longitude: -1.397236,
-  },
-]
+import { useGetVenuesQuery } from '../redux/apiSlice'
 
 export default function MapResultsView() {
   const { mapRef, isMapReady } = useAzureMaps()
+  const { data, isLoading } = useGetVenuesQuery({})
+
   return (
     <div style={{ height: '300px' }}>
       <Map>
         <>
           <LocationMarker />
-          {data.map((venue) => (
+          {data?.results.map((venue) => (
             <VenueMarker key={venue.id} venue={venue} />
           ))}
         </>
       </Map>
-      {isMapReady ? null : <CircularProgress />}
+      {isMapReady || isLoading ? null : <CircularProgress />}
     </div>
   )
 }
