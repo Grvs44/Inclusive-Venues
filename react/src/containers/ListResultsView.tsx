@@ -2,17 +2,23 @@ import React from 'react'
 import List from '@mui/material/List'
 import Skeleton from '@mui/material/Skeleton'
 import VenueListItem from '../components/VenueListItem'
-import { ListVenue } from '../redux/types'
+import { useGetVenuesQuery } from '../redux/apiSlice'
 
-export type ListResultsViewProps = {
-  results?: ListVenue[]
-}
+export default function ListResultsView() {
+  const { data, isLoading } = useGetVenuesQuery({})
 
-export default function ListResultsView({ results }: ListResultsViewProps) {
   return (
     <List>
-      {results?.map((venue) => <VenueListItem key={venue.id} venue={venue} />)}
-      <Skeleton />
+      {data?.results.map((venue) => (
+        <VenueListItem key={venue.id} venue={venue} />
+      ))}
+      {isLoading ? (
+        <>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </>
+      ) : null}
     </List>
   )
 }

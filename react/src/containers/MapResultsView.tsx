@@ -5,25 +5,23 @@ import { useAzureMaps } from 'react-azure-maps'
 import LocationMarker from '../components/LocationMarker'
 import Map from '../components/Map'
 import VenueMarker from '../components/VenueMarker'
-import { ListVenue } from '../redux/types'
+import { useGetVenuesQuery } from '../redux/apiSlice'
 
-export type MapResultsViewProps = {
-  results?: ListVenue[]
-}
-
-export default function MapResultsView({ results }: MapResultsViewProps) {
+export default function MapResultsView() {
   const { mapRef, isMapReady } = useAzureMaps()
+  const { data, isLoading } = useGetVenuesQuery({})
+
   return (
     <div style={{ height: '300px' }}>
       <Map>
         <>
           <LocationMarker />
-          {results?.map((venue) => (
+          {data?.results.map((venue) => (
             <VenueMarker key={venue.id} venue={venue} />
           ))}
         </>
       </Map>
-      {isMapReady ? null : <CircularProgress />}
+      {isMapReady || isLoading ? null : <CircularProgress />}
     </div>
   )
 }
