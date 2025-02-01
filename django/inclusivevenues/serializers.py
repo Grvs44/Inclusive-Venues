@@ -34,7 +34,21 @@ class VenueSerializer(ModelSerializer):
             'latitude',
             'address',
             'subcategory',
+            'score',
             'images',
+        ]
+
+
+class VenueListSerializer(ModelSerializer):
+    class Meta:
+        model = models.Venue
+        fields = [
+            'id',
+            'name',
+            'longitude',
+            'latitude',
+            'subcategory',
+            'score',
         ]
 
 

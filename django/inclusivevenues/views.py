@@ -9,39 +9,49 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import authenticate, login, logout
 
 from . import models, serializers
+from .pagination import Pagination
 
 
-class VenueCategoryViewSet(ModelViewSet):
+class ViewSet(ModelViewSet):
+    pagination_class = Pagination
+
+
+class VenueCategoryViewSet(ViewSet):
     queryset = models.VenueCategory.objects
     serializer_class = serializers.VenueCategorySerializer
 
 
-class VenueSubcategoryViewSet(ModelViewSet):
+class VenueSubcategoryViewSet(ViewSet):
     queryset = models.VenueSubcategory.objects
     serializer_class = serializers.VenueSubcategorySerializer
 
 
-class VenueViewSet(ModelViewSet):
-    queryset = models.Venue.objects
-    serializer_class = serializers.VenueSerializer
+class VenueViewSet(ViewSet):
+    queryset = models.Venue.objects.all()
+
+    # Adapted from https://github.com/Grvs44/budgetmanager/blob/Grvs44/issue73/budgetmanager/views.py
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.VenueListSerializer
+        return serializers.VenueSerializer
 
 
-class ReviewViewSet(ModelViewSet):
+class ReviewViewSet(ViewSet):
     queryset = models.Review.objects
     serializer_class = serializers.ReviewSerializer
 
 
-class RatingCategoryViewSet(ModelViewSet):
+class RatingCategoryViewSet(ViewSet):
     queryset = models.RatingCategory.objects
     serializer_class = serializers.RatingCategorySerializer
 
 
-class RatingViewSet(ModelViewSet):
+class RatingViewSet(ViewSet):
     queryset = models.Rating.objects
     serializer_class = serializers.RatingSerializer
 
 
-class ImageViewSet(ModelViewSet):
+class ImageViewSet(ViewSet):
     queryset = models.Image.objects
     serializer_class = serializers.ImageSerializer
 
