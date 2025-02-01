@@ -32,7 +32,7 @@ export interface Entity {
   id: number
 }
 
-// Adapted from https://github.com/Grvs44/budgetmanager/blob/Grvs44/issue73/budgetmanagerpwa/src/redux/types.ts
+// Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/types.ts
 export interface PageState<T> {
   results: T[]
   count: number
