@@ -8,6 +8,7 @@ django = "*"
 djangorestframework = "*"
 django-filter = "*"
 pillow = "*"
+requests = "*"
 
 [dev-packages]
 python-dotenv = "*"
