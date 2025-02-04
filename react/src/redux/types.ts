@@ -51,6 +51,7 @@ export type Venue = ListVenue & {
   description: string
   address?: string
   subcategory: number
+  map: string | null
   images?: Image[]
 }
 
