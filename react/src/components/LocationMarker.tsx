@@ -5,7 +5,11 @@ import {
   useAzureMaps,
 } from 'react-azure-maps'
 
-export default function LocationMarker() {
+export type LocationMarkerProps = {
+  onReady: () => void
+}
+
+export default function LocationMarker({ onReady }: LocationMarkerProps) {
   const [position, setPosition] = React.useState<AzureDataPosition | undefined>(
     undefined,
   )
@@ -17,7 +21,9 @@ export default function LocationMarker() {
         const center = [coords.longitude, coords.latitude]
         setPosition(center)
         mapRef?.setCamera({ center, zoom: 12 })
-      })
+        onReady()
+      }, onReady)
+    else onReady()
   }, [])
 
   return position ? (
