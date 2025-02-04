@@ -1,3 +1,4 @@
+# pylint:disable=no-member
 from django.conf import settings
 from django.core import validators
 from django.db import models
@@ -46,7 +47,7 @@ class Review(models.Model):
     body = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.venue.name} by {self.author.name}'
+        return f'{self.venue.name} by {self.author.username}'
 
 
 class RatingCategory(models.Model):
@@ -68,6 +69,9 @@ class Rating(models.Model):
         validators.MinValueValidator(1),
         validators.MaxValueValidator(5),
     ])
+
+    def __str__(self):
+        return f'Rating ({self.id})'  # type: ignore
 
 
 class Image(models.Model):
