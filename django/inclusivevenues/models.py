@@ -3,6 +3,8 @@ from django.conf import settings
 from django.core import validators
 from django.db import models
 
+from .maps import get_image_url
+
 
 class VenueCategory(models.Model):
     name = models.CharField(max_length=20)
@@ -35,9 +37,18 @@ class Venue(models.Model):
     address = models.TextField(null=True, blank=True)
     subcategory = models.ForeignKey(VenueSubcategory, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField(null=True, blank=True)
+    map = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return str(self.name)
+
+    def generate_map(self):
+        self.map = get_image_url(self.latitude, self.longitude)
+
+    def clean(self):
+        super().clean()
+        if self.map.name is None:
+            self.generate_map()
 
 
 class Review(models.Model):
