@@ -36,6 +36,7 @@ class VenueSerializer(ModelSerializer):
             'address',
             'subcategory',
             'score',
+            'map',
             'images',
         ]
 
