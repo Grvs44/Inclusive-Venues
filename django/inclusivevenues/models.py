@@ -10,7 +10,7 @@ class VenueCategory(models.Model):
         return str(self.name)
 
     class Meta:
-        verbose_name_plural = "Venue categories"
+        verbose_name_plural = 'Venue categories'
 
 
 class VenueSubcategory(models.Model):
@@ -21,7 +21,7 @@ class VenueSubcategory(models.Model):
         return f'{self.category.name} > {self.name}'
 
     class Meta:
-        verbose_name_plural = "Venue subcategories"
+        verbose_name_plural = 'Venue subcategories'
 
 
 class Venue(models.Model):
@@ -58,7 +58,7 @@ class RatingCategory(models.Model):
         return str(self.name)
 
     class Meta:
-        verbose_name_plural = "Rating categories"
+        verbose_name_plural = 'Rating categories'
 
 
 class Rating(models.Model):
