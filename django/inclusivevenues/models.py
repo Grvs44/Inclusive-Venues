@@ -1,3 +1,4 @@
+# pylint:disable=no-member
 from django.conf import settings
 from django.core import validators
 from django.db import models
@@ -6,16 +7,22 @@ from django.db import models
 class VenueCategory(models.Model):
     name = models.CharField(max_length=20)
 
+    def __str__(self):
+        return str(self.name)
+
     class Meta:
-        verbose_name_plural = "Venue categories"
+        verbose_name_plural = 'Venue categories'
 
 
 class VenueSubcategory(models.Model):
     name = models.CharField(max_length=20)
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.category.name} > {self.name}'
+
     class Meta:
-        verbose_name_plural = "Venue subcategories"
+        verbose_name_plural = 'Venue subcategories'
 
 
 class Venue(models.Model):
@@ -29,6 +36,9 @@ class Venue(models.Model):
     subcategory = models.ForeignKey(VenueSubcategory, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField(null=True, blank=True)
 
+    def __str__(self):
+        return str(self.name)
+
 
 class Review(models.Model):
     author = models.ForeignKey(
@@ -36,14 +46,20 @@ class Review(models.Model):
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.venue.name} by {self.author.username}'
+
 
 class RatingCategory(models.Model):
     name = models.CharField(max_length=20)
     # TODO: add to ER diagram
     description = models.TextField()
 
+    def __str__(self):
+        return str(self.name)
+
     class Meta:
-        verbose_name_plural = "Rating categories"
+        verbose_name_plural = 'Rating categories'
 
 
 class Rating(models.Model):
@@ -54,6 +70,9 @@ class Rating(models.Model):
         validators.MaxValueValidator(5),
     ])
 
+    def __str__(self):
+        return f'Rating ({self.id})'  # type: ignore
+
 
 class Image(models.Model):
     venue = models.ForeignKey(
@@ -61,3 +80,6 @@ class Image(models.Model):
     order = models.PositiveSmallIntegerField()
     alt = models.CharField(max_length=100)
     src = models.ImageField()
+
+    def __str__(self):
+        return f'{self.venue.name}: {self.order}'
