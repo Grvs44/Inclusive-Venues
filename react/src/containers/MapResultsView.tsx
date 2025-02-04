@@ -11,8 +11,9 @@ import { useGetVenuesQuery } from '../redux/apiSlice'
 import { ListVenue } from '../redux/types'
 
 export default function MapResultsView() {
-  const { mapRef, isMapReady } = useAzureMaps()
+  const { isMapReady } = useAzureMaps()
   const { data, isLoading } = useGetVenuesQuery({})
+  const [locationLoading, setLocationLoading] = React.useState<boolean>(true)
   const [selectedVenue, setSelectedVenue] = React.useState<
     ListVenue | undefined
   >(undefined)
@@ -27,7 +28,7 @@ export default function MapResultsView() {
       <Box style={{ height: '300px' }}>
         <Map>
           <>
-            <LocationMarker />
+            <LocationMarker onReady={() => setLocationLoading(false)} />
             {data?.results.map((venue) => (
               <VenueMarker
                 key={venue.id}
@@ -37,7 +38,9 @@ export default function MapResultsView() {
             ))}
           </>
         </Map>
-        {isMapReady || isLoading ? null : <CircularProgress />}
+        {!isMapReady || isLoading || locationLoading ? (
+          <CircularProgress />
+        ) : null}
       </Box>
       {selectedVenue ? (
         <Card>
