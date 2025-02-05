@@ -1,3 +1,8 @@
+'''
+Module for fetching and storing map preview images.
+Documentation for downloading map static image:
+https://learn.microsoft.com/en-us/rest/api/maps/render/get-map-static-image
+'''
 from decimal import Decimal
 import uuid
 import requests
@@ -33,6 +38,7 @@ def get_image(latitude: Decimal, longitude: Decimal):
 
 def save_image(image: bytes):
     '''Save map preview image to storage'''
+# Adapted from https://docs.djangoproject.com/en/5.1/topics/files/#storage-objects
     return default_storage.save(f'{uuid.uuid4()}.png', ContentFile(image))
 
 
