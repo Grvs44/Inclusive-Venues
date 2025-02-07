@@ -18,10 +18,12 @@ export default createBrowserRouter([
       {
         path: 'venue',
         element: <VenueResultsPage />,
-      },
-      {
-        path: 'venue/:id',
-        element: <VenueDetailPage />,
+        children: [
+          {
+            path: ':id',
+            element: <VenueDetailPage />,
+          },
+        ],
       },
       {
         path: 'logintest',
