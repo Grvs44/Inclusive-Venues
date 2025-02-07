@@ -7,16 +7,16 @@ import { useParams } from 'react-router-dom'
 import ListResultsView from '../containers/ListResultsView'
 import MapResultsView from '../containers/MapResultsView'
 import ResultsFilters from '../containers/ResultsFilters'
+import VenueOutlet from '../containers/VenueOutlet'
 import { useGetVenuesQuery } from '../redux/apiSlice'
-import { incrementPage } from '../redux/resultsSlice'
 import { setTitle } from '../redux/titleSlice'
 import type { State } from '../redux/types'
-import VenueOutlet from '../containers/VenueOutlet'
 
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
   const { id } = useParams()
-  const { showMap, page } = useSelector((state: State) => state.results)
+  const { showMap } = useSelector((state: State) => state.results)
+  const [page, setPage] = React.useState<number>(1)
   const { data, isLoading } = useGetVenuesQuery({ page })
 
   React.useEffect(() => {
@@ -35,7 +35,7 @@ export default function VenueResultsPage() {
       )}
       <VenueOutlet id={id} />
       {data?.next ? (
-        <Button variant="contained" onClick={() => dispatch(incrementPage())}>
+        <Button variant="contained" onClick={() => setPage((page) => page + 1)}>
           Load more
         </Button>
       ) : null}

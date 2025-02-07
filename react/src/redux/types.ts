@@ -13,7 +13,6 @@ export type TitleState = {
 
 export type ResultsState = {
   showMap: boolean
-  page: number
 }
 
 export type LoggedInUser = {
