@@ -7,13 +7,13 @@ import ListResultsView from '../containers/ListResultsView'
 import MapResultsView from '../containers/MapResultsView'
 import ResultsFilters from '../containers/ResultsFilters'
 import { useGetVenuesQuery } from '../redux/apiSlice'
+import { incrementPage } from '../redux/resultsSlice'
 import { setTitle } from '../redux/titleSlice'
-import { State } from '../redux/types'
+import type { State } from '../redux/types'
 
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
-  const { showMap } = useSelector((state: State) => state.results)
-  const [page, setPage] = React.useState<number>(1)
+  const { showMap, page } = useSelector((state: State) => state.results)
   const { data, isLoading } = useGetVenuesQuery({ page })
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ export default function VenueResultsPage() {
         <ListResultsView data={data} isLoading={isLoading} />
       )}
       {data?.next ? (
-        <Button variant="contained" onClick={() => setPage((page) => page + 1)}>
+        <Button variant="contained" onClick={() => dispatch(incrementPage())}>
           Load more
         </Button>
       ) : null}
