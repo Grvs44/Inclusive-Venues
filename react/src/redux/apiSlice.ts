@@ -12,7 +12,39 @@ import { getFilterQuery } from './utils'
 
 const LIST = -1
 
-// Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/apiSlice.ts
+// Pagination functions adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/apiSlice.ts
+const nullNumber = (value: string | null) => (value ? Number(value) : Infinity)
+
+const getPage = ({ next }: PageState<any>) =>
+  next
+    ? nullNumber(new URLSearchParams(next.slice(next.indexOf('?'))).get('page'))
+    : Infinity
+
+const merge = <T>(currentCache: PageState<T>, responseData: PageState<T>) => {
+  if (
+    currentCache.count === responseData.count &&
+    getPage(currentCache) < getPage(responseData)
+  ) {
+    currentCache.results.push(...responseData.results)
+  } else {
+    currentCache.results = responseData.results
+  }
+  currentCache.next = responseData.next
+  currentCache.count = responseData.count
+}
+
+const serializeQueryArgs = ({ endpointName }: { endpointName: string }) =>
+  endpointName
+
+const forceRefetch = <T>({
+  currentArg,
+  previousArg,
+}: {
+  currentArg: T
+  previousArg: T
+}) => currentArg !== previousArg
+// End of pagination functions
+
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.BASE_URL + import.meta.env.VITE_API_URL,
@@ -22,11 +54,14 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['venue'],
+  tagTypes: ['user', 'venue'],
+  keepUnusedDataFor: 120,
   endpoints: (builder) => ({
     // Authentication
     getUserDetails: builder.query<User, void>({
       query: () => 'user',
+      providesTags: () => [{ type: 'user' }],
+      keepUnusedDataFor: 60000,
     }),
     login: builder.mutation<void, UserLogin>({
       query: (body) => ({
@@ -66,6 +101,9 @@ export const apiSlice = createApi({
     getVenues: builder.query<PageState<ListVenue>, VenueQuery>({
       query: (filters) => 'venue' + getFilterQuery(filters),
       providesTags: () => [{ type: 'venue', id: LIST }],
+      serializeQueryArgs,
+      merge,
+      forceRefetch,
     }),
     getVenue: builder.query<Venue, any>({
       query: (id) => `venue/${id}`,

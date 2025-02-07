@@ -13,6 +13,7 @@ export type TitleState = {
 
 export type ResultsState = {
   showMap: boolean
+  page: number
 }
 
 export type LoggedInUser = {
@@ -55,8 +56,11 @@ export type Venue = ListVenue & {
   images?: Image[]
 }
 
-export type VenueQuery = {
+export interface PageQuery {
   page?: number
+}
+
+export type VenueQuery = PageQuery & {
   // TODO: other filters
 }
 
