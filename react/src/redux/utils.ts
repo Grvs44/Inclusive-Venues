@@ -1,4 +1,4 @@
-import { LoggedInUser, Venue } from './types'
+import type { LoggedInUser, Venue } from './types'
 
 export const getDisplayName = (user: LoggedInUser) =>
   user.firstName ? user.firstName : user.username

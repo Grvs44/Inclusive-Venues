@@ -10,7 +10,7 @@ export const resultsSlice = createSlice({
   name: 'results',
   initialState,
   reducers: {
-    setShowMap: (state, action: { payload: boolean }) => {
+    setShowMap(state, action: { payload: boolean }) {
       state.showMap = action.payload
     },
     toggleShowMap(state) {

@@ -7,12 +7,11 @@ import LocationMarker from '../components/LocationMarker'
 import Map from '../components/Map'
 import StarBox from '../components/StarBox'
 import VenueMarker from '../components/VenueMarker'
-import { useGetVenuesQuery } from '../redux/apiSlice'
 import { ListVenue } from '../redux/types'
+import type { ResultsViewProps } from './ListResultsView'
 
-export default function MapResultsView() {
+export default function MapResultsView({ data, isLoading }: ResultsViewProps) {
   const { isMapReady } = useAzureMaps()
-  const { data, isLoading } = useGetVenuesQuery({})
   const [locationLoading, setLocationLoading] = React.useState<boolean>(true)
   const [selectedVenue, setSelectedVenue] = React.useState<
     ListVenue | undefined
