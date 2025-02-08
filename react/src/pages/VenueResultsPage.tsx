@@ -17,7 +17,10 @@ export default function VenueResultsPage() {
   const { id } = useParams()
   const { showMap } = useSelector((state: State) => state.results)
   const [page, setPage] = React.useState<number>(1)
-  const { data, isLoading } = useGetVenuesQuery({ page })
+  const { data, isLoading } = useGetVenuesQuery(
+    { page },
+    { skip: id != undefined },
+  )
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
