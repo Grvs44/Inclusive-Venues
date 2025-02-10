@@ -68,3 +68,15 @@ export type Image = {
   alt: string
   src: string
 }
+
+export type ListReview = {
+  id: number
+  venue: number
+  body: string
+  ratings: ListRating[]
+}
+
+export type ListRating = {
+  category: number
+  value: number
+}

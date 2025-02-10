@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import HomePage from './pages/HomePage'
 import LoginTestPage from './pages/LoginTestPage'
+import ReviewListPage from './pages/ReviewListPage'
 import VenueDetailPage from './pages/VenueDetailPage'
 import VenueResultsPage from './pages/VenueResultsPage'
 
@@ -24,6 +25,10 @@ export default createBrowserRouter([
             element: <VenueDetailPage />,
           },
         ],
+      },
+      {
+        path: 'review',
+        element: <ReviewListPage />,
       },
       {
         path: 'logintest',
