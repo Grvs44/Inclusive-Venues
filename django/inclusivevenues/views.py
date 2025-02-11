@@ -29,7 +29,6 @@ class VenueSubcategoryViewSet(ViewSet):
 class VenueViewSet(ViewSet):
     queryset = models.Venue.objects.all()
 
-    # Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanager/views.py
     def get_serializer_class(self):
         if self.action == 'list':
             return serializers.VenueListSerializer
@@ -37,8 +36,12 @@ class VenueViewSet(ViewSet):
 
 
 class ReviewViewSet(ViewSet):
-    queryset = models.Review.objects
-    serializer_class = serializers.ReviewSerializer
+    queryset = models.Review.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.ReviewListSerializer
+        return serializers.ReviewSerializer
 
 
 class RatingCategoryViewSet(ViewSet):

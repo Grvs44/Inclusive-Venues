@@ -74,8 +74,10 @@ class RatingCategory(models.Model):
 
 
 class Rating(models.Model):
-    category = models.ForeignKey(RatingCategory, on_delete=models.CASCADE)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        RatingCategory, on_delete=models.CASCADE, related_name='ratings')
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, related_name='ratings')
     value = models.PositiveSmallIntegerField(validators=[
         validators.MinValueValidator(1),
         validators.MaxValueValidator(5),
