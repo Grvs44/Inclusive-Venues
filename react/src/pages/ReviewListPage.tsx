@@ -1,27 +1,16 @@
 import React from 'react'
-import { Container } from '@mui/material'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
 import { useDispatch } from 'react-redux'
 import ReviewList from '../containers/ReviewList'
+import { useGetReviewsQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import { ListReview } from '../redux/types'
 
-// Test data
-const results: ListReview[] = [
-  {
-    id: 1,
-    venue: 1,
-    body: 'my review',
-    ratings: [
-      { category: 1, value: 4 },
-      { category: 2, value: 3 },
-    ],
-  },
-]
-const data = { results, count: 1, next: null }
-const isLoading = false
-
 export default function ReviewListPage() {
   const dispatch = useDispatch()
+  const [page, setPage] = React.useState<number>(1)
+  const { data, isLoading } = useGetReviewsQuery({ page })
 
   const onEdit = (review: ListReview) => {
     console.log(review)
@@ -34,6 +23,11 @@ export default function ReviewListPage() {
   return (
     <Container>
       <ReviewList data={data} isLoading={isLoading} onEdit={onEdit} />
+      {data?.next ? (
+        <Button variant="contained" onClick={() => setPage((page) => page + 1)}>
+          Load more
+        </Button>
+      ) : null}
     </Container>
   )
 }

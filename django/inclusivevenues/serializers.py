@@ -1,5 +1,5 @@
 # Adapted from https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CharField
 from . import models
 
 
@@ -58,6 +58,23 @@ class ReviewSerializer(ModelSerializer):
     class Meta:
         model = models.Review
         fields = ['id', 'author', 'venue', 'body']
+
+
+class RatingListSerializer(ModelSerializer):
+    category = CharField(source='category.name', read_only=True)
+
+    class Meta:
+        model = models.Rating
+        fields = ['category', 'value']
+
+
+class ReviewListSerializer(ModelSerializer):
+    venueName = CharField(source='venue.name', read_only=True)
+    ratings = RatingListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Review
+        fields = ['id', 'venue', 'venueName', 'body', 'ratings']
 
 
 class RatingCategorySerializer(ModelSerializer):

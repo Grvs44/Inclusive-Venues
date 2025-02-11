@@ -72,6 +72,7 @@ export type Image = {
 export type ListReview = {
   id: number
   venue: number
+  venueName: string
   body: string
   ratings: ListRating[]
 }
@@ -79,4 +80,8 @@ export type ListReview = {
 export type ListRating = {
   category: number
   value: number
+}
+
+export type ReviewQuery = PageQuery & {
+  // TODO: other filters
 }
