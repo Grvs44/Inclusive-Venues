@@ -17,12 +17,12 @@ class ViewSet(ModelViewSet):
 
 
 class VenueCategoryViewSet(ViewSet):
-    queryset = models.VenueCategory.objects
+    queryset = models.VenueCategory.objects.all()
     serializer_class = serializers.VenueCategorySerializer
 
 
 class VenueSubcategoryViewSet(ViewSet):
-    queryset = models.VenueSubcategory.objects
+    queryset = models.VenueSubcategory.objects.all()
     serializer_class = serializers.VenueSubcategorySerializer
 
 
@@ -45,17 +45,17 @@ class ReviewViewSet(ViewSet):
 
 
 class RatingCategoryViewSet(ViewSet):
-    queryset = models.RatingCategory.objects
+    queryset = models.RatingCategory.objects.all()
     serializer_class = serializers.RatingCategorySerializer
 
 
 class RatingViewSet(ViewSet):
-    queryset = models.Rating.objects
+    queryset = models.Rating.objects.all()
     serializer_class = serializers.RatingSerializer
 
 
 class ImageViewSet(ViewSet):
-    queryset = models.Image.objects
+    queryset = models.Image.objects.all()
     serializer_class = serializers.ImageSerializer
 
 
