@@ -6,13 +6,13 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { ListReview } from '../redux/types'
+import { Review } from '../redux/types'
 import Link from './Link'
 import StarBox from './StarBox'
 
 export type ReviewListItemProps = {
-  review: ListReview
-  onEdit: (review: ListReview) => void
+  review: Review
+  onEdit: (review: Review) => void
 }
 
 export default function ReviewListItem({

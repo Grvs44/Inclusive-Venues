@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
 import type {
-  ListReview,
   ListVenue,
   PageState,
+  Review,
   ReviewQuery,
   User,
   UserLogin,
@@ -114,7 +114,7 @@ export const apiSlice = createApi({
     }),
 
     // Reviews
-    getReviews: builder.query<PageState<ListReview>, ReviewQuery>({
+    getReviews: builder.query<PageState<Review>, ReviewQuery>({
       query: (filters) => 'review' + getFilterQuery(filters),
       providesTags: [{ type: 'review', id: LIST }],
       serializeQueryArgs,

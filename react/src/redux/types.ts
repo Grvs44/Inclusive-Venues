@@ -69,7 +69,7 @@ export type Image = {
   src: string
 }
 
-export type ListReview = {
+export type Review = {
   id: number
   venue: number
   venueName: string
