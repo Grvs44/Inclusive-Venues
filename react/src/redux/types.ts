@@ -78,10 +78,16 @@ export type Review = {
 }
 
 export type ListRating = {
+  id?: number
   category: number
   value: number
 }
 
 export type ReviewQuery = PageQuery & {
   // TODO: other filters
+}
+
+export type ListCategory = {
+  id: number
+  name: string
 }
