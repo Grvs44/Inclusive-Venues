@@ -18,7 +18,7 @@ export default function ReviewList({
   return (
     <List>
       {data?.results.map((review) => (
-        <ReviewListItem review={review} onEdit={onEdit} />
+        <ReviewListItem key={review.id} review={review} onEdit={onEdit} />
       ))}
       <LoadingSkeleton isLoading={isLoading} />
     </List>

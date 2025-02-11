@@ -1,6 +1,13 @@
 import React from 'react'
-import { ListItem, ListItemText, Stack, Typography } from '@mui/material'
+import {
+  Button,
+  ListItem,
+  ListItemText,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { ListReview } from '../redux/types'
+import Link from './Link'
 import StarBox from './StarBox'
 
 export type ReviewListItemProps = {
@@ -8,23 +15,27 @@ export type ReviewListItemProps = {
   onEdit: (review: ListReview) => void
 }
 
-export default function ReviewListItem(props: ReviewListItemProps) {
+export default function ReviewListItem({
+  review,
+  onEdit,
+}: ReviewListItemProps) {
   return (
     <ListItem>
       <ListItemText
-        primary={
-          <Stack spacing={4}>
-            {props.review.venue}
-            {props.review.ratings.map((rating) => (
-              <Typography>
-                {rating.category}:{' '}
-                <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
-              </Typography>
-            ))}
-          </Stack>
-        }
-        secondary={<Typography>{props.review.body}</Typography>}
+        primary={<Link to={`/venue/${review.venue}`}>{review.venueName}</Link>}
+        secondary={review.body}
       />
+      <Stack spacing={4}>
+        {review.ratings.map((rating) => (
+          <Typography>
+            {rating.category}:{' '}
+            <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
+          </Typography>
+        ))}
+      </Stack>
+      <Button variant="contained" onClick={() => onEdit(review)}>
+        Edit
+      </Button>
     </ListItem>
   )
 }

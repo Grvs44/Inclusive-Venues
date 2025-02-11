@@ -1,8 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
 import type {
+  ListReview,
   ListVenue,
   PageState,
+  ReviewQuery,
   User,
   UserLogin,
   Venue,
@@ -54,13 +56,13 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['user', 'venue'],
+  tagTypes: ['user', 'venue', 'review'],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
     // Authentication
     getUserDetails: builder.query<User, void>({
       query: () => 'user',
-      providesTags: () => [{ type: 'user' }],
+      providesTags: ['user'],
       keepUnusedDataFor: 60000,
     }),
     login: builder.mutation<void, UserLogin>({
@@ -100,7 +102,7 @@ export const apiSlice = createApi({
     // Venues
     getVenues: builder.query<PageState<ListVenue>, VenueQuery>({
       query: (filters) => 'venue' + getFilterQuery(filters),
-      providesTags: () => [{ type: 'venue', id: LIST }],
+      providesTags: [{ type: 'venue', id: LIST }],
       serializeQueryArgs,
       merge,
       forceRefetch,
@@ -109,6 +111,15 @@ export const apiSlice = createApi({
       query: (id) => `venue/${id}`,
       providesTags: (result) =>
         result ? [{ type: 'venue', id: result.id }] : [],
+    }),
+
+    // Reviews
+    getReviews: builder.query<PageState<ListReview>, ReviewQuery>({
+      query: (filters) => 'review' + getFilterQuery(filters),
+      providesTags: [{ type: 'review', id: LIST }],
+      serializeQueryArgs,
+      merge,
+      forceRefetch,
     }),
   }),
 })
@@ -119,4 +130,5 @@ export const {
   useLogoutMutation,
   useGetVenuesQuery,
   useGetVenueQuery,
+  useGetReviewsQuery,
 } = apiSlice
