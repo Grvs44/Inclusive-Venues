@@ -6,8 +6,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
 } from '@mui/material'
 import DropDown from '../components/DropDown'
+import RateBox from '../components/RateBox'
 import { ListCategory, ListRating, Venue } from '../redux/types'
 
 export type ReviewDialogProps = {
@@ -30,6 +35,8 @@ const categoryList = {
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
   const [ratings, setRatings] = React.useState<ListRating[]>([])
+  const bodyRef = React.useRef<HTMLInputElement | null>(null)
+
   const addRating = (category: ListCategory | null) =>
     category
       ? setRatings((ratings) =>
@@ -37,19 +44,42 @@ export default function ReviewDialog(props: ReviewDialogProps) {
         )
       : null
 
+  const onRatingChange = (category: number) => (value: number) =>
+    setRatings((ratings) => {
+      const rating = ratings.find((rating) => rating.category == category)
+      if (rating) rating.value = value
+      return ratings
+    })
+
+  const onSubmit = () => {
+    console.log('submit')
+    console.log(ratings)
+    console.log(bodyRef.current)
+    console.log(bodyRef.current?.value)
+  }
+
   return (
-    <Dialog open={props.open}>
+    <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{data ? data.name : 'Loading review...'}</DialogTitle>
       <DialogContent>
         {isLoading ? (
           <CircularProgress />
         ) : (
           <>
-            {ratings.map((rating) => (
-              <p key={rating.id}>
-                {rating.category}:{rating.value}
-              </p>
-            ))}
+            <List>
+              {ratings.map((rating) => (
+                <ListItem key={rating.id}>
+                  <ListItemText
+                    primary={rating.category}
+                    secondary={'description'}
+                  />
+                  <RateBox
+                    value={rating.value}
+                    onRate={onRatingChange(rating.category)}
+                  />
+                </ListItem>
+              ))}
+            </List>
             <DropDown
               data={categoryList.data}
               isLoading={categoryList.isLoading}
@@ -57,6 +87,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
               onChange={addRating}
               getLabel={(c) => c.name}
             />
+            <TextField inputRef={bodyRef} label="Review body" fullWidth />
           </>
         )}
       </DialogContent>
@@ -64,7 +95,12 @@ export default function ReviewDialog(props: ReviewDialogProps) {
         <Button type="button" onClick={props.onClose}>
           Close
         </Button>
-        <Button type="submit" variant="contained" disabled={isLoading}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={isLoading}
+          onClick={onSubmit}
+        >
           Submit
         </Button>
       </DialogActions>
