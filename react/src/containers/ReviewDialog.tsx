@@ -26,8 +26,8 @@ const data: Venue | undefined = undefined
 const isLoading = false
 const categoryList = {
   data: [
-    { id: 1, name: 'category 1' },
-    { id: 2, name: 'category 2' },
+    { id: 1, name: 'category 1', description: 'description1' },
+    { id: 2, name: 'category 2', description: 'description2' },
   ],
   isLoading: false,
 }
@@ -38,18 +38,26 @@ export default function ReviewDialog(props: ReviewDialogProps) {
   const bodyRef = React.useRef<HTMLInputElement | null>(null)
 
   const addRating = (category: ListCategory | null) =>
-    category
+    category && !ratings.find((r) => r.category == category.id)
       ? setRatings((ratings) =>
           ratings.concat({ category: category.id, value: 0 }),
         )
       : null
 
-  const onRatingChange = (category: number) => (value: number) =>
+  const onRatingChange = (rating: ListRating) => (value: number) =>
     setRatings((ratings) => {
-      const rating = ratings.find((rating) => rating.category == category)
-      if (rating) rating.value = value
-      return ratings
+      const index = ratings.indexOf(rating)
+      const newCategory = { ...rating, value }
+      return index == -1
+        ? ratings.concat(newCategory)
+        : ratings
+            .slice(0, index)
+            .concat(newCategory)
+            .concat(ratings.slice(index + 1))
     })
+
+  const deleteRating = (category: number) =>
+    setRatings((ratings) => ratings.filter((r) => r.category != category))
 
   const onSubmit = () => {
     console.log('submit')
@@ -68,14 +76,18 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           <>
             <List>
               {ratings.map((rating) => (
-                <ListItem key={rating.id}>
+                <ListItem key={rating.category}>
                   <ListItemText
                     primary={rating.category}
-                    secondary={'description'}
+                    secondary={
+                      categoryList.data.find((c) => c.id == rating.category)
+                        ?.description
+                    }
                   />
                   <RateBox
-                    defaultValue={rating.value}
-                    onRate={onRatingChange(rating.category)}
+                    value={rating.value}
+                    onRate={onRatingChange(rating)}
+                    onDelete={() => deleteRating(rating.category)}
                   />
                 </ListItem>
               ))}

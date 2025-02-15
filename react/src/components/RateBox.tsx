@@ -5,23 +5,22 @@ import type { SvgIconProps } from '@mui/material'
 import Box from '@mui/material/Box'
 
 export type RateBoxProps = {
-  defaultValue?: number
-  valueRef: React.RefObject<number>
+  value: number
+  onRate: (value: number) => void
+  onDelete: () => void
 } & SvgIconProps
 
-export default function RateBox({ defaultValue,valueRef, ...props }: RateBoxProps) {
-  const [selected,setSelected] = React.useState<number>(defaultValue || 0)
-  
-  const onRate = (value:number)=>{
-    valueRef.current = value
-    setSelected(value)
-  }
-
+export default function RateBox({
+  value,
+  onRate,
+  onDelete,
+  ...props
+}: RateBoxProps) {
   const stars = []
-  for (let i = 1; i <= selected; i++) {
+  for (let i = 1; i <= value; i++) {
     stars.push(<Star key={i} onClick={() => onRate(i)} {...props} />)
   }
-  for (let i = selected + 1; i <= 5; i++) {
+  for (let i = value + 1; i <= 5; i++) {
     stars.push(<StarBorder key={i} onClick={() => onRate(i)} {...props} />)
   }
 
