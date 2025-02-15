@@ -1,4 +1,5 @@
 # Adapted from https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
+# pylint:disable=no-member
 from rest_framework.serializers import ModelSerializer, CharField
 from . import models
 
@@ -66,6 +67,27 @@ class RatingListSerializer(ModelSerializer):
     class Meta:
         model = models.Rating
         fields = ['category', 'value']
+
+
+class ReviewRatingListSerializer(ModelSerializer):
+    class Meta:
+        model = models.Rating
+        fields = ['category', 'value']
+
+
+class CreateReviewSerializer(ModelSerializer):
+    ratings = ReviewRatingListSerializer(many=True)
+
+    def create(self, validated_data: dict):
+        ratings = validated_data.pop('ratings', [])
+        review = models.Review.objects.create(**validated_data)
+        for rating in ratings:
+            models.Rating.objects.create(review=review, **rating)
+        return review
+
+    class Meta:
+        model = models.Review
+        fields = ['id', 'venue', 'body', 'ratings']
 
 
 class ReviewListSerializer(ModelSerializer):

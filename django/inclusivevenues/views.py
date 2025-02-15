@@ -41,7 +41,12 @@ class ReviewViewSet(ViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return serializers.ReviewListSerializer
+        if self.action == 'create':
+            return serializers.CreateReviewSerializer
         return serializers.ReviewSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class RatingCategoryViewSet(ViewSet):
