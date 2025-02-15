@@ -43,7 +43,11 @@ export default function VenueDetailPage() {
           </Link>
         </Typography>
       )}
-      <ReviewDialog open={reviewOpen} onClose={() => setReviewOpen(false)} />
+      <ReviewDialog
+        open={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        venueId={data?.id}
+      />
     </Container>
   )
 }

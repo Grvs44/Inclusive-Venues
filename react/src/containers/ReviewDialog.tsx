@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import DropDown from '../components/DropDown'
 import RateBox from '../components/RateBox'
+import { useCreateReviewMutation } from '../redux/apiSlice'
 import { ListCategory, ListRating, Venue } from '../redux/types'
 
 export type ReviewDialogProps = {
@@ -34,7 +35,9 @@ const categoryList = {
 
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
+  const [createReview] = useCreateReviewMutation()
   const [ratings, setRatings] = React.useState<ListRating[]>([])
+  const [submitting, setSubmitting] = React.useState<boolean>(false)
   const bodyRef = React.useRef<HTMLInputElement | null>(null)
 
   const addRating = (category: ListCategory | null) =>
@@ -59,11 +62,23 @@ export default function ReviewDialog(props: ReviewDialogProps) {
   const deleteRating = (category: number) =>
     setRatings((ratings) => ratings.filter((r) => r.category != category))
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    if (props.venueId == undefined) return
     console.log('submit')
     console.log(ratings)
-    console.log(bodyRef.current)
     console.log(bodyRef.current?.value)
+    setSubmitting(true)
+    const result = await createReview({
+      venue: props.venueId,
+      body: bodyRef.current?.value || '',
+      ratings,
+    })
+    if (result.error) {
+      console.error(result.error)
+    } else {
+      setSubmitting(false)
+      props.onClose()
+    }
   }
 
   return (
@@ -110,7 +125,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
         <Button
           type="submit"
           variant="contained"
-          disabled={isLoading}
+          disabled={isLoading || submitting}
           onClick={onSubmit}
         >
           Submit

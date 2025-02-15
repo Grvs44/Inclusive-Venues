@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
 import type {
+  CreateReview,
   ListVenue,
   PageState,
   Review,
@@ -121,6 +122,14 @@ export const apiSlice = createApi({
       merge,
       forceRefetch,
     }),
+    createReview: builder.mutation<Review, CreateReview>({
+      query: (body) => ({
+        url: 'review',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'review', id: LIST }],
+    }),
   }),
 })
 
@@ -131,4 +140,5 @@ export const {
   useGetVenuesQuery,
   useGetVenueQuery,
   useGetReviewsQuery,
+  useCreateReviewMutation,
 } = apiSlice
