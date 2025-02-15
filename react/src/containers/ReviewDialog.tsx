@@ -68,13 +68,17 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     console.log(ratings)
     console.log(bodyRef.current?.value)
     setSubmitting(true)
-    const result = createReview({
+    const result = await createReview({
       venue: props.venueId,
       body: bodyRef.current?.value || '',
       ratings,
     })
-    console.log(await result)
-    setSubmitting(false)
+    if (result.error) {
+      console.error(result.error)
+    } else {
+      setSubmitting(false)
+      props.onClose()
+    }
   }
 
   return (
