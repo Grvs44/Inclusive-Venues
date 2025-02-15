@@ -74,7 +74,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
                     secondary={'description'}
                   />
                   <RateBox
-                    value={rating.value}
+                    defaultValue={rating.value}
                     onRate={onRatingChange(rating.category)}
                   />
                 </ListItem>
