@@ -5,14 +5,14 @@ import { useDispatch } from 'react-redux'
 import ReviewList from '../containers/ReviewList'
 import { useGetReviewsQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
-import { ListReview } from '../redux/types'
+import { Review } from '../redux/types'
 
 export default function ReviewListPage() {
   const dispatch = useDispatch()
   const [page, setPage] = React.useState<number>(1)
   const { data, isLoading } = useGetReviewsQuery({ page })
 
-  const onEdit = (review: ListReview) => {
+  const onEdit = (review: Review) => {
     console.log(review)
   }
 

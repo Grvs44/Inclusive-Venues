@@ -1,9 +1,10 @@
 import React from 'react'
-import { Link, Paper, Typography } from '@mui/material'
+import { Button, Link, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import ReviewDialog from '../containers/ReviewDialog'
 import VenueImageList from '../containers/VenueImageList'
 import VenueInfo from '../containers/VenueInfo'
 import VenueLocation from '../containers/VenueLocation'
@@ -16,6 +17,7 @@ export default function VenueDetailPage() {
   const navigate = useNavigate()
   const { id } = useParams()
   const { data, isLoading } = useGetVenueQuery(id, { skip: id == undefined })
+  const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     dispatch(setTitle(data?.name || 'Venue'))
@@ -29,6 +31,7 @@ export default function VenueDetailPage() {
         <Paper>
           <VenueImageList images={data.images} />
           <VenueInfo venue={data} />
+          <Button onClick={() => setReviewOpen(true)}>Leave a review</Button>
           <VenueReviews />
           <VenueLocation venue={data} />
         </Paper>
@@ -40,6 +43,7 @@ export default function VenueDetailPage() {
           </Link>
         </Typography>
       )}
+      <ReviewDialog open={reviewOpen} onClose={() => setReviewOpen(false)} />
     </Container>
   )
 }
