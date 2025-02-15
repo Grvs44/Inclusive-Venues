@@ -64,3 +64,8 @@ jobs:
         with:
           app-name: "inclusivevenues"
           slot-name: "Production"
+
+      - name: Delete artifact
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: python-app
