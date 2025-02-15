@@ -77,6 +77,12 @@ export type Review = {
   ratings: ListRating[]
 }
 
+export type CreateReview = {
+  venue: number
+  body: string
+  ratings: ListRating[]
+}
+
 export type ListRating = {
   id?: number
   category: number
