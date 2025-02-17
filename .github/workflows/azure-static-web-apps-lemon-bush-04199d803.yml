@@ -2,8 +2,6 @@
 name: Azure Static Web Apps CI/CD
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -28,8 +26,6 @@ jobs:
             const coredemo = require('@actions/core')
             return await coredemo.getIDToken()
           result-encoding: string
-      - name: Change branch
-        run: git checkout origin/main && git branch
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v2.0
         with:
