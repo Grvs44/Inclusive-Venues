@@ -30,6 +30,12 @@ jobs:
           result-encoding: string
       - name: Change branch
         run: git checkout origin/main && git branch
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_VITE_API_URL: api/
+          envkey_VITE_AZURE_MAP_KEY: ${{ secrets.AZURE_MAP_KEY }}
+          directory: react
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
