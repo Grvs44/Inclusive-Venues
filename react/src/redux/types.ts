@@ -83,6 +83,12 @@ export type CreateReview = {
   ratings: ListRating[]
 }
 
+export type UpdateReview = {
+  id: number // ID of Review to update
+  body: string
+  ratings: ListRating[]
+}
+
 export type ListRating = {
   id?: number
   category: number

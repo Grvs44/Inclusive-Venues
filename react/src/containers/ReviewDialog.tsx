@@ -13,7 +13,11 @@ import {
 } from '@mui/material'
 import DropDown from '../components/DropDown'
 import RateBox from '../components/RateBox'
-import { useCreateReviewMutation } from '../redux/apiSlice'
+import {
+  useCreateReviewMutation,
+  useGetVenueReviewQuery,
+  useUpdateReviewMutation,
+} from '../redux/apiSlice'
 import { ListCategory, ListRating, Venue } from '../redux/types'
 
 export type ReviewDialogProps = {
@@ -23,8 +27,6 @@ export type ReviewDialogProps = {
 }
 
 // Test data
-const data: Venue | undefined = undefined
-const isLoading = false
 const categoryList = {
   data: [
     { id: 1, name: 'category 1', description: 'description1' },
@@ -35,10 +37,21 @@ const categoryList = {
 
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
+  const { data, isLoading } = useGetVenueReviewQuery(props.venueId, {
+    skip: props.venueId == undefined,
+  })
   const [createReview] = useCreateReviewMutation()
+  const [updateReview] = useUpdateReviewMutation()
   const [ratings, setRatings] = React.useState<ListRating[]>([])
   const [submitting, setSubmitting] = React.useState<boolean>(false)
   const bodyRef = React.useRef<HTMLInputElement | null>(null)
+
+  React.useEffect(() => {
+    if (data) {
+      if (bodyRef.current) bodyRef.current.value = data.body
+      setRatings(data.ratings)
+    }
+  }, [data])
 
   const addRating = (category: ListCategory | null) =>
     category && !ratings.find((r) => r.category == category.id)
@@ -68,11 +81,17 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     console.log(ratings)
     console.log(bodyRef.current?.value)
     setSubmitting(true)
-    const result = await createReview({
-      venue: props.venueId,
-      body: bodyRef.current?.value || '',
-      ratings,
-    })
+    const result = await (data
+      ? updateReview({
+          id: data.id,
+          body: bodyRef.current?.value || '',
+          ratings,
+        })
+      : createReview({
+          venue: props.venueId,
+          body: bodyRef.current?.value || '',
+          ratings,
+        }))
     if (result.error) {
       console.error(result.error)
     } else {
@@ -83,7 +102,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
 
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{data ? data.name : 'Loading review...'}</DialogTitle>
+      <DialogTitle>{data ? data.venueName : 'New review'}</DialogTitle>
       <DialogContent>
         {isLoading ? (
           <CircularProgress />
