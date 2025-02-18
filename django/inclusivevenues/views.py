@@ -3,6 +3,7 @@ Views for the Inclusive Venues Django app
 ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset
 '''
 # pylint:disable=no-member
+from rest_framework.decorators import action
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import ModelViewSet
 
@@ -33,6 +34,15 @@ class VenueViewSet(ViewSet):
         if self.action == 'list':
             return serializers.VenueListSerializer
         return serializers.VenueSerializer
+
+    @action(methods=['GET'], detail=True, url_path='review')
+    def get_review(self, request, pk):
+        '''Get the current user's review for this Venue'''
+        if request.user.is_anonymous:
+            return Response(None, status.HTTP_401_UNAUTHORIZED)
+        review = models.Review.objects.filter(
+            venue_id=pk, author=request.user).first()
+        return Response(None if review is None else serializers.CreateReviewSerializer(review).data)
 
 
 class ReviewViewSet(ViewSet):

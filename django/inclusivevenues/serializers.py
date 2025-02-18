@@ -76,6 +76,7 @@ class ReviewRatingListSerializer(ModelSerializer):
 
 
 class CreateReviewSerializer(ModelSerializer):
+    venueName = CharField(source='venue.name', read_only=True)
     ratings = ReviewRatingListSerializer(many=True)
 
     def create(self, validated_data: dict):
@@ -87,7 +88,7 @@ class CreateReviewSerializer(ModelSerializer):
 
     class Meta:
         model = models.Review
-        fields = ['id', 'venue', 'body', 'ratings']
+        fields = ['id', 'venue', 'venueName', 'body', 'ratings']
 
 
 class ReviewListSerializer(ModelSerializer):
