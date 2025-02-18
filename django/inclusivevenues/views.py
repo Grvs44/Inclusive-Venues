@@ -51,8 +51,10 @@ class ReviewViewSet(ViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return serializers.ReviewListSerializer
-        if self.action == 'create' or self.action == 'update':
+        if self.action == 'create':
             return serializers.CreateReviewSerializer
+        if self.action == 'update':
+            return serializers.UpdateReviewSerializer
         return serializers.ReviewSerializer
 
     def perform_create(self, serializer):

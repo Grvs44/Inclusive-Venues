@@ -91,6 +91,20 @@ class CreateReviewSerializer(ModelSerializer):
         fields = ['id', 'venue', 'venueName', 'body', 'ratings']
 
 
+class UpdateReviewSerializer(ModelSerializer):
+    ratings = ReviewRatingListSerializer(many=True)
+
+    def update(self, instance: models.Review, validated_data: dict):
+        ratings = validated_data.pop('ratings', [])
+        for rating in ratings:
+            models.Rating.objects.update_or_create(**rating)
+        return super().update(instance, validated_data)
+
+    class Meta:
+        model = models.Review
+        fields = ['id', 'body', 'ratings']
+
+
 class ReviewListSerializer(ModelSerializer):
     venueName = CharField(source='venue.name', read_only=True)
     ratings = RatingListSerializer(many=True, read_only=True)

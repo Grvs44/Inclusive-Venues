@@ -137,7 +137,7 @@ export const apiSlice = createApi({
     updateReview: builder.mutation<Review, UpdateReview>({
       query: ({ id, ...body }) => ({
         url: `review/${id}`,
-        method: 'POST',
+        method: 'PUT',
         body,
       }),
       invalidatesTags: [{ type: 'review', id: LIST }],
