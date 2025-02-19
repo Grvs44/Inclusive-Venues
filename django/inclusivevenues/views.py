@@ -3,6 +3,7 @@ Views for the Inclusive Venues Django app
 ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset
 '''
 # pylint:disable=no-member
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import ModelViewSet
@@ -47,6 +48,8 @@ class VenueViewSet(ViewSet):
 
 class ReviewViewSet(ViewSet):
     queryset = models.Review.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['venue']
 
     def get_serializer_class(self):
         if self.action == 'list':
