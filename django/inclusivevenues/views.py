@@ -3,6 +3,7 @@ Views for the Inclusive Venues Django app
 ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset
 '''
 # pylint:disable=no-member
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import ModelViewSet
@@ -44,9 +45,21 @@ class VenueViewSet(ViewSet):
             venue_id=pk, author=request.user).first()
         return Response(None if review is None else serializers.CreateReviewSerializer(review).data)
 
+# Pagination adapted from ListModelMixin.list
+# from https://github.com/encode/django-rest-framework/blob/master/rest_framework/mixins.py
+    @action(methods=['GET'], detail=True, url_path='reviews')
+    def list_reviews(self, request, pk):
+        '''List the reviews of this venue'''
+        queryset = models.Review.objects.filter(venue=pk)
+        results = self.paginate_queryset(queryset)
+        data = serializers.ReviewListSerializer(results, many=True).data
+        return self.get_paginated_response(data)
+
 
 class ReviewViewSet(ViewSet):
     queryset = models.Review.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['venue']
 
     def get_serializer_class(self):
         if self.action == 'list':

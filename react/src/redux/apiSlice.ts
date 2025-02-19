@@ -11,6 +11,7 @@ import type {
   UserLogin,
   Venue,
   VenueQuery,
+  VenueReviewQuery,
 } from './types'
 import { getFilterQuery } from './utils'
 
@@ -117,6 +118,13 @@ export const apiSlice = createApi({
     getVenueReview: builder.query<Review | null, any>({
       query: (id) => `venue/${id}/review`,
     }),
+    getVenueReviews: builder.query<PageState<Review>, VenueReviewQuery>({
+      query: ({ id, ...filters }) =>
+        `venue/${id}/reviews` + getFilterQuery(filters),
+      serializeQueryArgs,
+      merge,
+      forceRefetch,
+    }),
 
     // Reviews
     getReviews: builder.query<PageState<Review>, ReviewQuery>({
@@ -152,6 +160,7 @@ export const {
   useGetVenuesQuery,
   useGetVenueQuery,
   useGetVenueReviewQuery,
+  useGetVenueReviewsQuery,
   useGetReviewsQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,

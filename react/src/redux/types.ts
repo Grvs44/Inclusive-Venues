@@ -99,6 +99,8 @@ export type ReviewQuery = PageQuery & {
   // TODO: other filters
 }
 
+export type VenueReviewQuery = Entity & ReviewQuery
+
 export type ListCategory = {
   id: number
   name: string

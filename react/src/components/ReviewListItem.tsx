@@ -27,7 +27,7 @@ export default function ReviewListItem({
       />
       <Stack spacing={4}>
         {review.ratings.map((rating) => (
-          <Typography>
+          <Typography key={rating.category}>
             {rating.category}:{' '}
             <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
           </Typography>
