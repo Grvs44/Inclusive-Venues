@@ -8,7 +8,7 @@ import ReviewDialog from '../containers/ReviewDialog'
 import VenueImageList from '../containers/VenueImageList'
 import VenueInfo from '../containers/VenueInfo'
 import VenueLocation from '../containers/VenueLocation'
-import VenueReviews from '../containers/VenueReviews'
+import VenueReviewArea from '../containers/VenueReviewArea'
 import { useGetVenueQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 
@@ -32,7 +32,7 @@ export default function VenueDetailPage() {
           <VenueImageList images={data.images} />
           <VenueInfo venue={data} />
           <Button onClick={() => setReviewOpen(true)}>Leave a review</Button>
-          <VenueReviews />
+          <VenueReviewArea id={data.id} />
           <VenueLocation venue={data} />
         </Paper>
       ) : (
