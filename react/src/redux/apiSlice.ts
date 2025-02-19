@@ -117,6 +117,9 @@ export const apiSlice = createApi({
     getVenueReview: builder.query<Review | null, any>({
       query: (id) => `venue/${id}/review`,
     }),
+    getVenueReviews: builder.query<PageState<Review>, any>({
+      query: (id) => `venue/${id}/reviews`,
+    }),
 
     // Reviews
     getReviews: builder.query<PageState<Review>, ReviewQuery>({
@@ -152,6 +155,7 @@ export const {
   useGetVenuesQuery,
   useGetVenueQuery,
   useGetVenueReviewQuery,
+  useGetVenueReviewsQuery,
   useGetReviewsQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,
