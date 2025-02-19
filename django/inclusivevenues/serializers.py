@@ -1,6 +1,7 @@
 # Adapted from https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
 # pylint:disable=no-member
 from rest_framework.serializers import ModelSerializer, CharField
+from django.db.transaction import atomic
 from . import models
 
 
@@ -79,6 +80,7 @@ class CreateReviewSerializer(ModelSerializer):
     venueName = CharField(source='venue.name', read_only=True)
     ratings = ReviewRatingListSerializer(many=True)
 
+    @atomic
     def create(self, validated_data: dict):
         ratings = validated_data.pop('ratings', [])
         review = models.Review.objects.create(**validated_data)
@@ -94,6 +96,7 @@ class CreateReviewSerializer(ModelSerializer):
 class UpdateReviewSerializer(ModelSerializer):
     ratings = ReviewRatingListSerializer(many=True)
 
+    @atomic
     def update(self, instance: models.Review, validated_data: dict):
         ratings = validated_data.pop('ratings', [])
         for rating in ratings:
