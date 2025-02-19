@@ -97,7 +97,9 @@ class UpdateReviewSerializer(ModelSerializer):
     def update(self, instance: models.Review, validated_data: dict):
         ratings = validated_data.pop('ratings', [])
         for rating in ratings:
-            models.Rating.objects.update_or_create(**rating)
+            value = rating.pop('value', 0)
+            models.Rating.objects.update_or_create(
+                defaults={'value': value}, review=instance, **rating)
         return super().update(instance, validated_data)
 
     class Meta:
