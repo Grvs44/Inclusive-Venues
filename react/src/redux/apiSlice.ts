@@ -6,6 +6,7 @@ import type {
   PageState,
   Review,
   ReviewQuery,
+  UpdateReview,
   User,
   UserLogin,
   Venue,
@@ -113,6 +114,9 @@ export const apiSlice = createApi({
       providesTags: (result) =>
         result ? [{ type: 'venue', id: result.id }] : [],
     }),
+    getVenueReview: builder.query<Review | null, any>({
+      query: (id) => `venue/${id}/review`,
+    }),
 
     // Reviews
     getReviews: builder.query<PageState<Review>, ReviewQuery>({
@@ -130,6 +134,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: [{ type: 'review', id: LIST }],
     }),
+    updateReview: builder.mutation<Review, UpdateReview>({
+      query: ({ id, ...body }) => ({
+        url: `review/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: [{ type: 'review', id: LIST }],
+    }),
   }),
 })
 
@@ -139,6 +151,8 @@ export const {
   useLogoutMutation,
   useGetVenuesQuery,
   useGetVenueQuery,
+  useGetVenueReviewQuery,
   useGetReviewsQuery,
   useCreateReviewMutation,
+  useUpdateReviewMutation,
 } = apiSlice

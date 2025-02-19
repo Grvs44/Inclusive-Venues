@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.core import validators
 from django.db import models
+from django.db.models.constraints import UniqueConstraint
 
 from .maps import get_image_url
 
@@ -60,6 +61,15 @@ class Review(models.Model):
     def __str__(self):
         return f'{self.venue.name} by {self.author.username}'
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['author', 'venue'],
+                name='unique_venue_author',
+                violation_error_message='You may only leave one review per venue'
+            )
+        ]
+
 
 class RatingCategory(models.Model):
     name = models.CharField(max_length=20)
@@ -85,6 +95,15 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'Rating ({self.id})'  # type: ignore
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['category', 'review'],
+                name='unique_category_review',
+                violation_error_message='You may only rate each category once per review'
+            )
+        ]
 
 
 class Image(models.Model):
