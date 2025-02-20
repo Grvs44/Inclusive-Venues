@@ -55,6 +55,10 @@ class Venue(models.Model):
             models.Avg('ratings__value')
         )['ratings__value__avg']
 
+    def update_score(self):
+        self.calculate_score()
+        self.save()
+
     def clean(self):
         super().clean()
         if self.map.name is None:

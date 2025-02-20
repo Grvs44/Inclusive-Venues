@@ -72,6 +72,15 @@ class ReviewViewSet(ViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+        self.get_object().venue.update_score()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        self.get_object().venue.update_score()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self.get_object().venue.update_score()
 
 
 class RatingCategoryViewSet(ViewSet):
