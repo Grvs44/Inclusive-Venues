@@ -1,4 +1,5 @@
 # pylint:disable=no-member
+from decimal import Decimal
 from django.conf import settings
 from django.core import validators
 from django.db import models
@@ -37,7 +38,10 @@ class Venue(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.TextField(null=True, blank=True)
     subcategory = models.ForeignKey(VenueSubcategory, on_delete=models.CASCADE)
-    score = models.PositiveSmallIntegerField(null=True, blank=True)
+    score = models.DecimalField(null=True, blank=True, max_digits=2, decimal_places=1, validators=[
+        validators.MinValueValidator(Decimal(1)),
+        validators.MaxValueValidator(Decimal(5)),
+    ])
     map = models.ImageField(null=True, blank=True)
 
     def __str__(self):
@@ -45,6 +49,15 @@ class Venue(models.Model):
 
     def generate_map(self):
         self.map = get_image_url(self.latitude, self.longitude)
+
+    def calculate_score(self):
+        self.score = self.review_set.aggregate(  # type: ignore
+            models.Avg('ratings__value')
+        )['ratings__value__avg']
+
+    def update_score(self):
+        self.calculate_score()
+        self.save()
 
     def clean(self):
         super().clean()
