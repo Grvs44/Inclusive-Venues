@@ -50,6 +50,11 @@ class Venue(models.Model):
     def generate_map(self):
         self.map = get_image_url(self.latitude, self.longitude)
 
+    def calculate_score(self):
+        self.score = self.review_set.aggregate(  # type: ignore
+            models.Avg('ratings__value')
+        )['ratings__value__avg']
+
     def clean(self):
         super().clean()
         if self.map.name is None:
