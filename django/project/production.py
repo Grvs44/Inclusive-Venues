@@ -6,8 +6,6 @@ import os
 
 from .settings import *  # noqa
 
-# Configure the domain name using the environment variable
-# that Azure automatically creates for us.
 ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = []
 if 'STATICAPP_URL' in os.environ:
@@ -21,17 +19,6 @@ DEBUG = 'DEBUG' in os.environ
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 INSTALLED_APPS.append('storages')
-
-# WhiteNoise configuration
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 # Adapted from https://medium.com/@hellenwain_54279/uploading-django-static-and-media-files-to-azure-blob-storage-9f5e1e33725f
 AZURE_ACCOUNT_NAME = 'inclusivevenues'
