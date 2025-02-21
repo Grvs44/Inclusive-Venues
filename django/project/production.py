@@ -6,28 +6,19 @@ import os
 
 from .settings import *  # noqa
 
-# Configure the domain name using the environment variable
-# that Azure automatically creates for us.
-ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']
-                 ] if 'WEBSITE_HOSTNAME' in os.environ else []
-CSRF_TRUSTED_ORIGINS = ['https://' + os.environ['WEBSITE_HOSTNAME']
-                        ] if 'WEBSITE_HOSTNAME' in os.environ else []
+ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = []
+if 'STATICAPP_URL' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['STATICAPP_URL'])
+    CSRF_TRUSTED_ORIGINS.append('https://' + os.environ['STATICAPP_URL'])
+if 'WEBSITE_HOSTNAME' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['WEBSITE_HOSTNAME'])
+    CSRF_TRUSTED_ORIGINS.append('https://' + os.environ['WEBSITE_HOSTNAME'])
 DEBUG = 'DEBUG' in os.environ
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 INSTALLED_APPS.append('storages')
-
-# WhiteNoise configuration
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 # Adapted from https://medium.com/@hellenwain_54279/uploading-django-static-and-media-files-to-azure-blob-storage-9f5e1e33725f
 AZURE_ACCOUNT_NAME = 'inclusivevenues'
