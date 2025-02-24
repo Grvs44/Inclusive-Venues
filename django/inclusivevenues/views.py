@@ -7,10 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login, logout
 
-from . import models, serializers
+from . import models, permissions, serializers
 from .pagination import Pagination
 
 
@@ -21,15 +22,18 @@ class ViewSet(ModelViewSet):
 class VenueCategoryViewSet(ViewSet):
     queryset = models.VenueCategory.objects.all()
     serializer_class = serializers.VenueCategorySerializer
+    permission_classes = [permissions.ReadOnly]
 
 
 class VenueSubcategoryViewSet(ViewSet):
     queryset = models.VenueSubcategory.objects.all()
     serializer_class = serializers.VenueSubcategorySerializer
+    permission_classes = [permissions.ReadOnly]
 
 
 class VenueViewSet(ViewSet):
     queryset = models.Venue.objects.all()
+    permission_classes = [permissions.VenuePermission]
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -57,9 +61,10 @@ class VenueViewSet(ViewSet):
 
 
 class ReviewViewSet(ViewSet):
-    queryset = models.Review.objects.all()
+    queryset = models.Review.objects
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['venue']
+    permission_classes = [IsAuthenticated, permissions.ReviewPermission]
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -69,6 +74,9 @@ class ReviewViewSet(ViewSet):
         if self.action == 'update':
             return serializers.UpdateReviewSerializer
         return serializers.ReviewSerializer
+
+    def get_queryset(self):
+        return models.Review.objects.filter(author=self.request.user).all()
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -86,16 +94,22 @@ class ReviewViewSet(ViewSet):
 class RatingCategoryViewSet(ViewSet):
     queryset = models.RatingCategory.objects.all()
     serializer_class = serializers.RatingCategorySerializer
+    permission_classes = [permissions.ReadOnly]
 
 
 class RatingViewSet(ViewSet):
-    queryset = models.Rating.objects.all()
+    queryset = models.Rating.objects
     serializer_class = serializers.RatingSerializer
+    permission_classes = [IsAuthenticated, permissions.ReadOnly]
+
+    def get_queryset(self):
+        return models.Rating.objects.filter(review__author=self.request.user).all()
 
 
 class ImageViewSet(ViewSet):
     queryset = models.Image.objects.all()
     serializer_class = serializers.ImageSerializer
+    permission_classes = [permissions.ReadOnly]
 
 
 class UserView(APIView):
