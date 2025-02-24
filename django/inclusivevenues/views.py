@@ -5,6 +5,7 @@ ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/
 # pylint:disable=no-member
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -34,6 +35,10 @@ class VenueSubcategoryViewSet(ViewSet):
 class VenueViewSet(ViewSet):
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_fields = ['subcategory', 'subcategory__category']
+    ordering_fields = ['score']
+    search_fields = ['name']
 
     def get_serializer_class(self):
         if self.action == 'list':
