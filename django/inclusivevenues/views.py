@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 
 from . import models, permissions, serializers
+from .filters import VenueFilterSet
 from .pagination import Pagination
 
 
@@ -41,7 +42,7 @@ class VenueViewSet(ViewSet):
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    filterset_fields = ['subcategory', 'subcategory__category']
+    filterset_class = VenueFilterSet
     ordering_fields = ['score']
     search_fields = ['name']
 
