@@ -13,7 +13,6 @@ def split_params(arg: str) -> list[int]:
 
 class VenueFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
-        print(request.GET)
         categories = split_params(request.GET.get('category', ''))
         subcategories = split_params(request.GET.get('subcategory', ''))
         if not categories and not subcategories:
