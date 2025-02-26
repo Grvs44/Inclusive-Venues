@@ -1,17 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
-import type {
-  CreateReview,
-  ListVenue,
-  PageState,
-  Review,
-  ReviewQuery,
-  UpdateReview,
-  User,
-  UserLogin,
-  Venue,
-  VenueQuery,
-  VenueReviewQuery,
+import {
+  PageQuery,
+  VenueCategory,
+  VenueSubcategory,
+  VenueSubcategoryQuery,
+  type CreateReview,
+  type ListVenue,
+  type PageState,
+  type Review,
+  type ReviewQuery,
+  type UpdateReview,
+  type User,
+  type UserLogin,
+  type Venue,
+  type VenueQuery,
+  type VenueReviewQuery,
 } from './types'
 import { getFilterQuery } from './utils'
 
@@ -59,7 +63,7 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['user', 'venue', 'review'],
+  tagTypes: ['user', 'venuecat', 'venuesub', 'venue', 'review'],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
     // Authentication
@@ -100,6 +104,21 @@ export const apiSlice = createApi({
           ),
         )
       },
+    }),
+
+    // Venue categories
+    getVenueCategories: builder.query<PageState<VenueCategory>, PageQuery>({
+      query: (filters) => 'venuecat' + getFilterQuery(filters),
+      providesTags: [{ type: 'venuecat', id: LIST }],
+    }),
+
+    // Venue subcategories
+    getVenueSubcategories: builder.query<
+      PageState<VenueSubcategory>,
+      VenueSubcategoryQuery
+    >({
+      query: (filters) => 'venuesub' + getFilterQuery(filters),
+      providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg.category }],
     }),
 
     // Venues
@@ -157,6 +176,8 @@ export const {
   useGetUserDetailsQuery,
   useLoginMutation,
   useLogoutMutation,
+  useGetVenueCategoriesQuery,
+  useGetVenueSubcategoriesQuery,
   useGetVenuesQuery,
   useGetVenueQuery,
   useGetVenueReviewQuery,

@@ -7,6 +7,7 @@ import {
 } from '@mui/material'
 import DropDown from '../components/DropDown'
 import LocationInput from '../components/LocationInput'
+import SubcategoryFilterList from '../components/SubcategoryFilterList'
 
 const data: { id: number; name: string }[] = [
   { id: 1, name: 'filter1' },
@@ -25,13 +26,7 @@ export default function SearchCard() {
           Search
         </Typography>
         <LocationInput onLoadChange={setLocationLoading} />
-        <DropDown
-          label="Filters"
-          data={data}
-          isLoading={false}
-          onChange={() => console.log('changed')}
-          getLabel={(x) => x.name}
-        />
+        <SubcategoryFilterList id={1} open/>
         <Button variant="contained" disabled={locationLoading}>
           Search
         </Button>
