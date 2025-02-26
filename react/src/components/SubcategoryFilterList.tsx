@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup} from '@mui/material'
 import { useGetVenueSubcategoriesQuery } from '../redux/apiSlice'
 import LoadingSkeleton from './LoadingSkeleton'
 
@@ -16,17 +16,18 @@ export default function SubcategoryFilterList(
   })
   return props.open ? (
     <Box>
-      <RadioGroup>
+      <FormControl>
+        <FormGroup>
         {data?.map((s) => (
           <FormControlLabel
             key={s.id}
             value={s.id}
             label={s.name}
-            control={<Radio />}
+            control={<Checkbox />}
           />
         ))}
-        <LoadingSkeleton isLoading={isLoading} />
-      </RadioGroup>
+        <LoadingSkeleton isLoading={isLoading} /></FormGroup>
+      </FormControl>
     </Box>
   ) : (
     <></>
