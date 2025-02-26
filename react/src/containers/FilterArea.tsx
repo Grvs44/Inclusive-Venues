@@ -1,20 +1,15 @@
 import React from 'react'
-import { Box, Typography } from '@mui/material'
+import List from '@mui/material/List'
+import FilterCategoryItem from '../components/FilterCategoryItem'
 import LoadingSkeleton from '../components/LoadingSkeleton'
-import SubcategoryFilterList from '../components/SubcategoryFilterList'
 import { useGetVenueCategoriesQuery } from '../redux/apiSlice'
 
 export default function FilterArea() {
   const { data, isLoading } = useGetVenueCategoriesQuery()
   return (
-    <Box>
-      {data?.map((c) => (
-        <Box key={c.id}>
-          <Typography>{c.name}</Typography>
-          <SubcategoryFilterList id={c.id} open />
-        </Box>
-      ))}
+    <List>
+      {data?.map((c) => <FilterCategoryItem key={c.id} category={c} />)}
       <LoadingSkeleton isLoading={isLoading} />
-    </Box>
+    </List>
   )
 }
