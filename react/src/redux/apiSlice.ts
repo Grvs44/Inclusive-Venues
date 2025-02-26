@@ -1,10 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
 import {
-  PageQuery,
   VenueCategory,
   VenueSubcategory,
-  VenueSubcategoryQuery,
   type CreateReview,
   type ListVenue,
   type PageState,
@@ -107,18 +105,15 @@ export const apiSlice = createApi({
     }),
 
     // Venue categories
-    getVenueCategories: builder.query<PageState<VenueCategory>, PageQuery>({
-      query: (filters) => 'venuecat' + getFilterQuery(filters),
+    getVenueCategories: builder.query<VenueCategory[], void>({
+      query: () => 'venuecat',
       providesTags: [{ type: 'venuecat', id: LIST }],
     }),
 
     // Venue subcategories
-    getVenueSubcategories: builder.query<
-      PageState<VenueSubcategory>,
-      VenueSubcategoryQuery
-    >({
-      query: (filters) => 'venuesub' + getFilterQuery(filters),
-      providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg.category }],
+    getVenueSubcategories: builder.query<VenueSubcategory[], number>({
+      query: (id) => 'venuesub?category=' + id,
+      providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg }],
     }),
 
     // Venues

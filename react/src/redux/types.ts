@@ -68,10 +68,6 @@ export interface PageQuery {
   page?: number
 }
 
-export type VenueSubcategoryQuery = PageQuery & {
-  category?: number
-}
-
 export type VenueQuery = PageQuery & {
   // TODO: other filters
 }

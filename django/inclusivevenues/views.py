@@ -6,8 +6,9 @@ ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView, Response, status
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login, logout
@@ -20,16 +21,18 @@ class ViewSet(ModelViewSet):
     pagination_class = Pagination
 
 
-class VenueCategoryViewSet(ViewSet):
+class ListViewSet(ListModelMixin, GenericViewSet):
+    pass
+
+
+class VenueCategoryViewSet(ListViewSet):
     queryset = models.VenueCategory.objects.all()
     serializer_class = serializers.VenueCategorySerializer
-    permission_classes = [permissions.ReadOnly]
 
 
-class VenueSubcategoryViewSet(ViewSet):
+class VenueSubcategoryViewSet(ListViewSet):
     queryset = models.VenueSubcategory.objects.all()
     serializer_class = serializers.VenueSubcategorySerializer
-    permission_classes = [permissions.ReadOnly]
 
 
 class VenueViewSet(ViewSet):
