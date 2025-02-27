@@ -46,19 +46,16 @@ class LocationFilter(BaseFilterBackend):
         location = get_location(request.GET.get('location', ''))
         if location is None:
             return queryset
-        radius = 2
+        try:
+            radius = Decimal(request.GET.get('radius', 1))
+        except InvalidOperation as e:
+            raise ValidationError('Radius must be a number') from e
         lat, lon = location
         km_lat = Decimal(0.00902) * radius
         km_lon = Decimal(0.00898) * radius
-        lat_max = lat + km_lat
-        lat_min = lat - km_lat
-        lon_max = lon + km_lon
-        lon_min = lon - km_lon
-        print(lat_max,lon_max)
-        print(lat_min,lon_min)
         return queryset.filter(
-            latitude__lt=lat_max,
-            latitude__gt=lat_min,
-            longitude__lt=lon_max,
-            longitude__gt=lon_min,
+            latitude__lt=lat + km_lat,
+            latitude__gt=lat - km_lat,
+            longitude__lt=lon + km_lon,
+            longitude__gt=lon - km_lon,
         )
