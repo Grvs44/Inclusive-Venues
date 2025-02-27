@@ -50,6 +50,8 @@ class LocationFilter(BaseFilterBackend):
             radius = Decimal(request.GET.get('radius', 1))
         except InvalidOperation as e:
             raise ValidationError('Radius must be a number') from e
+        if radius <= 0:
+            raise ValidationError('Radius must be a positive number')
         lat, lon = location
         km_lat = Decimal(0.00902) * radius
         km_lon = Decimal(0.00898) * radius
