@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Card, Stack, Typography } from '@mui/material'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import LocationInput from '../components/LocationInput'
 import RadiusInput from '../components/RadiusInput'
 import { useFilters } from '../providers/FilterProvider'
@@ -15,6 +15,7 @@ export default function SearchCard() {
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
+    if (filters.location && !filters.radius) filters.setRadius('5')
     navigate('/venue')
   }
 
