@@ -41,7 +41,9 @@ class VenueSubcategoryViewSet(ListViewSet):
 class VenueViewSet(ViewSet):
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
-    filter_backends = [CategoryFilter, LocationFilter, OrderingFilter, SearchFilter]
+    filter_backends = [
+        CategoryFilter, LocationFilter, OrderingFilter, SearchFilter
+    ]
     ordering_fields = ['score']
     search_fields = ['name']
 
@@ -90,7 +92,7 @@ class ReviewViewSet(ViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        self.get_object().venue.update_score()
+        self.queryset.get(pk=serializer.data.get('id')).venue.update_score()
 
     def perform_update(self, serializer):
         super().perform_update(serializer)
