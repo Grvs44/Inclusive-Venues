@@ -131,6 +131,7 @@ export const apiSlice = createApi({
     }),
     getVenueReview: builder.query<Review | null, any>({
       query: (id) => `venue/${id}/review`,
+      providesTags: (result) => [{ type: 'review', id: result?.id }],
     }),
     getVenueReviews: builder.query<PageState<Review>, VenueReviewQuery>({
       query: ({ id, ...filters }) =>
@@ -155,6 +156,16 @@ export const apiSlice = createApi({
         body,
       }),
       invalidatesTags: [{ type: 'review', id: LIST }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.upsertQueryData(
+            'getVenueReview',
+            query.data.id,
+            query.data,
+          ),
+        )
+      },
     }),
     updateReview: builder.mutation<Review, UpdateReview>({
       query: ({ id, ...body }) => ({
@@ -163,6 +174,16 @@ export const apiSlice = createApi({
         body,
       }),
       invalidatesTags: [{ type: 'review', id: LIST }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.upsertQueryData(
+            'getVenueReview',
+            query.data.id,
+            query.data,
+          ),
+        )
+      },
     }),
   }),
 })

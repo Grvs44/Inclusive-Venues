@@ -9,7 +9,7 @@ import VenueImageList from '../containers/VenueImageList'
 import VenueInfo from '../containers/VenueInfo'
 import VenueLocation from '../containers/VenueLocation'
 import VenueReviewArea from '../containers/VenueReviewArea'
-import { useGetVenueQuery } from '../redux/apiSlice'
+import { useGetUserDetailsQuery, useGetVenueQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 
 export default function VenueDetailPage() {
@@ -17,6 +17,7 @@ export default function VenueDetailPage() {
   const navigate = useNavigate()
   const { id } = useParams()
   const { data, isLoading } = useGetVenueQuery(id, { skip: id == undefined })
+  const user = useGetUserDetailsQuery()
   const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
 
   React.useEffect(() => {
@@ -31,7 +32,20 @@ export default function VenueDetailPage() {
         <Paper>
           <VenueImageList images={data.images} />
           <VenueInfo venue={data} />
-          <Button onClick={() => setReviewOpen(true)}>Leave a review</Button>
+          {user.data ? (
+            <>
+              <Button onClick={() => setReviewOpen(true)}>
+                Leave a review
+              </Button>
+              <ReviewDialog
+                open={reviewOpen}
+                onClose={() => setReviewOpen(false)}
+                venueId={data?.id}
+              />
+            </>
+          ) : (
+            <Button disabled>Sign in to leave a review</Button>
+          )}
           <VenueReviewArea id={data.id} />
           <VenueLocation venue={data} />
         </Paper>
@@ -43,11 +57,6 @@ export default function VenueDetailPage() {
           </Link>
         </Typography>
       )}
-      <ReviewDialog
-        open={reviewOpen}
-        onClose={() => setReviewOpen(false)}
-        venueId={data?.id}
-      />
     </Container>
   )
 }
