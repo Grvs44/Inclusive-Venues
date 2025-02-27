@@ -41,6 +41,13 @@ def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     return lat_d, lon_d
 
 
+def get_adjustment(coordinate: Decimal, conversion: Decimal) -> Decimal:
+    exp = coordinate.as_tuple().exponent
+    if isinstance(exp, str):
+        return Decimal(0)
+    exp = abs(exp)
+
+
 class LocationFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         location = get_location(request.GET.get('location', ''))
@@ -55,6 +62,7 @@ class LocationFilter(BaseFilterBackend):
         lat, lon = location
         km_lat = Decimal(0.00902) * radius
         km_lon = Decimal(0.00898) * radius
+        # Adapted from https://stackoverflow.com/a/29766316/18309216
         return queryset.filter(
             latitude__lt=lat + km_lat,
             latitude__gt=lat - km_lat,
