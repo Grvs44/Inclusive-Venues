@@ -11,14 +11,16 @@ import VenueOutlet from '../containers/VenueOutlet'
 import { useGetVenuesQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import type { State } from '../redux/types'
+import { useFilters } from '../providers/FilterProvider'
 
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
+  const filters = useFilters()
   const { id } = useParams()
   const { showMap } = useSelector((state: State) => state.results)
   const [page, setPage] = React.useState<number>(1)
   const { data, isLoading } = useGetVenuesQuery(
-    { page },
+    { page, ...filters?.getFilters() },
     { skip: id != undefined },
   )
 

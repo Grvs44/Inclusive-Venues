@@ -12,11 +12,10 @@ export type FilterCategoryItemProps = {
 
 export default function FilterCategoryItem(props: FilterCategoryItemProps) {
   const filters = useFilters()
-  const [open, setOpen] = React.useState<boolean>(false)
-
   const subcatSelected = filters?.subcategories.find(
     (s) => s.category == props.category.id,
   )
+  const [open, setOpen] = React.useState<boolean>(Boolean(subcatSelected))
 
   return (
     <ListItem>

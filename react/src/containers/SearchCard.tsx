@@ -1,11 +1,10 @@
 import React from 'react'
 import { Button, Card, Stack, Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
 import LocationInput from '../components/LocationInput'
-import { useFilters } from '../providers/FilterProvider'
 import FilterArea from './FilterArea'
 
 export default function SearchCard() {
-  const filters = useFilters()
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false)
 
   return (
@@ -19,7 +18,8 @@ export default function SearchCard() {
         <Button
           variant="contained"
           disabled={locationLoading}
-          onClick={() => console.log(filters?.getFilters())}
+          LinkComponent={Link}
+          to="/venue"
         >
           Search
         </Button>
