@@ -17,6 +17,6 @@ class VenuePermission(BasePermission):
         return request.method in SAFE_METHODS or request.user == obj.added_by
 
 
-class ReviewPermission(ReadOnly):
+class ReviewPermission(BasePermission):
     def has_object_permission(self, request, view, obj: models.Review):
         return request.method in SAFE_METHODS or request.user == obj.author
