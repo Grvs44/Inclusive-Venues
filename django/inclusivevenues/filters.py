@@ -56,6 +56,7 @@ class LocationFilter(BaseFilterBackend):
         if radius <= 0:
             raise ValidationError('Radius must be a positive number')
         lat, lon = location
+# Kilometers to degrees adapted from https://forest.moscowfsl.wsu.edu/fswepp/rc/kmlatcon.html
         km_lat = Decimal(0.00902) * radius
         km_lon = Decimal(0.00898) * radius
         # Adapted from https://stackoverflow.com/a/29766316/18309216
