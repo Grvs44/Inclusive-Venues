@@ -29,7 +29,10 @@ class CategoryFilter(BaseFilterBackend):
 def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     if location == '':
         return None
-    lat, lon = location.split(',', 2)
+    try:
+        lat, lon = location.split(',', 2)
+    except ValueError as e:
+        raise ValidationError('Invalid coordinates: must be of the form (latitude, longitude)') from e
     try:
         lat_d = Decimal(lat)
     except InvalidOperation as e:
