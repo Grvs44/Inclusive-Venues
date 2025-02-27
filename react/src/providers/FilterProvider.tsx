@@ -5,6 +5,10 @@ export type Filters = {
   subcategories: VenueSubcategory[]
   addSubcategories: (subs: VenueSubcategory[]) => void
   removeSubcategories: (subs: VenueSubcategory[]) => void
+  location: string
+  setLocation: (location: string) => void
+  radius: string
+  setRadius: (radius: string) => void
   getFilters: () => Object
 }
 
@@ -20,6 +24,8 @@ export default function FilterProvider(props: FilterProviderProps) {
   const [subcategories, setSubcategories] = React.useState<VenueSubcategory[]>(
     [],
   )
+  const [location, setLocation] = React.useState<string>('')
+  const [radius, setRadius] = React.useState<string>('')
 
   const addSubcategories: Filters['addSubcategories'] = (subs) =>
     setSubcategories((subcategories) => subcategories.concat(subs))
@@ -30,13 +36,21 @@ export default function FilterProvider(props: FilterProviderProps) {
     )
 
   const getFilters: Filters['getFilters'] = () => ({
-    subcategory: subcategories.map((s) => s.id).join(','),
+    subcategory: subcategories.length
+      ? subcategories.map((s) => s.id).join(',')
+      : undefined,
+    location: location || undefined,
+    radius: radius || undefined,
   })
 
   const value: Filters = {
     subcategories,
     addSubcategories,
     removeSubcategories,
+    location,
+    setLocation,
+    radius,
+    setRadius,
     getFilters,
   }
 

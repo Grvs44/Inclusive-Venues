@@ -10,10 +10,11 @@ import {
 
 export type LocationInputProps = {
   onLoadChange: (loading: boolean) => void
+  location:string
+  setLocation:(location:string)=>void
 }
 
 export default function LocationInput(props: LocationInputProps) {
-  const [location, setLocation] = React.useState<string>('')
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const getLocation = () => {
@@ -23,7 +24,7 @@ export default function LocationInput(props: LocationInputProps) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         setLoading(false)
         props.onLoadChange(false)
-        setLocation(`${coords.longitude},${coords.latitude}`)
+        props.setLocation(`${coords.latitude},${coords.longitude}`)
       })
     }
   }
@@ -31,8 +32,8 @@ export default function LocationInput(props: LocationInputProps) {
     <TextField
       name="location"
       label="Location"
-      value={location}
-      onChange={(event) => setLocation(event.currentTarget.value)}
+      value={props.location}
+      onChange={(event) => props.setLocation(event.currentTarget.value)}
       disabled={loading}
       // Adapted from https://mui.com/material-ui/react-text-field/#icons
       slotProps={{

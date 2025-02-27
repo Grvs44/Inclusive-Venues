@@ -12,7 +12,7 @@ export default function VenueMarker({ venue, onClick }: VenueMarkerProps) {
     <AzureMapHtmlMarker
       events={[{ eventName: 'click', callback: () => onClick(venue) }]}
       options={{
-        text: venue.score?.toFixed(1),
+        text: venue.score,
         position: [venue.longitude, venue.latitude],
       }}
     />
