@@ -38,7 +38,7 @@ const categoryList = {
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
   const { data, isLoading } = useGetVenueReviewQuery(props.venueId, {
-    skip: props.venueId == undefined,
+    skip: !props.open || props.venueId == undefined,
   })
   const [createReview] = useCreateReviewMutation()
   const [updateReview] = useUpdateReviewMutation()
@@ -93,7 +93,8 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           ratings,
         }))
     if (result.error) {
-      console.error(result.error)
+      alert(result.error)
+      setSubmitting(false)
     } else {
       setSubmitting(false)
       props.onClose()
