@@ -18,7 +18,7 @@ import {
   useGetVenueReviewQuery,
   useUpdateReviewMutation,
 } from '../redux/apiSlice'
-import { ListCategory, ListRating, Venue } from '../redux/types'
+import { ListRating, VenueCategory } from '../redux/types'
 
 export type ReviewDialogProps = {
   venueId?: number
@@ -53,7 +53,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     }
   }, [data])
 
-  const addRating = (category: ListCategory | null) =>
+  const addRating = (category: VenueCategory | null) =>
     category && !ratings.find((r) => r.category == category.id)
       ? setRatings((ratings) =>
           ratings.concat({ category: category.id, value: 0 }),
