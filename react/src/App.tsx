@@ -9,10 +9,14 @@ export default function App() {
   const dispatch = useDispatch()
 
   // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/App.tsx
-  window.addEventListener('beforeinstallprompt', (event: Event) => {
-    dispatch(setShow(true))
-    dispatch(setDeferredPrompt(event))
-  })
+  React.useEffect(
+    () =>
+      window.addEventListener('beforeinstallprompt', (event: Event) => {
+        dispatch(setShow(true))
+        dispatch(setDeferredPrompt(event))
+      }),
+    [],
+  )
 
   return (
     <div>

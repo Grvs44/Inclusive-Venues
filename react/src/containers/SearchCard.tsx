@@ -1,19 +1,8 @@
 import React from 'react'
-import {
-  Button,
-  Card,
-  Stack,
-  Typography,
-} from '@mui/material'
-import DropDown from '../components/DropDown'
+import { Button, Card, Stack, Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
 import LocationInput from '../components/LocationInput'
-
-const data: { id: number; name: string }[] = [
-  { id: 1, name: 'filter1' },
-  { id: 2, name: 'filter2' },
-  { id: 3, name: 'filter3' },
-  { id: 4, name: 'filter4' },
-]
+import FilterArea from './FilterArea'
 
 export default function SearchCard() {
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false)
@@ -25,14 +14,13 @@ export default function SearchCard() {
           Search
         </Typography>
         <LocationInput onLoadChange={setLocationLoading} />
-        <DropDown
-          label="Filters"
-          data={data}
-          isLoading={false}
-          onChange={() => console.log('changed')}
-          getLabel={(x) => x.name}
-        />
-        <Button variant="contained" disabled={locationLoading}>
+        <FilterArea />
+        <Button
+          variant="contained"
+          disabled={locationLoading}
+          LinkComponent={Link}
+          to="/venue"
+        >
           Search
         </Button>
       </Stack>

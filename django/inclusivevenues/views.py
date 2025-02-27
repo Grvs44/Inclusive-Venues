@@ -5,13 +5,16 @@ ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/
 # pylint:disable=no-member
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView, Response, status
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login, logout
 
 from . import models, permissions, serializers
+from .filters import VenueFilter
 from .pagination import Pagination
 
 
@@ -19,21 +22,28 @@ class ViewSet(ModelViewSet):
     pagination_class = Pagination
 
 
-class VenueCategoryViewSet(ViewSet):
+class ListViewSet(ListModelMixin, GenericViewSet):
+    pass
+
+
+class VenueCategoryViewSet(ListViewSet):
     queryset = models.VenueCategory.objects.all()
     serializer_class = serializers.VenueCategorySerializer
-    permission_classes = [permissions.ReadOnly]
 
 
-class VenueSubcategoryViewSet(ViewSet):
+class VenueSubcategoryViewSet(ListViewSet):
     queryset = models.VenueSubcategory.objects.all()
     serializer_class = serializers.VenueSubcategorySerializer
-    permission_classes = [permissions.ReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category']
 
 
 class VenueViewSet(ViewSet):
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
+    filter_backends = [VenueFilter, OrderingFilter, SearchFilter]
+    ordering_fields = ['score']
+    search_fields = ['name']
 
     def get_serializer_class(self):
         if self.action == 'list':

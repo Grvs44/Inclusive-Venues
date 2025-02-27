@@ -39,6 +39,15 @@ export interface PageState<T> {
   next: string | null
 }
 
+export type VenueCategory = {
+  id: number
+  name: string
+}
+
+export type VenueSubcategory = VenueCategory & {
+  category: number
+}
+
 export type ListVenue = {
   id: number
   name: string
@@ -100,8 +109,3 @@ export type ReviewQuery = PageQuery & {
 }
 
 export type VenueReviewQuery = Entity & ReviewQuery
-
-export type ListCategory = {
-  id: number
-  name: string
-}
