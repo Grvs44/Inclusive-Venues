@@ -5,6 +5,7 @@ ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/
 # pylint:disable=no-member
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView, Response, status
@@ -12,6 +13,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login, logout
+from django.db.utils import IntegrityError
 
 from . import models, permissions, serializers
 from .filters import CategoryFilter, LocationFilter
@@ -91,8 +93,13 @@ class ReviewViewSet(ViewSet):
         return models.Review.objects.filter(author=self.request.user).all()
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-        self.queryset.get(pk=serializer.data.get('id')).venue.update_score()
+        try:
+            serializer.save(author=self.request.user)
+            self.queryset.get(
+                pk=serializer.data.get('id')).venue.update_score()
+        except IntegrityError as e:
+            raise ValidationError(
+                'You have already left a review for this venue') from e
 
     def perform_update(self, serializer):
         super().perform_update(serializer)

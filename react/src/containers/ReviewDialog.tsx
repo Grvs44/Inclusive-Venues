@@ -93,12 +93,11 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           ratings,
         }))
     if (result.error) {
-      alert(result.error)
-      setSubmitting(false)
+      alert('data' in result.error ? result.error.data : 'Unknown error')
     } else {
-      setSubmitting(false)
       props.onClose()
     }
+    setSubmitting(false)
   }
 
   return (
