@@ -1,5 +1,6 @@
 # Adapted from https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
 # pylint:disable=no-member
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, CharField
 from django.db.transaction import atomic
 from . import models
@@ -83,6 +84,9 @@ class CreateReviewSerializer(ModelSerializer):
     @atomic
     def create(self, validated_data: dict):
         ratings = validated_data.pop('ratings', [])
+        if not ratings:
+            raise ValidationError(
+                'You must rate at least one category to leave a review')
         review = models.Review.objects.create(**validated_data)
         for rating in ratings:
             models.Rating.objects.create(review=review, **rating)
@@ -99,6 +103,9 @@ class UpdateReviewSerializer(ModelSerializer):
     @atomic
     def update(self, instance: models.Review, validated_data: dict):
         ratings = validated_data.pop('ratings', [])
+        if not ratings:
+            raise ValidationError(
+                'You must rate at least one category to leave a review')
         for rating in ratings:
             value = rating.pop('value', 0)
             models.Rating.objects.update_or_create(
