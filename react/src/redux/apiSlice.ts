@@ -129,9 +129,9 @@ export const apiSlice = createApi({
       providesTags: (result) =>
         result ? [{ type: 'venue', id: result.id }] : [],
     }),
-    getVenueReview: builder.query<Review | null, any>({
+    getVenueReview: builder.query<Review | null, number | undefined>({
       query: (id) => `venue/${id}/review`,
-      providesTags: (result) => [{ type: 'review', id: result?.id }],
+      providesTags: (_r, _e, id) => [{ type: 'review', id }],
     }),
     getVenueReviews: builder.query<PageState<Review>, VenueReviewQuery>({
       query: ({ id, ...filters }) =>
@@ -161,7 +161,7 @@ export const apiSlice = createApi({
         dispatch(
           apiSlice.util.upsertQueryData(
             'getVenueReview',
-            query.data.id,
+            query.data.venue,
             query.data,
           ),
         )
@@ -179,7 +179,7 @@ export const apiSlice = createApi({
         dispatch(
           apiSlice.util.upsertQueryData(
             'getVenueReview',
-            query.data.id,
+            query.data.venue,
             query.data,
           ),
         )
