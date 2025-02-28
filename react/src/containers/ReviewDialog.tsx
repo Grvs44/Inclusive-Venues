@@ -80,6 +80,14 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     console.log('submit')
     console.log(ratings)
     console.log(bodyRef.current?.value)
+    if (ratings.length == 0) {
+      alert('You must rate at least one category to leave a review')
+      return
+    }
+    if (ratings.filter((r) => r.value == 0).length) {
+      alert('Please rate all the chosen categories')
+      return
+    }
     setSubmitting(true)
     const result = await (data
       ? updateReview({
@@ -93,7 +101,11 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           ratings,
         }))
     if (result.error) {
-      alert('data' in result.error ? result.error.data : 'Unknown error')
+      alert(
+        'data' in result.error && Array.isArray(result.error.data)
+          ? result.error.data
+          : 'Unknown error',
+      )
     } else {
       props.onClose()
     }
