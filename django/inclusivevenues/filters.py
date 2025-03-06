@@ -2,6 +2,7 @@ from decimal import Decimal, InvalidOperation
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
 from django.db.models import F, Func, Q
+from geopy.distance import distance
 
 
 def split_params(arg: str) -> list[int]:
@@ -45,10 +46,6 @@ def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     return lat_d, lon_d
 
 
-# Degrees to kilometers adapted from https://forest.moscowfsl.wsu.edu/fswepp/rc/kmlatcon.html
-KM_LAT = Decimal(0.00902)
-KM_LON = Decimal(0.00898)
-
 class LocationFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         location = get_location(request.GET.get('location', ''))
@@ -60,8 +57,7 @@ class LocationFilter(BaseFilterBackend):
             raise ValidationError('Radius must be a number') from e
         if radius <= 0:
             raise ValidationError('Radius must be a positive number')
-        lat, lon = location
 
-        return queryset.alias(lat_change=(F('latitude') - Decimal(lat))*KM_LAT, lon_change=(F('longitude') - Decimal(lon))*KM_LON)\
-            .alias(distance=Func((F('lat_change')*F('lat_change')) + (F('lon_change')*F('lon_change')), function='SQRT'))\
+        return queryset.alias(distance=distance((F('latitude'), F('longitude')), location).km)\
+            .order_by('distance')\
             .annotate(distance=F('distance'))
