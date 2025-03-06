@@ -54,9 +54,15 @@ export type ListVenue = {
   longitude: number
   latitude: number
   score?: string
+  distance?: string
 }
 
-export type Venue = ListVenue & {
+export type Venue = {
+  id: number
+  name: string
+  longitude: number
+  latitude: number
+  score?: string
   description: string
   address?: string
   subcategory: number
