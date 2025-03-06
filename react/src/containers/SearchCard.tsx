@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Card, Stack, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import LocationInput from '../components/LocationInput'
-import RadiusInput from '../components/RadiusInput'
 import { useFilters } from '../providers/FilterProvider'
 import FilterArea from './FilterArea'
 
@@ -31,7 +30,6 @@ export default function SearchCard() {
             location={filters.location}
             setLocation={filters.setLocation}
           />
-          <RadiusInput radius={filters.radius} setRadius={filters.setRadius} />
           <FilterArea />
           <Button variant="contained" type="submit" disabled={locationLoading}>
             Search

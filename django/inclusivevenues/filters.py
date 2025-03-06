@@ -55,12 +55,6 @@ class LocationFilter(BaseFilterBackend):
         location = get_location(request.GET.get('location', ''))
         if location is None:
             return queryset
-        try:
-            radius = Decimal(request.GET.get('radius', 1))
-        except InvalidOperation as e:
-            raise ValidationError('Radius must be a number') from e
-        if radius <= 0:
-            raise ValidationError('Radius must be a positive number')
         lat, lon = location
 
         return queryset.alias(lat_change=(F('latitude') - Decimal(lat)) * LAT_KM, lon_change=(F('longitude') - Decimal(lon)) * LON_KM)\
