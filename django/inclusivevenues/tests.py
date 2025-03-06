@@ -1,13 +1,13 @@
 '''Module containing TestCases for the inclusivevenues Django app'''
-# pylint:disable=no-member,missing-function-docstring
+# pylint:disable=no-member
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
-from django.test import TransactionTestCase
+from django.test import TestCase, TransactionTestCase
 from . import models
 
 
 class ModelTestCase(TransactionTestCase):
-    '''TestCase for inclusivevenues.models'''
+    '''TransactionTestCase for inclusivevenues.models'''
 
     def setUp(self):
         category = models.VenueCategory.objects.create(name='category1')
@@ -17,6 +17,7 @@ class ModelTestCase(TransactionTestCase):
             name='category1', description='rating category 1')
 
     def test_unique_constraints(self):
+        '''Test the unique constraints prevent duplicate reviews and ratings from being created'''
         user = User.objects.create_user('constraint_user')
         venue = models.Venue.objects.create(
             name='venue1', added_by=user, longitude=0, latitude=0, subcategory=self.subcategory)
@@ -36,6 +37,7 @@ class ModelTestCase(TransactionTestCase):
         )
 
     def test_venue_calculate_score(self):
+        '''Test the Venue score is calculated correctly'''
         rating_category1 = models.RatingCategory.objects.create(
             name='venue_score1', description='rating category 1')
         rating_category2 = models.RatingCategory.objects.create(
@@ -64,3 +66,73 @@ class ModelTestCase(TransactionTestCase):
         venue.update_score()
         venue.refresh_from_db()
         self.assertEqual(venue.score, 3.5, 'Score with ratings')
+
+
+class ViewTestCase(TestCase):
+    '''TestCase for inclusivevenues.views'''
+    def setUp(self):
+        self.user = User.objects.create_user('user')
+        venue_category = models.VenueCategory.objects.create(name='category1')
+        venue_subcategory = models.VenueSubcategory.objects.create(
+            name='subcategory1', category=venue_category)
+        self.venue = models.Venue.objects.create(
+            name='venue', added_by=self.user, subcategory=venue_subcategory, longitude=50.937665, latitude=-1.395655)
+
+    def test_venue_detail(self):
+        '''Test the Venue detail view contains the correct properties'''
+        venue: dict = self.client.get(f'/api/venue/{self.venue.pk}').json()
+        self.assertIsInstance(venue, dict)
+        self.assertSetEqual(set(venue.keys()), {
+            'id',
+            'name',
+            'description',
+            'longitude',
+            'latitude',
+            'address',
+            'subcategory',
+            'score',
+            'map',
+            'images',
+        })
+
+    def test_venue_list(self):
+        '''Test the Venue list view contains the correct properties'''
+        data = self.client.get('/api/venue').json()
+        self.assertIsInstance(data, dict)
+        self.assertSetEqual(set(data.keys()), {
+            'count', 'next', 'previous', 'results'
+        })
+        results = data['results']
+        self.assertIsInstance(results, list)
+        for item in results:
+            self.assertIsInstance(item, dict)
+            self.assertSetEqual(set(item.keys()), {
+                'id',
+                'name',
+                'longitude',
+                'latitude',
+                'subcategory',
+                'score',
+            })
+
+    def test_venue_list_with_location(self):
+        '''Test the Venue list view contains the correct properties
+        when the location is provided'''
+        data = self.client.get(
+            '/api/venue?location=50.934672,-1.399775').json()
+        self.assertIsInstance(data, dict)
+        self.assertSetEqual(set(data.keys()), {
+            'count', 'next', 'previous', 'results'
+        })
+        results = data['results']
+        self.assertIsInstance(results, list)
+        for item in results:
+            self.assertSetEqual(set(item.keys()), {
+                'id',
+                'name',
+                'longitude',
+                'latitude',
+                'distance',
+                'subcategory',
+                'score',
+            })
