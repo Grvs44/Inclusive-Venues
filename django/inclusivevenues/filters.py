@@ -1,7 +1,7 @@
 from decimal import Decimal, InvalidOperation
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
-from django.db.models import Q
+from django.db.models import F, Func, Q
 
 
 def split_params(arg: str) -> list[int]:
@@ -32,7 +32,8 @@ def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     try:
         lat, lon = location.split(',', 2)
     except ValueError as e:
-        raise ValidationError('Invalid coordinates: must be of the form (latitude, longitude)') from e
+        raise ValidationError(
+            'Invalid coordinates: must be of the form (latitude, longitude)') from e
     try:
         lat_d = Decimal(lat)
     except InvalidOperation as e:
@@ -44,25 +45,19 @@ def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     return lat_d, lon_d
 
 
+# Adapted from https://geoscience.blog/how-do-you-convert-latitude-and-longitude-to-kilometers/
+LAT_KM = Decimal(110.574)
+LON_KM = Decimal(70.1495605)
+
+
 class LocationFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         location = get_location(request.GET.get('location', ''))
         if location is None:
             return queryset
-        try:
-            radius = Decimal(request.GET.get('radius', 1))
-        except InvalidOperation as e:
-            raise ValidationError('Radius must be a number') from e
-        if radius <= 0:
-            raise ValidationError('Radius must be a positive number')
         lat, lon = location
-# Kilometers to degrees adapted from https://forest.moscowfsl.wsu.edu/fswepp/rc/kmlatcon.html
-        km_lat = Decimal(0.00902) * radius
-        km_lon = Decimal(0.00898) * radius
-        # Adapted from https://stackoverflow.com/a/29766316/18309216
-        return queryset.filter(
-            latitude__lt=lat + km_lat,
-            latitude__gt=lat - km_lat,
-            longitude__lt=lon + km_lon,
-            longitude__gt=lon - km_lon,
-        )
+
+        return queryset.alias(lat_change=(F('latitude') - Decimal(lat)) * LAT_KM, lon_change=(F('longitude') - Decimal(lon)) * LON_KM)\
+            .alias(distance=Func((F('lat_change')*F('lat_change')) + (F('lon_change')*F('lon_change')), function='SQRT'))\
+            .order_by('distance')\
+            .annotate(distance=F('distance'))

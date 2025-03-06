@@ -17,14 +17,16 @@ export default function VenueListItem({ venue }: VenueListItemProps) {
         primary={
           <Stack direction="row" spacing={4}>
             {venue.name}
-            <StarBox value={venue.score} sx={{ fontSize: 'inherit' }} />
+            <StarBox value={Number(venue.score)} sx={{ fontSize: 'inherit' }} />
           </Stack>
         }
         secondary={
-          <>
-            <NavigationIcon sx={{ fontSize: 'inherit' }} />
-            {venue.latitude + 'km'}
-          </>
+          venue.distance ? (
+            <>
+              <NavigationIcon sx={{ fontSize: 'inherit' }} />
+              {venue.distance + 'km'}
+            </>
+          ) : null
         }
       />
     </LinkListItem>

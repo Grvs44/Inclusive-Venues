@@ -1,7 +1,7 @@
 # Adapted from https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
 # pylint:disable=no-member
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import ModelSerializer, CharField, DecimalField
 from django.db.transaction import atomic
 from . import models
 
@@ -45,6 +45,8 @@ class VenueSerializer(ModelSerializer):
 
 
 class VenueListSerializer(ModelSerializer):
+    distance = DecimalField(max_digits=5, decimal_places=1, read_only=True)
+
     class Meta:
         model = models.Venue
         fields = [
@@ -52,6 +54,7 @@ class VenueListSerializer(ModelSerializer):
             'name',
             'longitude',
             'latitude',
+            'distance',
             'subcategory',
             'score',
         ]
