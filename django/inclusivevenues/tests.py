@@ -45,16 +45,17 @@ class ModelTestCase(TransactionTestCase):
         venue = models.Venue.objects.create(
             name='University', added_by=user1, longitude=50.937665, latitude=-1.395655, subcategory=self.subcategory)
 
+        self.assertEqual(venue.score, None, 'Initial score')
         venue.update_score()
         venue.refresh_from_db()
-        self.assertEqual(venue.score, 0)
+        self.assertEqual(venue.score, None, 'Score with no reviews')
 
-        review1 = models.Venue.objects.create(author=user1, venue=venue)
+        review1 = models.Review.objects.create(author=user1, venue=venue)
         models.Rating.objects.create(
             review=review1, category=rating_category1, value=2)
         models.Rating.objects.create(
             review=review1, category=rating_category2, value=4)
-        review2 = models.Venue.objects.create(author=user2, venue=venue)
+        review2 = models.Review.objects.create(author=user2, venue=venue)
         models.Rating.objects.create(
             review=review2, category=rating_category1, value=5)
         models.Rating.objects.create(
@@ -62,4 +63,4 @@ class ModelTestCase(TransactionTestCase):
 
         venue.update_score()
         venue.refresh_from_db()
-        self.assertEqual(venue.score, 3.5)
+        self.assertEqual(venue.score, 3.5, 'Score with ratings')
