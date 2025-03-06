@@ -40,7 +40,7 @@ export default function FilterProvider(props: FilterProviderProps) {
       ? subcategories.map((s) => s.id).join(',')
       : undefined,
     location: location || undefined,
-    radius: radius || undefined,
+    radius: location ? radius || '5' : undefined,
   })
 
   const value: Filters = {
