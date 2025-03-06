@@ -1,5 +1,7 @@
 '''Module containing TestCases for the inclusivevenues Django app'''
 # pylint:disable=no-member
+from decimal import Decimal
+from typing import Any
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase, TransactionTestCase
@@ -68,15 +70,23 @@ class ModelTestCase(TransactionTestCase):
         self.assertEqual(venue.score, 3.5, 'Score with ratings')
 
 
+def decimal_to_str(d: Any) -> str | Any:
+    if isinstance(d, Decimal):
+        return str(d)
+    return d
+
+
 class ViewTestCase(TestCase):
     '''TestCase for inclusivevenues.views'''
+
     def setUp(self):
-        self.user = User.objects.create_user('user')
-        venue_category = models.VenueCategory.objects.create(name='category1')
-        venue_subcategory = models.VenueSubcategory.objects.create(
-            name='subcategory1', category=venue_category)
+        self.user = User.objects.create_user('user', password='password')
+        self.venue_category = models.VenueCategory.objects.create(
+            name='category1')
+        self.venue_subcategory = models.VenueSubcategory.objects.create(
+            name='subcategory1', category=self.venue_category)
         self.venue = models.Venue.objects.create(
-            name='venue', added_by=self.user, subcategory=venue_subcategory, longitude=50.937665, latitude=-1.395655)
+            name='venue', added_by=self.user, subcategory=self.venue_subcategory, longitude=50.937665, latitude=-1.395655)
 
     def test_venue_detail(self):
         '''Test the Venue detail view contains the correct properties'''
@@ -136,3 +146,46 @@ class ViewTestCase(TestCase):
                 'subcategory',
                 'score',
             })
+
+    def test_venue_list_with_invalid_location(self):
+        '''Test that the correct error message is returned when
+        invalid coordinates are provided'''
+        data = self.client.get('/api/venue?location=here').json()
+        self.assertListEqual(
+            data, ['Invalid coordinates: must be of the form (latitude, longitude)'])
+
+    def test_venue_list_with_invalid_latitude(self):
+        '''Test that the correct error message is returned when
+        a non-numeric latitude is given'''
+        data = self.client.get('/api/venue?location=lat,-1.399776').json()
+        self.assertListEqual(data, ['Latitude must be a number'])
+
+    def test_venue_list_with_invalid_longitude(self):
+        '''Test that the correct error message is returned when
+        a non-numeric longitude is given'''
+        data = self.client.get('/api/venue?location=50.934674,lon').json()
+        self.assertListEqual(data, ['Longitude must be a number'])
+
+    def test_create_venue(self):
+        '''Test that a valid venue can be created'''
+        self.assertTrue(self.client.login(
+            username='user', password='password'))
+        name = 'mynewvenue'
+        data = self.client.post('/api/venue',  {
+            'name': name, 'latitude': 50.934672,
+            'longitude': -1.399775, 'subcategory': self.venue_subcategory.pk,
+        }).json()
+
+        venue: dict | None = models.Venue.objects.filter(
+            name=name).values().first()
+        if venue is None:
+            self.fail('Venue was not created')
+
+        venue['score'] = decimal_to_str(venue.get('score'))
+        venue['latitude'] = decimal_to_str(venue.get('latitude'))
+        venue['longitude'] = decimal_to_str(venue.get('longitude'))
+
+        self.assertIsInstance(data.pop('map', None), str)
+        venue.pop('map')
+        self.assertDictEqual(data, venue)
+        self.client.logout()
