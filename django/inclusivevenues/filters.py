@@ -1,7 +1,7 @@
 from decimal import Decimal, InvalidOperation
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
-from django.db.models import Q
+from django.db.models import F, Func, Q
 
 
 def split_params(arg: str) -> list[int]:
@@ -32,7 +32,8 @@ def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     try:
         lat, lon = location.split(',', 2)
     except ValueError as e:
-        raise ValidationError('Invalid coordinates: must be of the form (latitude, longitude)') from e
+        raise ValidationError(
+            'Invalid coordinates: must be of the form (latitude, longitude)') from e
     try:
         lat_d = Decimal(lat)
     except InvalidOperation as e:
@@ -43,6 +44,10 @@ def get_location(location: str) -> tuple[Decimal, Decimal] | None:
         raise ValidationError('Longitude must be a number') from e
     return lat_d, lon_d
 
+
+# Degrees to kilometers adapted from https://forest.moscowfsl.wsu.edu/fswepp/rc/kmlatcon.html
+KM_LAT = Decimal(0.00902)
+KM_LON = Decimal(0.00898)
 
 class LocationFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
@@ -56,13 +61,7 @@ class LocationFilter(BaseFilterBackend):
         if radius <= 0:
             raise ValidationError('Radius must be a positive number')
         lat, lon = location
-# Kilometers to degrees adapted from https://forest.moscowfsl.wsu.edu/fswepp/rc/kmlatcon.html
-        km_lat = Decimal(0.00902) * radius
-        km_lon = Decimal(0.00898) * radius
-        # Adapted from https://stackoverflow.com/a/29766316/18309216
-        return queryset.filter(
-            latitude__lt=lat + km_lat,
-            latitude__gt=lat - km_lat,
-            longitude__lt=lon + km_lon,
-            longitude__gt=lon - km_lon,
-        )
+
+        return queryset.alias(lat_change=(F('latitude') - Decimal(lat))*KM_LAT, lon_change=(F('longitude') - Decimal(lon))*KM_LON)\
+            .alias(distance=Func((F('lat_change')*F('lat_change')) + (F('lon_change')*F('lon_change')), function='SQRT'))\
+            .annotate(distance=F('distance'))
