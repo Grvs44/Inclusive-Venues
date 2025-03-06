@@ -12,7 +12,7 @@ export default function RadiusInput(props: RadiusInputProps) {
       name="radius"
       label="Search radius (km)"
       type="number"
-      slotProps={{ htmlInput: { min: 1, step: 0.1 } }}
+      slotProps={{ htmlInput: { min: 0.1, step: 0.1 } }}
       value={props.radius}
       onChange={(event) => props.setRadius(event.currentTarget.value)}
     />
