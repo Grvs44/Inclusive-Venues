@@ -48,7 +48,10 @@ class Venue(models.Model):
         return str(self.name)
 
     def generate_map(self):
-        self.map = get_image_url(self.latitude, self.longitude)
+        map = get_image_url(self.latitude, self.longitude)
+        if map is not None:
+            self.map = map
+            super().save()
 
     def calculate_score(self):
         self.score = self.review_set.aggregate(  # type: ignore
@@ -60,9 +63,9 @@ class Venue(models.Model):
         self.save()
 
     def save(self, *args, **kwargs) -> None:
+        super().save(*args, **kwargs)
         if self.map.name is None:
             self.generate_map()
-        return super().save(*args, **kwargs)
 
 
 class Review(models.Model):

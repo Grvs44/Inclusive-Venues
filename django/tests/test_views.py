@@ -6,7 +6,7 @@ from typing import Any
 from inclusivevenues import models
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 
 def decimal_to_str(d: Any) -> str | Any:
@@ -16,17 +16,19 @@ def decimal_to_str(d: Any) -> str | Any:
     return d
 
 
+@override_settings(AZURE_MAP_KEY=None)
 class VenueTestCase(TestCase):
     '''TestCase for inclusivevenues.views'''
 
-    def setUp(self):
-        self.user = User.objects.create_user('user', password='password')
-        self.venue_category = models.VenueCategory.objects.create(
+    @classmethod
+    def setUpClass(cls):
+        cls.user = User.objects.create_user('user', password='password')
+        cls.venue_category = models.VenueCategory.objects.create(
             name='category1')
-        self.venue_subcategory = models.VenueSubcategory.objects.create(
-            name='subcategory1', category=self.venue_category)
-        self.venue = models.Venue.objects.create(
-            name='venue', added_by=self.user, subcategory=self.venue_subcategory, longitude=50.937665, latitude=-1.395655)
+        cls.venue_subcategory = models.VenueSubcategory.objects.create(
+            name='subcategory1', category=cls.venue_category)
+        cls.venue = models.Venue.objects.create(
+            name='venue', added_by=cls.user, subcategory=cls.venue_subcategory, longitude=50.937665, latitude=-1.395655)
 
     def test_venue_detail(self):
         '''Test the Venue detail view contains the correct properties'''
