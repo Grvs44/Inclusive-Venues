@@ -181,11 +181,14 @@ class ViewTestCase(TestCase):
         if venue is None:
             self.fail('Venue was not created')
 
+        # Convert fields from models.Venue object to same format as from API
         venue['score'] = decimal_to_str(venue.get('score'))
         venue['latitude'] = decimal_to_str(venue.get('latitude'))
         venue['longitude'] = decimal_to_str(venue.get('longitude'))
+        venue.pop('added_by_id')
+        venue['subcategory'] = venue.pop('subcategory_id', None)
+        venue['map'] = 'http://testserver/media/' + venue['map']
+        venue['images'] = []
 
-        self.assertIsInstance(data.pop('map', None), str)
-        venue.pop('map')
         self.assertDictEqual(data, venue)
         self.client.logout()
