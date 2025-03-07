@@ -1,9 +1,10 @@
 '''Tests for inclusivevenues.models'''
 # pylint:disable=no-member
+from inclusivevenues import models
+
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TransactionTestCase
-from .. import models
 
 
 class ModelTestCase(TransactionTestCase):

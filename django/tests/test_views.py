@@ -2,9 +2,11 @@
 # pylint:disable=no-member
 from decimal import Decimal
 from typing import Any
+
+from inclusivevenues import models
+
 from django.contrib.auth.models import User
 from django.test import TestCase
-from .. import models
 
 
 def decimal_to_str(d: Any) -> str | Any:
