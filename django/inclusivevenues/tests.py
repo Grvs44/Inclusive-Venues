@@ -71,6 +71,7 @@ class ModelTestCase(TransactionTestCase):
 
 
 def decimal_to_str(d: Any) -> str | Any:
+    '''Convert d to a str if it is a Decimal'''
     if isinstance(d, Decimal):
         return str(d)
     return d
@@ -171,7 +172,7 @@ class ViewTestCase(TestCase):
         self.assertTrue(self.client.login(
             username='user', password='password'))
         name = 'mynewvenue'
-        data = self.client.post('/api/venue',  {
+        data = self.client.post('/api/venue', {
             'name': name, 'latitude': 50.934672,
             'longitude': -1.399775, 'subcategory': self.venue_subcategory.pk,
         }).json()
@@ -192,3 +193,45 @@ class ViewTestCase(TestCase):
 
         self.assertDictEqual(data, venue)
         self.client.logout()
+
+    def test_create_venue_empty(self):
+        '''Test that an empty venue cannot be created'''
+        self.assertTrue(self.client.login(
+            username='user', password='password'))
+        response = self.client.post('/api/venue', {})
+        self.assertEqual(response.status_code, 400)
+        self.assertDictEqual(response.json(), {
+            'name': ['This field is required.'],
+            'longitude': ['This field is required.'],
+            'latitude': ['This field is required.'],
+            'subcategory': ['This field is required.'],
+        })
+        self.client.logout()
+
+    def test_create_venue_blank(self):
+        '''Test that an empty venue cannot be created'''
+        self.assertTrue(self.client.login(
+            username='user', password='password'))
+        response = self.client.post('/api/venue', {
+            'name': '', 'latitude': '',
+            'longitude': '', 'subcategory': '',
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertDictEqual(response.json(), {
+            'name': ['This field may not be blank.'],
+            'longitude': ['A valid number is required.'],
+            'latitude': ['A valid number is required.'],
+            'subcategory': ['This field may not be null.'],
+        })
+        self.client.logout()
+
+    def test_create_venue_anonymous(self):
+        '''Test that a venue can't be created if the user isn't logged in'''
+        self.client.logout()
+        response = self.client.post('/api/venue', {
+            'name': 'anonymous', 'latitude': 50.934672,
+            'longitude': -1.399775, 'subcategory': self.venue_subcategory.pk,
+        })
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(
+            response.json(), {'detail': 'Authentication credentials were not provided.'})
