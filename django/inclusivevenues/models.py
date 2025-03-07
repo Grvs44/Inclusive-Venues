@@ -59,10 +59,10 @@ class Venue(models.Model):
         self.calculate_score()
         self.save()
 
-    def clean(self):
-        super().clean()
+    def save(self, *args, **kwargs) -> None:
         if self.map.name is None:
             self.generate_map()
+        return super().save(*args, **kwargs)
 
 
 class Review(models.Model):
