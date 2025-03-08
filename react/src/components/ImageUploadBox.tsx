@@ -12,16 +12,16 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
   const [viewOpen, setViewOpen] = React.useState<boolean>(false)
   const [viewImage, setViewImage] = React.useState<File | null>(null)
 
-  const addFiles = (newFiles: FileList) =>
-    props.setFiles((files) =>
-      files.concat(
-        Array.from(newFiles).filter(
-          (newFile) =>
-            files.findIndex((f) => f.name == newFile.name) == -1 &&
-            newFile.type.startsWith('image/'),
-        ),
-      ),
+  const addFiles = (fileList: FileList) => {
+    const newFiles = Array.from(fileList).filter((file) =>
+      file.type.startsWith('image/'),
     )
+    props.setFiles((files) =>
+      files
+        .filter((file) => newFiles.findIndex((f) => f.name == file.name) == -1)
+        .concat(newFiles),
+    )
+  }
 
   const removeFile = (file: File) =>
     props.setFiles((files) => files.filter((f) => f != file))
