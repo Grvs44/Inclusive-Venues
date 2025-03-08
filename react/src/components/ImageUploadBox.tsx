@@ -45,7 +45,7 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
             <ListItemButton onClick={() => openView(file)}>
               <ListItemText
                 primary={file.name}
-                secondary={`${file.type} - ${file.size / 1000}KB`}
+                secondary={`${(file.size / 1000).toFixed(0)}KB`}
               />
             </ListItemButton>
           </ListItem>
