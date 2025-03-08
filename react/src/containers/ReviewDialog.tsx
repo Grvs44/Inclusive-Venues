@@ -150,7 +150,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
         )}
       </DialogContent>
       <DialogActions>
-        <Button type="button" onClick={props.onClose}>
+        <Button type="button" onClick={props.onClose} disabled={submitting}>
           Close
         </Button>
         <Button
