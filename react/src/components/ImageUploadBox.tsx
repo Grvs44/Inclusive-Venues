@@ -1,5 +1,11 @@
 import React from 'react'
-import { List, ListItem, ListItemButton, ListItemText } from '@mui/material'
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from '@mui/material'
 import FileUploadButton from './FileUploadButton'
 import ImageViewDialog from './ImageViewDialog'
 
@@ -39,6 +45,7 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
         onAdd={addFiles}
         accept="image/*"
       />
+      <Button onClick={() => props.setFiles([])}>Clear list</Button>
       <List>
         {props.files.map((file) => (
           <ListItem key={file.name}>
