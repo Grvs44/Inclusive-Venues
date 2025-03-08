@@ -5,7 +5,7 @@ from django.core import validators
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
 
-from .maps import get_image_url
+from .maps import get_map_image_url
 
 
 class VenueCategory(models.Model):
@@ -48,9 +48,9 @@ class Venue(models.Model):
         return str(self.name)
 
     def generate_map(self):
-        map = get_image_url(self.latitude, self.longitude)
-        if map is not None:
-            self.map = map
+        url = get_map_image_url(self.latitude, self.longitude)
+        if url is not None:
+            self.map = url
             super().save()
 
     def calculate_score(self):
@@ -61,11 +61,6 @@ class Venue(models.Model):
     def update_score(self):
         self.calculate_score()
         self.save()
-
-    def save(self, *args, **kwargs) -> None:
-        super().save(*args, **kwargs)
-        if self.map.name is None:
-            self.generate_map()
 
 
 class Review(models.Model):

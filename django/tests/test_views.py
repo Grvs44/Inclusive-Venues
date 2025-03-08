@@ -6,7 +6,7 @@ from typing import Any
 from inclusivevenues import models
 
 from django.contrib.auth.models import User
-from django.test import TestCase, override_settings
+from django.test import TestCase
 
 
 def decimal_to_str(d: Any) -> str | Any:
@@ -16,12 +16,11 @@ def decimal_to_str(d: Any) -> str | Any:
     return d
 
 
-@override_settings(AZURE_MAP_KEY=None)
 class VenueTestCase(TestCase):
     '''TestCase for inclusivevenues.views'''
 
     @classmethod
-    def setUpClass(cls):
+    def setUpTestData(cls):
         cls.user = User.objects.create_user('user', password='password')
         cls.venue_category = models.VenueCategory.objects.create(
             name='category1')
@@ -129,7 +128,11 @@ class VenueTestCase(TestCase):
         venue['longitude'] = decimal_to_str(venue.get('longitude'))
         venue.pop('added_by_id')
         venue['subcategory'] = venue.pop('subcategory_id', None)
-        venue['map'] = 'http://testserver/media/' + venue['map']
+        venue_map = venue['map']
+        if venue_map:
+            venue['map'] = 'http://testserver/media/' + venue_map
+        else:
+            venue['map'] = None
         venue['images'] = []
 
         self.assertDictEqual(data, venue)
