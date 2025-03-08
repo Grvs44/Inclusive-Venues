@@ -1,13 +1,9 @@
 import React from 'react'
-import {
-  Button,
-  Stack,
-  TextField,
-} from '@mui/material'
+import { Button, Stack, TextField } from '@mui/material'
 
 export default function CoordinatesInput() {
-  const [latitude, setLatitude] = React.useState<number | null>(null)
-  const [longitude, setLongitude] = React.useState<number | null>(null)
+  const [latitude, setLatitude] = React.useState<string | null>(null)
+  const [longitude, setLongitude] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const getLocation = () => {
@@ -15,8 +11,8 @@ export default function CoordinatesInput() {
       setLoading(true)
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
-          setLatitude(coords.latitude)
-          setLongitude(coords.longitude)
+          setLatitude(coords.latitude.toString())
+          setLongitude(coords.longitude.toString())
           setLoading(false)
         },
         (error) => {
@@ -32,21 +28,25 @@ export default function CoordinatesInput() {
   return (
     <fieldset>
       <legend>Location</legend>
-      <Button onClick={getLocation} loading={loading}>Use current location</Button>
+      <Button onClick={getLocation} loading={loading} loadingPosition="start">
+        Use current location
+      </Button>
       <Stack direction="row">
         <TextField
           type="number"
-          label="latitude"
-          name="Latitude"
+          label="Latitude"
+          name="latitude"
           value={latitude}
+          onChange={(event) => setLatitude(event.target.value)}
           fullWidth
           required
         />
         <TextField
           type="number"
-          label="longitude"
-          name="Longitude"
+          label="Longitude"
+          name="longitude"
           value={longitude}
+          onChange={(event) => setLongitude(event.target.value)}
           fullWidth
           required
         />
