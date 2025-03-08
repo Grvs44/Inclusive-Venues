@@ -44,7 +44,5 @@ def save_map_image(image: bytes):
 
 def get_map_image_url(latitude: Decimal, longitude: Decimal):
     '''Download map preview image from coordinates and save to storage'''
-    print('get map', latitude, longitude)
     image = get_map_image(latitude, longitude)
-    print('map:', image is not None)
     return None if image is None else save_map_image(image)
