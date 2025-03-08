@@ -96,6 +96,13 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           margin="dense"
           multiline
         />
+        <TextField
+          label="Address"
+          name="address"
+          fullWidth
+          margin="dense"
+          multiline
+        />
         <ImageUploadBox files={files} setFiles={setFiles} />
       </DialogContent>
       <DialogActions>
