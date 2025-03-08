@@ -15,19 +15,18 @@ export type ImageViewDialogProps = {
 }
 
 export default function ImageViewDialog(props: ImageViewDialogProps) {
-  const imageRef = React.useRef<HTMLImageElement | null>(null)
+  const [src, setSrc] = React.useState<string | undefined>(undefined)
 
   React.useEffect(() => {
-    const img = imageRef.current
-    if (img == null || props.file == null) return
+    if (props.file == null) return
     const reader = new FileReader()
     reader.onload = () => {
-      if (img && typeof reader.result == 'string') {
-        img.src = reader.result
+      if (typeof reader.result == 'string') {
+        setSrc(reader.result)
       }
     }
     reader.readAsDataURL(props.file)
-  }, [imageRef.current])
+  }, [props.file])
 
   const onRemove = () => {
     if (props.file) props.onRemove(props.file)
@@ -38,7 +37,11 @@ export default function ImageViewDialog(props: ImageViewDialogProps) {
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{props.file?.name}</DialogTitle>
       <DialogContent>
-        <img alt="Venue image" ref={imageRef} />
+        <img
+          alt="Venue image"
+          src={src}
+          style={{ maxWidth: '100%', maxHeight: '100%' }}
+        />
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="error" onClick={onRemove}>
