@@ -1,5 +1,4 @@
 {
-  "python.terminal.activateEnvironment": false,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.typeCheckingMode": "basic"
 }
