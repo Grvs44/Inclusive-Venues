@@ -16,7 +16,9 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
     props.setFiles((files) =>
       files.concat(
         Array.from(newFiles).filter(
-          (newFile) => files.findIndex((f) => f.name == newFile.name) == -1,
+          (newFile) =>
+            files.findIndex((f) => f.name == newFile.name) == -1 &&
+            newFile.type.startsWith('image/'),
         ),
       ),
     )
@@ -32,7 +34,11 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
   return (
     <fieldset>
       <legend>Images</legend>
-      <FileUploadButton text="Upload images" onAdd={addFiles} />
+      <FileUploadButton
+        text="Upload images"
+        onAdd={addFiles}
+        accept="image/*"
+      />
       <List>
         {props.files.map((file) => (
           <ListItem key={file.name}>

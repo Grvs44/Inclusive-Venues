@@ -17,8 +17,9 @@ const VisuallyHiddenInput = styled('input')({
 })
 
 export type FileUploadButtonProps = {
-  text: String
+  text: string
   onAdd: (files: FileList) => void
+  accept?: string
 }
 
 export default function FileUploadButton(props: FileUploadButtonProps) {
@@ -37,7 +38,12 @@ export default function FileUploadButton(props: FileUploadButtonProps) {
       startIcon={<CloudUploadIcon />}
     >
       {props.text}
-      <VisuallyHiddenInput type="file" onChange={onChange} multiple />
+      <VisuallyHiddenInput
+        type="file"
+        onChange={onChange}
+        accept={props.accept}
+        multiple
+      />
     </Button>
   )
 }
