@@ -7,6 +7,22 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material'
+import CoordinatesInput from '../components/CoordinatesInput'
+import DropDown from '../components/DropDown'
+import ImageUploadBox from '../components/ImageUploadBox'
+import { VenueCategory, VenueSubcategory } from '../redux/types'
+
+//Temporary data
+const categoryData: VenueCategory[] = [
+  { id: 1, name: 'category 1' },
+  { id: 2, name: 'category 2' },
+]
+const categories = { data: categoryData, isLoading: false }
+const subcatData: VenueSubcategory[] = [
+  { id: 1, name: 'subcategory 1', category: 1 },
+  { id: 2, name: 'subcategory 2', category: 2 },
+]
+const subcategories = { data: subcatData, isLoading: false }
 
 export type NewVenueDialogProps = {
   open: boolean
@@ -15,6 +31,11 @@ export type NewVenueDialogProps = {
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
   const [submitting, setSubmitting] = React.useState<boolean>(false)
+  const [category, setCategory] = React.useState<VenueCategory | null>(null)
+  const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
+    null,
+  )
+  const [files, setFiles] = React.useState<File[]>([])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -44,7 +65,38 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           variant="standard"
           fullWidth
           margin="dense"
+          autoComplete="false"
         />
+        <DropDown
+          label="Category"
+          data={categories.data}
+          isLoading={categories.isLoading}
+          getLabel={(x) => x.name}
+          onChange={setCategory}
+          defaultValue={category}
+          required
+          fullWidth
+        />
+        <DropDown
+          label="Subcategory"
+          data={subcategories.data}
+          isLoading={false}
+          getLabel={(x) => x.name}
+          onChange={setSubcategory}
+          defaultValue={subcategory}
+          required
+          fullWidth
+          disabled={category == null}
+        />
+        <CoordinatesInput />
+        <TextField
+          label="Description"
+          name="description"
+          fullWidth
+          margin="dense"
+          multiline
+        />
+        <ImageUploadBox files={files} setFiles={setFiles} />
       </DialogContent>
       <DialogActions>
         <Button type="button" onClick={props.onClose} disabled={submitting}>
