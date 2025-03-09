@@ -11,6 +11,7 @@ export type DropDownProps<T extends Entity> = {
   label: string
   required?: boolean
   disabled?: boolean
+  fullWidth?: boolean
   onChange: (value: T | null) => void
   getLabel: (value: T) => string
   data: T[]
@@ -27,6 +28,7 @@ export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
       filterOptions={(x) => x}
       defaultValue={props.defaultValue}
       disabled={props.disabled}
+      fullWidth={props.fullWidth}
       sx={{ width: 300 }}
       open={open}
       onOpen={() => setOpen(true)}

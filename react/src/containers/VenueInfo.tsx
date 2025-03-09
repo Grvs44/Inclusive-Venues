@@ -23,6 +23,7 @@ export default function VenueInfo({ venue }: { venue: Venue }) {
         </Link>
       </Breadcrumbs>
       <StarBox value={venue.score} />
+      <Typography>{venue.description}</Typography>
     </Card>
   )
 }
