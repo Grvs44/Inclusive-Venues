@@ -6,18 +6,18 @@ https://learn.microsoft.com/en-us/rest/api/maps/render/get-map-static-image
 from decimal import Decimal
 import uuid
 import requests
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
+from .settings import MAP_KEY
 
-def get_image(latitude: Decimal, longitude: Decimal):
+
+def get_map_image(latitude: Decimal, longitude: Decimal):
     '''Download map preview image from coordinates'''
-    map_key = getattr(settings, 'AZURE_MAP_KEY')
-    if map_key is None:
-        raise AttributeError('AZURE_MAP_KEY setting not initialised')
+    if MAP_KEY is None:
+        return None
     headers = {
-        'subscription-key': map_key
+        'subscription-key': MAP_KEY
     }
     params = {
         'api-version': '2024-04-01',
@@ -36,13 +36,13 @@ def get_image(latitude: Decimal, longitude: Decimal):
     return response.content
 
 
-def save_image(image: bytes):
+def save_map_image(image: bytes):
     '''Save map preview image to storage'''
 # Adapted from https://docs.djangoproject.com/en/5.1/topics/files/#storage-objects
     return default_storage.save(f'{uuid.uuid4()}.png', ContentFile(image))
 
 
-def get_image_url(latitude: Decimal, longitude: Decimal):
+def get_map_image_url(latitude: Decimal, longitude: Decimal):
     '''Download map preview image from coordinates and save to storage'''
-    image = get_image(latitude, longitude)
-    return save_image(image)
+    image = get_map_image(latitude, longitude)
+    return None if image is None else save_map_image(image)
