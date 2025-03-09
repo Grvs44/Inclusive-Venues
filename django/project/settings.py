@@ -13,6 +13,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
+# Load environment variables from dotenv, if installed
+try:
+    if 'AZURE_MAP_KEY' not in os.environ:
+        from dotenv import load_dotenv
+        load_dotenv()
+except ImportError:
+    pass
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

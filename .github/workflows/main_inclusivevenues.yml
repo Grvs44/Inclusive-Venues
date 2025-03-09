@@ -22,6 +22,15 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install dependencies and run tests
+        working-directory: ./django
+        run: |
+          pipenv install
+          pipenv run python manage.py test --settings tests.settings -v 0
+
       - name: Zip artifact for deployment
         working-directory: ./django
         run: zip release.zip ./* -r -x@.funcignore
