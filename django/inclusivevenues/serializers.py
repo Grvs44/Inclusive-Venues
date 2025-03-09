@@ -28,12 +28,6 @@ class VenueImageSerializer(ModelSerializer):
 class VenueSerializer(ModelSerializer):
     images = VenueImageSerializer(many=True, read_only=True)
 
-    def create(self, validated_data):
-        instance: models.Venue = super().create(validated_data)
-        instance.generate_map()
-        instance.save()
-        return instance
-
     class Meta:
         model = models.Venue
         fields = [
@@ -46,6 +40,31 @@ class VenueSerializer(ModelSerializer):
             'subcategory',
             'score',
             'map',
+            'images',
+        ]
+
+
+class CreateVenueSerializer(ModelSerializer):
+    images = VenueImageSerializer(many=True)
+
+    @atomic
+    def create(self, validated_data: dict):
+        images = validated_data.pop('images', [])
+        venue: models.Venue = super().create(validated_data)
+        for image in images:
+            models.Image.objects.create(venue=venue, **image)
+        venue.generate_map()
+        return venue
+
+    class Meta:
+        model = models.Venue
+        fields = [
+            'name',
+            'description',
+            'longitude',
+            'latitude',
+            'address',
+            'subcategory',
             'images',
         ]
 

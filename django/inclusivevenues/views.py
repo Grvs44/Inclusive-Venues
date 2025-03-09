@@ -52,6 +52,8 @@ class VenueViewSet(ViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return serializers.VenueListSerializer
+        if self.action == 'create':
+            return serializers.CreateVenueSerializer
         return serializers.VenueSerializer
 
     def perform_create(self, serializer):
