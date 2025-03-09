@@ -70,6 +70,16 @@ export type Venue = {
   images?: Image[]
 }
 
+export type NewVenue = {
+  name: string
+  longitude: number
+  latitude: number
+  description: string
+  address?: string
+  subcategory: number
+  images?: ImageFile[]
+}
+
 export interface PageQuery {
   page?: number
 }
@@ -82,6 +92,11 @@ export type Image = {
   id: number
   alt: string
   src: string
+}
+
+export type ImageFile = {
+  alt: string
+  file: File
 }
 
 export type Review = {

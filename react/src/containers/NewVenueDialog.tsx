@@ -7,10 +7,12 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material'
+import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ImageUploadBox from '../components/ImageUploadBox'
-import { VenueCategory, VenueSubcategory } from '../redux/types'
+import { useCreateVenueMutation } from '../redux/apiSlice'
+import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 
 //Temporary data
 const categoryData: VenueCategory[] = [
@@ -30,6 +32,7 @@ export type NewVenueDialogProps = {
 }
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
+  const [createVenue] = useCreateVenueMutation()
   const [submitting, setSubmitting] = React.useState<boolean>(false)
   const [category, setCategory] = React.useState<VenueCategory | null>(null)
   const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
@@ -42,9 +45,37 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
     setSubmitting(true)
     const formData = new FormData(event.currentTarget)
     const data = Object.fromEntries(formData.entries())
-    console.log(data)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    props.onClose()
+    if (!('name' in data)) {
+      alert('Venue name is required')
+      return
+    }
+    if (!('description' in data)) {
+      alert('Venue description is required')
+      return
+    }
+    if (subcategory == null) {
+      alert('Venue subcategory is required')
+      return
+    }
+    const newVenue: NewVenue = {
+      name: data.name.toString(),
+      subcategory: subcategory.id,
+      description: data.description.toString(),
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
+      images: files.map((file) => ({ alt: 'alt text', file })),
+    }
+    const result = await createVenue(newVenue)
+    if (result.data) {
+      redirect(`/venue/${result.data.id}`)
+      props.onClose()
+    } else {
+      alert(
+        'data' in result.error && Array.isArray(result.error.data)
+          ? result.error.data
+          : 'Unknown error',
+      )
+    }
     setSubmitting(false)
   }
 

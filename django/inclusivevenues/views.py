@@ -54,6 +54,9 @@ class VenueViewSet(ViewSet):
             return serializers.VenueListSerializer
         return serializers.VenueSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(added_by=self.request.user)
+
     @action(methods=['GET'], detail=True, url_path='review')
     def get_review(self, request, pk):
         '''Get the current user's review for this Venue'''

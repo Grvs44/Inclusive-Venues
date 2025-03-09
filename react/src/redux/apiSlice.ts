@@ -1,19 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
-import {
+import type {
+  CreateReview,
+  ListVenue,
+  NewVenue,
+  PageState,
+  Review,
+  ReviewQuery,
+  UpdateReview,
+  User,
+  UserLogin,
+  Venue,
   VenueCategory,
+  VenueQuery,
+  VenueReviewQuery,
   VenueSubcategory,
-  type CreateReview,
-  type ListVenue,
-  type PageState,
-  type Review,
-  type ReviewQuery,
-  type UpdateReview,
-  type User,
-  type UserLogin,
-  type Venue,
-  type VenueQuery,
-  type VenueReviewQuery,
 } from './types'
 import { getFilterQuery } from './utils'
 
@@ -124,7 +125,7 @@ export const apiSlice = createApi({
       merge,
       forceRefetch,
     }),
-    getVenue: builder.query<Venue, any>({
+    getVenue: builder.query<Venue, string | number | undefined>({
       query: (id) => `venue/${id}`,
       providesTags: (result) =>
         result ? [{ type: 'venue', id: result.id }] : [],
@@ -139,6 +140,20 @@ export const apiSlice = createApi({
       serializeQueryArgs,
       merge,
       forceRefetch,
+    }),
+    createVenue: builder.mutation<Venue, NewVenue>({
+      query: (body) => ({
+        url: 'venue',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'venue', id: LIST }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.upsertQueryData('getVenue', query.data.id, query.data),
+        )
+      },
     }),
 
     // Reviews
@@ -198,6 +213,7 @@ export const {
   useGetVenueQuery,
   useGetVenueReviewQuery,
   useGetVenueReviewsQuery,
+  useCreateVenueMutation,
   useGetReviewsQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,
