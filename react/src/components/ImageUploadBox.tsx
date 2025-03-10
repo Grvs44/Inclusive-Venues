@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Typography,
 } from '@mui/material'
 import FileUploadButton from './FileUploadButton'
 import ImageViewDialog from './ImageViewDialog'
@@ -39,7 +40,9 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
 
   return (
     <fieldset>
-      <legend>Images</legend>
+      <legend>
+        <Typography>Images</Typography>
+      </legend>
       <FileUploadButton
         text="Upload images"
         onAdd={addFiles}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Stack, TextField } from '@mui/material'
+import { Button, Stack, TextField, Typography } from '@mui/material'
 
 export default function CoordinatesInput() {
   const [latitude, setLatitude] = React.useState<string | null>(null)
@@ -27,7 +27,9 @@ export default function CoordinatesInput() {
 
   return (
     <fieldset>
-      <legend>Location</legend>
+      <legend>
+        <Typography>Location</Typography>
+      </legend>
       <Button onClick={getLocation} loading={loading} loadingPosition="start">
         Use current location
       </Button>
