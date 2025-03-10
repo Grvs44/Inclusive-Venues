@@ -2,8 +2,10 @@ import React from 'react'
 import { Button, Stack, TextField, Typography } from '@mui/material'
 
 export default function CoordinatesInput() {
-  const [latitude, setLatitude] = React.useState<string | null>(null)
-  const [longitude, setLongitude] = React.useState<string | null>(null)
+  const [latitude, setLatitude] = React.useState<string | undefined>(undefined)
+  const [longitude, setLongitude] = React.useState<string | undefined>(
+    undefined,
+  )
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const getLocation = () => {
