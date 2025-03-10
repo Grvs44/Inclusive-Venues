@@ -10,8 +10,8 @@ import {
 
 export type LocationInputProps = {
   onLoadChange: (loading: boolean) => void
-  location:string
-  setLocation:(location:string)=>void
+  location: string
+  setLocation: (location: string) => void
 }
 
 export default function LocationInput(props: LocationInputProps) {
@@ -24,7 +24,9 @@ export default function LocationInput(props: LocationInputProps) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         setLoading(false)
         props.onLoadChange(false)
-        props.setLocation(`${coords.latitude},${coords.longitude}`)
+        props.setLocation(
+          `${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`,
+        )
       })
     }
   }

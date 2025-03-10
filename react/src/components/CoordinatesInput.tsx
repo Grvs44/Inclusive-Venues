@@ -11,8 +11,8 @@ export default function CoordinatesInput() {
       setLoading(true)
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
-          setLatitude(coords.latitude.toString())
-          setLongitude(coords.longitude.toString())
+          setLatitude(coords.latitude.toFixed(6))
+          setLongitude(coords.longitude.toFixed(6))
           setLoading(false)
         },
         (error) => {
