@@ -98,6 +98,12 @@ export type Image = VenueImage & {
   order: number
 }
 
+export type RatingCategory = {
+  id: number
+  name: string
+  description: string
+}
+
 export type Review = {
   id: number
   venue: number

@@ -6,6 +6,7 @@ import type {
   ListVenue,
   NewVenue,
   PageState,
+  RatingCategory,
   Review,
   ReviewQuery,
   UpdateReview,
@@ -63,14 +64,14 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['user', 'venuecat', 'venuesub', 'venue', 'review'],
+  tagTypes: ['user', 'venuecat', 'venuesub', 'venue', 'ratingcat', 'review'],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
     // Authentication
     getUserDetails: builder.query<User, void>({
       query: () => 'user',
       providesTags: ['user'],
-      keepUnusedDataFor: 60000,
+      keepUnusedDataFor: 600000,
     }),
     login: builder.mutation<void, UserLogin>({
       query: (body) => ({
@@ -160,6 +161,13 @@ export const apiSlice = createApi({
       },
     }),
 
+    // Rating categories
+    getRatingCategories: builder.query<RatingCategory[], void>({
+      query: () => 'ratingcat',
+      providesTags: [{ type: 'ratingcat', id: LIST }],
+      keepUnusedDataFor: 600000,
+    }),
+
     // Reviews
     getReviews: builder.query<PageState<Review>, ReviewQuery>({
       query: (filters) => 'review' + getFilterQuery(filters),
@@ -227,6 +235,7 @@ export const {
   useGetVenueReviewQuery,
   useGetVenueReviewsQuery,
   useCreateVenueMutation,
+  useGetRatingCategoriesQuery,
   useGetReviewsQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,

@@ -15,6 +15,7 @@ import DropDown from '../components/DropDown'
 import RateBox from '../components/RateBox'
 import {
   useCreateReviewMutation,
+  useGetRatingCategoriesQuery,
   useGetVenueReviewQuery,
   useUpdateReviewMutation,
 } from '../redux/apiSlice'
@@ -26,19 +27,13 @@ export type ReviewDialogProps = {
   onClose: () => void
 }
 
-// Test data
-const categoryList = {
-  data: [
-    { id: 1, name: 'category 1', description: 'description1' },
-    { id: 2, name: 'category 2', description: 'description2' },
-  ],
-  isLoading: false,
-}
-
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
   const { data, isLoading } = useGetVenueReviewQuery(props.venueId, {
     skip: !props.open || props.venueId == undefined,
+  })
+  const categories = useGetRatingCategoriesQuery(undefined, {
+    skip: data == undefined,
   })
   const [createReview] = useCreateReviewMutation()
   const [updateReview] = useUpdateReviewMutation()
@@ -116,7 +111,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{data ? data.venueName : 'New review'}</DialogTitle>
       <DialogContent>
-        {isLoading ? (
+        {isLoading || categories.isLoading ? (
           <CircularProgress />
         ) : (
           <>
@@ -124,9 +119,12 @@ export default function ReviewDialog(props: ReviewDialogProps) {
               {ratings.map((rating) => (
                 <ListItem key={rating.category}>
                   <ListItemText
-                    primary={rating.category}
+                    primary={
+                      categories.data?.find(({ id }) => id == rating.category)
+                        ?.name
+                    }
                     secondary={
-                      categoryList.data.find((c) => c.id == rating.category)
+                      categories.data?.find((c) => c.id == rating.category)
                         ?.description
                     }
                   />
@@ -139,11 +137,12 @@ export default function ReviewDialog(props: ReviewDialogProps) {
               ))}
             </List>
             <DropDown
-              data={categoryList.data}
-              isLoading={categoryList.isLoading}
+              data={categories.data || []}
+              isLoading={categories.isLoading}
               label="Add category"
               onChange={addRating}
               getLabel={(c) => c.name}
+              disabled={categories.data == undefined}
             />
             <TextField inputRef={bodyRef} label="Review body" fullWidth />
           </>
