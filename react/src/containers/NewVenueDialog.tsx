@@ -11,6 +11,7 @@ import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ImageUploadBox from '../components/ImageUploadBox'
+import type { ImageFile } from '../components/ImageViewDialog'
 import {
   useCreateImageMutation,
   useCreateVenueMutation,
@@ -42,7 +43,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
     null,
   )
-  const [files, setFiles] = React.useState<File[]>([])
+  const [images, setImages] = React.useState<ImageFile[]>([])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -51,15 +52,21 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
     const data = Object.fromEntries(formData.entries())
     if (!('name' in data)) {
       alert('Venue name is required')
-      return
+      return setSubmitting(false)
     }
     if (!('description' in data)) {
       alert('Venue description is required')
-      return
+      return setSubmitting(false)
     }
     if (subcategory == null) {
       alert('Venue subcategory is required')
-      return
+      return setSubmitting(false)
+    }
+    for (const image of images) {
+      if (image.alt == '') {
+        alert(`Image ${image.file.name} is missing alternative text`)
+        return setSubmitting(false)
+      }
     }
     const newVenue: NewVenue = {
       name: data.name.toString(),
@@ -71,12 +78,12 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
     const result = await createVenue(newVenue)
     if (result.data) {
       console.log('uploading images')
-      files.forEach((file, index) => {
+      images.forEach((image, index) => {
         const formData = new FormData()
         formData.append('venue', result.data.id.toString())
-        formData.append('alt', 'alt text')
+        formData.append('alt', image.alt)
         formData.append('order', index.toString())
-        formData.append('src', file, file.name)
+        formData.append('src', image.file, image.file.name)
         createImage(formData)
       })
       redirect(`/venue/${result.data.id}`)
@@ -146,7 +153,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           margin="dense"
           multiline
         />
-        <ImageUploadBox files={files} setFiles={setFiles} />
+        <ImageUploadBox images={images} setImages={setImages} />
       </DialogContent>
       <DialogActions>
         <Button type="button" onClick={props.onClose} disabled={submitting}>

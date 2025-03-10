@@ -8,33 +8,42 @@ import {
   Typography,
 } from '@mui/material'
 import FileUploadButton from './FileUploadButton'
-import ImageViewDialog from './ImageViewDialog'
+import ImageViewDialog, { ImageFile } from './ImageViewDialog'
 
 export type ImageUploadBoxProps = {
-  files: File[]
-  setFiles: (value: React.SetStateAction<File[]>) => void
+  images: ImageFile[]
+  setImages: (value: React.SetStateAction<ImageFile[]>) => void
 }
 
 export default function ImageUploadBox(props: ImageUploadBoxProps) {
   const [viewOpen, setViewOpen] = React.useState<boolean>(false)
-  const [viewImage, setViewImage] = React.useState<File | null>(null)
+  const [viewImage, setViewImage] = React.useState<ImageFile | null>(null)
 
   const addFiles = (fileList: FileList) => {
     const newFiles = Array.from(fileList).filter((file) =>
       file.type.startsWith('image/'),
     )
-    props.setFiles((files) =>
+    props.setImages((files) =>
       files
-        .filter((file) => newFiles.findIndex((f) => f.name == file.name) == -1)
-        .concat(newFiles),
+        .filter(
+          ({ file }) => newFiles.findIndex((f) => f.name == file.name) == -1,
+        )
+        .concat(newFiles.map((file) => ({ alt: '', file }))),
     )
   }
 
-  const removeFile = (file: File) =>
-    props.setFiles((files) => files.filter((f) => f != file))
+  const removeFile = ({ file }: ImageFile) =>
+    props.setImages((files) => files.filter((i) => i.file != file))
 
-  const openView = (file: File) => {
-    setViewImage(file)
+  const saveFile = (image: ImageFile) =>
+    props.setImages((images) => {
+      const img = images.find(({ file }) => file == image.file)
+      if (img) img.alt = image.alt
+      return images
+    })
+
+  const openView = (image: ImageFile) => {
+    setViewImage(image)
     setViewOpen(true)
   }
 
@@ -48,14 +57,21 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
         onAdd={addFiles}
         accept="image/*"
       />
-      <Button onClick={() => props.setFiles([])}>Clear list</Button>
+      <Button onClick={() => props.setImages([])}>Clear list</Button>
       <List>
-        {props.files.map((file) => (
-          <ListItem key={file.name}>
-            <ListItemButton onClick={() => openView(file)}>
+        {props.images.map((image) => (
+          <ListItem key={image.file.name}>
+            <ListItemButton onClick={() => openView(image)}>
               <ListItemText
-                primary={file.name}
-                secondary={`${(file.size / 1000).toFixed(0)}KB`}
+                primary={image.file.name}
+                secondary={
+                  <>
+                    <Typography>
+                      {(image.file.size / 1000).toFixed(0)}KB
+                    </Typography>
+                    <Typography>{image.alt || '(missing alt text)'}</Typography>
+                  </>
+                }
               />
             </ListItemButton>
           </ListItem>
@@ -63,9 +79,10 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
       </List>
       <ImageViewDialog
         open={viewOpen}
-        file={viewImage}
+        image={viewImage}
         onClose={() => setViewOpen(false)}
         onRemove={removeFile}
+        onSave={saveFile}
       />
     </fieldset>
   )

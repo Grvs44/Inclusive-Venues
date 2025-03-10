@@ -98,11 +98,6 @@ export type Image = VenueImage & {
   order: number
 }
 
-export type ImageFile = {
-  alt: string
-  file: File
-}
-
 export type Review = {
   id: number
   venue: number
