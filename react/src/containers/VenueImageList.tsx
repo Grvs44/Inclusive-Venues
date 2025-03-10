@@ -1,9 +1,9 @@
 import React from 'react'
 import ImageList from '@mui/material/ImageList'
 import ImageListItem from '@mui/material/ImageListItem'
-import { Image } from '../redux/types'
+import { VenueImage } from '../redux/types'
 
-export default function VenueImageList({ images }: { images?: Image[] }) {
+export default function VenueImageList({ images }: { images?: VenueImage[] }) {
   return images ? (
     <ImageList
       cols={images.length}

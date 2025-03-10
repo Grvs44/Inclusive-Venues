@@ -23,3 +23,13 @@ class VenuePermission(BasePermission):
 class ReviewPermission(BasePermission):
     def has_object_permission(self, request, view, obj: models.Review):
         return request.method in SAFE_METHODS or request.user == obj.author
+
+
+class ImagePermission(BasePermission):
+    # TODO: only allow venue owner to add an image to the venue
+    def has_permission(self, request, view):
+        print(request)
+        return request.method in SAFE_METHODS or request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj: models.Image):
+        return request.method in SAFE_METHODS or obj.venue.added_by == request.user

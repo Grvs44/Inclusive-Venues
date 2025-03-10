@@ -11,7 +11,10 @@ import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ImageUploadBox from '../components/ImageUploadBox'
-import { useCreateVenueMutation } from '../redux/apiSlice'
+import {
+  useCreateImageMutation,
+  useCreateVenueMutation,
+} from '../redux/apiSlice'
 import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 
 //Temporary data
@@ -33,6 +36,7 @@ export type NewVenueDialogProps = {
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
   const [createVenue] = useCreateVenueMutation()
+  const [createImage] = useCreateImageMutation()
   const [submitting, setSubmitting] = React.useState<boolean>(false)
   const [category, setCategory] = React.useState<VenueCategory | null>(null)
   const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
@@ -63,10 +67,18 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       description: data.description.toString(),
       latitude: Number(data.latitude),
       longitude: Number(data.longitude),
-      images: files.map((file) => ({ alt: 'alt text', file })),
     }
     const result = await createVenue(newVenue)
     if (result.data) {
+      console.log('uploading images')
+      files.forEach((file, index) => {
+        const formData = new FormData()
+        formData.append('venue', result.data.id.toString())
+        formData.append('alt', 'alt text')
+        formData.append('order', index.toString())
+        formData.append('src', file, file.name)
+        createImage(formData)
+      })
       redirect(`/venue/${result.data.id}`)
       props.onClose()
     } else {

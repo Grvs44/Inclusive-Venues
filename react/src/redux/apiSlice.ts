@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
 import type {
   CreateReview,
+  Image,
   ListVenue,
   NewVenue,
   PageState,
@@ -200,6 +201,15 @@ export const apiSlice = createApi({
         )
       },
     }),
+
+    // Images
+    createImage: builder.mutation<Image, FormData>({
+      query: (body) => ({
+        url: 'image',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 })
 
@@ -217,4 +227,5 @@ export const {
   useGetReviewsQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,
+  useCreateImageMutation,
 } = apiSlice

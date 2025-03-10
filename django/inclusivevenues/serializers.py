@@ -44,31 +44,6 @@ class VenueSerializer(ModelSerializer):
         ]
 
 
-class CreateVenueSerializer(ModelSerializer):
-    images = VenueImageSerializer(many=True)
-
-    @atomic
-    def create(self, validated_data: dict):
-        images = validated_data.pop('images', [])
-        venue: models.Venue = super().create(validated_data)
-        for image in images:
-            models.Image.objects.create(venue=venue, **image)
-        venue.generate_map()
-        return venue
-
-    class Meta:
-        model = models.Venue
-        fields = [
-            'name',
-            'description',
-            'longitude',
-            'latitude',
-            'address',
-            'subcategory',
-            'images',
-        ]
-
-
 class VenueListSerializer(ModelSerializer):
     distance = DecimalField(max_digits=5, decimal_places=1, read_only=True)
 
