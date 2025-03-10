@@ -1,8 +1,9 @@
 import React from 'react'
 import NavigationIcon from '@mui/icons-material/Navigation'
+import { Typography } from '@mui/material'
 import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
-import { ListVenue } from '../redux/types'
+import type { ListVenue } from '../redux/types'
 import LinkListItem from './LinkListItem'
 import StarBox from './StarBox'
 
@@ -16,7 +17,7 @@ export default function VenueListItem({ venue }: VenueListItemProps) {
       <ListItemText
         primary={
           <Stack direction="row" spacing={4}>
-            {venue.name}
+            <Typography>{venue.name}</Typography>
             <StarBox value={Number(venue.score)} sx={{ fontSize: 'inherit' }} />
           </Stack>
         }

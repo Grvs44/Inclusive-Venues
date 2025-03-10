@@ -8,11 +8,14 @@ export type StarBoxProps = {
 } & SvgIconProps
 
 export default function StarBox({ value, ...props }: StarBoxProps) {
+  if (!value) return null
   const stars = []
-  if (value) {
-    for (let i = 0; i < value; i++) {
-      stars.push(<Star key={i} {...props} />)
-    }
+  for (let i = 0; i < Math.round(value); i++) {
+    stars.push(<Star key={i} {...props} />)
   }
-  return <Box>{stars}</Box>
+  return (
+    <Box>
+      {stars} {value}
+    </Box>
+  )
 }
