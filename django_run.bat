@@ -1,2 +1,2 @@
 cd django
-pipenv run python -m manage runserver
+python -m manage runserver

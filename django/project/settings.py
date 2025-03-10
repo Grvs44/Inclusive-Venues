@@ -16,6 +16,7 @@ from pathlib import Path
 # Load environment variables from dotenv, if installed
 try:
     if 'AZURE_MAP_KEY' not in os.environ:
+        print('project.settings: loading from .env')
         from dotenv import load_dotenv
         load_dotenv()
 except ImportError:

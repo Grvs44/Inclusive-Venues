@@ -8,6 +8,7 @@ import { Entity } from '../redux/types'
 
 export type DropDownProps<T extends Entity> = {
   defaultValue?: T | null
+  value?: T | null
   label: string
   required?: boolean
   disabled?: boolean
@@ -27,6 +28,7 @@ export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
     <Autocomplete
       filterOptions={(x) => x}
       defaultValue={props.defaultValue}
+      value={props.value}
       disabled={props.disabled}
       fullWidth={props.fullWidth}
       sx={{ width: 300 }}

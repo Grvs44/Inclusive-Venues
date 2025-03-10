@@ -7,22 +7,18 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material'
+import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ImageUploadBox from '../components/ImageUploadBox'
-import { VenueCategory, VenueSubcategory } from '../redux/types'
-
-//Temporary data
-const categoryData: VenueCategory[] = [
-  { id: 1, name: 'category 1' },
-  { id: 2, name: 'category 2' },
-]
-const categories = { data: categoryData, isLoading: false }
-const subcatData: VenueSubcategory[] = [
-  { id: 1, name: 'subcategory 1', category: 1 },
-  { id: 2, name: 'subcategory 2', category: 2 },
-]
-const subcategories = { data: subcatData, isLoading: false }
+import type { ImageFile } from '../components/ImageViewDialog'
+import {
+  useCreateImageMutation,
+  useCreateVenueMutation,
+  useGetVenueCategoriesQuery,
+  useGetVenueSubcategoriesQuery,
+} from '../redux/apiSlice'
+import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 
 export type NewVenueDialogProps = {
   open: boolean
@@ -30,21 +26,75 @@ export type NewVenueDialogProps = {
 }
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
+  const [createVenue] = useCreateVenueMutation()
+  const [createImage] = useCreateImageMutation()
+
   const [submitting, setSubmitting] = React.useState<boolean>(false)
   const [category, setCategory] = React.useState<VenueCategory | null>(null)
   const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
     null,
   )
-  const [files, setFiles] = React.useState<File[]>([])
+  const [images, setImages] = React.useState<ImageFile[]>([])
+
+  const categories = useGetVenueCategoriesQuery(undefined, {
+    skip: !props.open,
+  })
+  const subcategories = useGetVenueSubcategoriesQuery(category?.id, {
+    skip: !props.open || category == null,
+  })
+
+  React.useEffect(() => setSubcategory(null), [category])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSubmitting(true)
     const formData = new FormData(event.currentTarget)
     const data = Object.fromEntries(formData.entries())
-    console.log(data)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    props.onClose()
+    if (!('name' in data)) {
+      alert('Venue name is required')
+      return setSubmitting(false)
+    }
+    if (!('description' in data)) {
+      alert('Venue description is required')
+      return setSubmitting(false)
+    }
+    if (subcategory == null) {
+      alert('Venue subcategory is required')
+      return setSubmitting(false)
+    }
+    for (const image of images) {
+      if (image.alt == '') {
+        alert(`Image ${image.file.name} is missing alternative text`)
+        return setSubmitting(false)
+      }
+    }
+    const newVenue: NewVenue = {
+      name: data.name.toString(),
+      subcategory: subcategory.id,
+      description: data.description.toString(),
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
+    }
+    const result = await createVenue(newVenue)
+    if (result.data) {
+      console.log('uploading images')
+      images.forEach((image, index) => {
+        const formData = new FormData()
+        formData.append('venue', result.data.id.toString())
+        formData.append('alt', image.alt)
+        formData.append('order', index.toString())
+        formData.append('src', image.file, image.file.name)
+        createImage(formData)
+      })
+      redirect(`/venue/${result.data.id}`)
+      props.onClose()
+    } else {
+      alert(
+        'data' in result.error && Array.isArray(result.error.data)
+          ? result.error.data
+          : 'Unknown error',
+      )
+    }
     setSubmitting(false)
   }
 
@@ -69,24 +119,25 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
         />
         <DropDown
           label="Category"
-          data={categories.data}
+          data={categories.data || []}
           isLoading={categories.isLoading}
           getLabel={(x) => x.name}
           onChange={setCategory}
-          defaultValue={category}
+          value={category}
           required
           fullWidth
+          disabled={categories.data == undefined}
         />
         <DropDown
           label="Subcategory"
-          data={subcategories.data}
+          data={subcategories.data || []}
           isLoading={false}
           getLabel={(x) => x.name}
           onChange={setSubcategory}
-          defaultValue={subcategory}
+          value={subcategory}
           required
           fullWidth
-          disabled={category == null}
+          disabled={subcategories.data == undefined}
         />
         <CoordinatesInput />
         <TextField
@@ -103,7 +154,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           margin="dense"
           multiline
         />
-        <ImageUploadBox files={files} setFiles={setFiles} />
+        <ImageUploadBox images={images} setImages={setImages} />
       </DialogContent>
       <DialogActions>
         <Button type="button" onClick={props.onClose} disabled={submitting}>

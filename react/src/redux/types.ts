@@ -67,7 +67,16 @@ export type Venue = {
   address?: string
   subcategory: number
   map: string | null
-  images?: Image[]
+  images?: VenueImage[]
+}
+
+export type NewVenue = {
+  name: string
+  longitude: number
+  latitude: number
+  description: string
+  address?: string
+  subcategory: number
 }
 
 export interface PageQuery {
@@ -78,10 +87,21 @@ export type VenueQuery = PageQuery & {
   // TODO: other filters
 }
 
-export type Image = {
+export type VenueImage = {
   id: number
   alt: string
   src: string
+}
+
+export type Image = VenueImage & {
+  venue: number
+  order: number
+}
+
+export type RatingCategory = {
+  id: number
+  name: string
+  description: string
 }
 
 export type Review = {

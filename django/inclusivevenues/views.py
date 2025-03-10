@@ -113,7 +113,7 @@ class ReviewViewSet(ViewSet):
         self.get_object().venue.update_score()
 
 
-class RatingCategoryViewSet(ViewSet):
+class RatingCategoryViewSet(ListViewSet):
     queryset = models.RatingCategory.objects.all()
     serializer_class = serializers.RatingCategorySerializer
     permission_classes = [permissions.ReadOnly]
@@ -131,7 +131,7 @@ class RatingViewSet(ViewSet):
 class ImageViewSet(ViewSet):
     queryset = models.Image.objects.all()
     serializer_class = serializers.ImageSerializer
-    permission_classes = [permissions.ReadOnly]
+    permission_classes = [permissions.ImagePermission]
 
 
 class UserView(APIView):

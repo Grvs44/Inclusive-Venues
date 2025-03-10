@@ -1,9 +1,11 @@
 import React from 'react'
-import { Button, Stack, TextField } from '@mui/material'
+import { Button, Stack, TextField, Typography } from '@mui/material'
 
 export default function CoordinatesInput() {
-  const [latitude, setLatitude] = React.useState<string | null>(null)
-  const [longitude, setLongitude] = React.useState<string | null>(null)
+  const [latitude, setLatitude] = React.useState<string | undefined>(undefined)
+  const [longitude, setLongitude] = React.useState<string | undefined>(
+    undefined,
+  )
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const getLocation = () => {
@@ -11,8 +13,8 @@ export default function CoordinatesInput() {
       setLoading(true)
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
-          setLatitude(coords.latitude.toString())
-          setLongitude(coords.longitude.toString())
+          setLatitude(coords.latitude.toFixed(6))
+          setLongitude(coords.longitude.toFixed(6))
           setLoading(false)
         },
         (error) => {
@@ -27,7 +29,9 @@ export default function CoordinatesInput() {
 
   return (
     <fieldset>
-      <legend>Location</legend>
+      <legend>
+        <Typography>Location</Typography>
+      </legend>
       <Button onClick={getLocation} loading={loading} loadingPosition="start">
         Use current location
       </Button>

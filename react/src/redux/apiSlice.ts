@@ -1,19 +1,22 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'js-cookie'
-import {
+import type {
+  CreateReview,
+  Image,
+  ListVenue,
+  NewVenue,
+  PageState,
+  RatingCategory,
+  Review,
+  ReviewQuery,
+  UpdateReview,
+  User,
+  UserLogin,
+  Venue,
   VenueCategory,
+  VenueQuery,
+  VenueReviewQuery,
   VenueSubcategory,
-  type CreateReview,
-  type ListVenue,
-  type PageState,
-  type Review,
-  type ReviewQuery,
-  type UpdateReview,
-  type User,
-  type UserLogin,
-  type Venue,
-  type VenueQuery,
-  type VenueReviewQuery,
 } from './types'
 import { getFilterQuery } from './utils'
 
@@ -61,14 +64,14 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['user', 'venuecat', 'venuesub', 'venue', 'review'],
+  tagTypes: ['user', 'venuecat', 'venuesub', 'venue', 'ratingcat', 'review'],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
     // Authentication
     getUserDetails: builder.query<User, void>({
       query: () => 'user',
       providesTags: ['user'],
-      keepUnusedDataFor: 60000,
+      keepUnusedDataFor: 600000,
     }),
     login: builder.mutation<void, UserLogin>({
       query: (body) => ({
@@ -111,7 +114,10 @@ export const apiSlice = createApi({
     }),
 
     // Venue subcategories
-    getVenueSubcategories: builder.query<VenueSubcategory[], number>({
+    getVenueSubcategories: builder.query<
+      VenueSubcategory[],
+      number | undefined
+    >({
       query: (id) => 'venuesub?category=' + id,
       providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg }],
     }),
@@ -124,7 +130,7 @@ export const apiSlice = createApi({
       merge,
       forceRefetch,
     }),
-    getVenue: builder.query<Venue, any>({
+    getVenue: builder.query<Venue, string | number | undefined>({
       query: (id) => `venue/${id}`,
       providesTags: (result) =>
         result ? [{ type: 'venue', id: result.id }] : [],
@@ -139,6 +145,27 @@ export const apiSlice = createApi({
       serializeQueryArgs,
       merge,
       forceRefetch,
+    }),
+    createVenue: builder.mutation<Venue, NewVenue>({
+      query: (body) => ({
+        url: 'venue',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'venue', id: LIST }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.upsertQueryData('getVenue', query.data.id, query.data),
+        )
+      },
+    }),
+
+    // Rating categories
+    getRatingCategories: builder.query<RatingCategory[], void>({
+      query: () => 'ratingcat',
+      providesTags: [{ type: 'ratingcat', id: LIST }],
+      keepUnusedDataFor: 600000,
     }),
 
     // Reviews
@@ -185,6 +212,15 @@ export const apiSlice = createApi({
         )
       },
     }),
+
+    // Images
+    createImage: builder.mutation<Image, FormData>({
+      query: (body) => ({
+        url: 'image',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 })
 
@@ -198,7 +234,10 @@ export const {
   useGetVenueQuery,
   useGetVenueReviewQuery,
   useGetVenueReviewsQuery,
+  useCreateVenueMutation,
+  useGetRatingCategoriesQuery,
   useGetReviewsQuery,
   useCreateReviewMutation,
   useUpdateReviewMutation,
+  useCreateImageMutation,
 } = apiSlice
