@@ -113,7 +113,10 @@ export const apiSlice = createApi({
     }),
 
     // Venue subcategories
-    getVenueSubcategories: builder.query<VenueSubcategory[], number>({
+    getVenueSubcategories: builder.query<
+      VenueSubcategory[],
+      number | undefined
+    >({
       query: (id) => 'venuesub?category=' + id,
       providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg }],
     }),
