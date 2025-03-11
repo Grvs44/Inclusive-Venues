@@ -65,7 +65,9 @@ class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
             return Response(None, status.HTTP_401_UNAUTHORIZED)
         review = models.Review.objects.filter(
             venue_id=pk, author=request.user).first()
-        return Response(None if review is None else serializers.CreateReviewSerializer(review).data)
+        if review is None:
+            return Response(None, status.HTTP_204_NO_CONTENT)
+        return Response(serializers.CreateReviewSerializer(review).data)
 
 # Pagination adapted from ListModelMixin.list
 # from https://github.com/encode/django-rest-framework/blob/master/rest_framework/mixins.py
