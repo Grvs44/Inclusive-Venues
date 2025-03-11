@@ -1,17 +1,14 @@
-'''Module containing TestCases for the inclusivevenues.views'''
+'''Module containing TestCases for inclusivevenues.views.VenueViewSet'''
 # pylint:disable=no-member
-from decimal import Decimal
-from typing import Any
-
 from inclusivevenues import models
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, tag
 
 
 class VenueTestCase(TestCase):
-    '''TestCase for inclusivevenues.views'''
-    credentials = {'username': 'user', 'password': 'password'}
+    '''TestCase for inclusivevenues.views.VenueViewSet'''
+    credentials = {'username': 'venue_user', 'password': 'password'}
     credentials2 = {'username': 'venue_user2', 'password': 'password2'}
 
     @classmethod
@@ -23,7 +20,21 @@ class VenueTestCase(TestCase):
         cls.venue_subcategory = models.VenueSubcategory.objects.create(
             name='subcategory1', category=cls.venue_category)
         cls.venue = models.Venue.objects.create(
-            name='venue', added_by=cls.user, subcategory=cls.venue_subcategory, longitude=50.937665, latitude=-1.395655)
+            name='venue', added_by=cls.user, subcategory=cls.venue_subcategory,
+            longitude=50.937665, latitude=-1.395655)
+        cls.venue2 = models.Venue.objects.create(
+            name='venue2', added_by=cls.user, subcategory=cls.venue_subcategory,
+            longitude=50.937664, latitude=-1.395654)
+        cls.ratingcat1 = models.RatingCategory.objects.create(
+            name='venue_ratingcat1', description='d1')
+        cls.ratingcat2 = models.RatingCategory.objects.create(
+            name='venue_ratingcat2', description='d2')
+        cls.review = models.Review.objects.create(
+            author=cls.user, venue=cls.venue, body='review body')
+        cls.rating1 = models.Rating.objects.create(
+            category=cls.ratingcat1, review=cls.review, value=4)
+        cls.rating2 = models.Rating.objects.create(
+            category=cls.ratingcat2, review=cls.review, value=5)
 
     def test_venue_detail(self):
         '''Test the Venue detail view contains the correct properties'''
@@ -262,3 +273,41 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(response.json(), {
             'detail': 'Authentication credentials were not provided.'
         })
+
+    @tag('get_review')
+    def test_venue_get_review_valid(self):
+        '''Test that the user's review is returned for the venue'''
+        self.assertTrue(self.client.login(**self.credentials))
+        data = self.client.get(f'/api/venue/{self.venue.pk}/review').json()
+        self.assertIsInstance(data, dict)
+
+        self.assertIn('ratings', data)
+        data_ratings = data.pop('ratings')
+
+        review = {'id': self.review.pk, 'venue': self.venue.pk,
+                  'venueName': self.venue.name, 'body': self.review.body}
+        self.assertDictEqual(data, review)
+
+        ratings = [
+            {'category': self.ratingcat1.pk, 'value': self.rating1.value},
+            {'category': self.ratingcat2.pk, 'value': self.rating2.value},
+        ]
+        self.assertListEqual(data_ratings, ratings)
+        self.client.logout()
+
+    @tag('get_review')
+    def test_venue_get_review_empty(self):
+        '''Test that no content is returned if the user hasn't left a review for this venue'''
+        self.assertTrue(self.client.login(**self.credentials))
+        response = self.client.get(f'/api/venue/{self.venue2.pk}/review')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(response.content), 0)
+        self.client.logout()
+
+    @tag('get_review')
+    def test_venue_get_review_anonymous(self):
+        '''Test that an error is returned if the user is logged-out and tries to fetch their review for a venue'''
+        self.client.logout()
+        response = self.client.get(f'/api/venue/{self.venue.pk}/review')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(len(response.content), 0)
