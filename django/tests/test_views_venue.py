@@ -19,22 +19,32 @@ class VenueTestCase(TestCase):
             name='category1')
         cls.venue_subcategory = models.VenueSubcategory.objects.create(
             name='subcategory1', category=cls.venue_category)
+
         cls.venue = models.Venue.objects.create(
             name='venue', added_by=cls.user, subcategory=cls.venue_subcategory,
             longitude=50.937665, latitude=-1.395655)
         cls.venue2 = models.Venue.objects.create(
             name='venue2', added_by=cls.user, subcategory=cls.venue_subcategory,
             longitude=50.937664, latitude=-1.395654)
+
         cls.ratingcat1 = models.RatingCategory.objects.create(
             name='venue_ratingcat1', description='d1')
         cls.ratingcat2 = models.RatingCategory.objects.create(
             name='venue_ratingcat2', description='d2')
+
         cls.review = models.Review.objects.create(
             author=cls.user, venue=cls.venue, body='review body')
         cls.rating1 = models.Rating.objects.create(
             category=cls.ratingcat1, review=cls.review, value=4)
         cls.rating2 = models.Rating.objects.create(
             category=cls.ratingcat2, review=cls.review, value=5)
+
+        cls.review2 = models.Review.objects.create(
+            author=cls.user2, venue=cls.venue, body='review2 body')
+        cls.rating2_1 = models.Rating.objects.create(
+            category=cls.ratingcat1, review=cls.review2, value=3)
+        cls.rating2_2 = models.Rating.objects.create(
+            category=cls.ratingcat2, review=cls.review2, value=2)
 
     @tag('venue_detail')
     def test_venue_detail(self):
@@ -328,3 +338,33 @@ class VenueTestCase(TestCase):
         response = self.client.get(f'/api/venue/{self.venue.pk}/review')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(response.content), 0)
+
+    @tag('list_reviews')
+    def test_venue_list_reviews(self):
+        '''Test that the correct list of reviews is returned for this venue'''
+        data = self.client.get(f'/api/venue/{self.venue.pk}/reviews').json()
+        self.assertIsInstance(data, dict)
+        self.assertIn('count', data)
+        self.assertEqual(data['count'], 2)
+        self.assertIn('next', data)
+        self.assertIsNone(data['next'])
+        self.assertIn('previous', data)
+        self.assertIsNone(data['previous'])
+        self.assertIn('results', data)
+        results = data['results']
+        self.assertIsInstance(results, list)
+        reviews = [
+            {'id': self.review.pk, 'venue': self.venue.pk,
+             'venueName': self.venue.name, 'body': self.review.body,
+             'ratings': [
+                 {'category': self.ratingcat1.name, 'value': self.rating1.value},
+                 {'category': self.ratingcat2.name, 'value': self.rating2.value},
+             ]},
+            {'id': self.review2.pk, 'venue': self.venue.pk,
+             'venueName': self.venue.name, 'body': self.review2.body,
+             'ratings': [
+                 {'category': self.ratingcat1.name, 'value': self.rating2_1.value},
+                 {'category': self.ratingcat2.name, 'value': self.rating2_2.value},
+             ]},
+        ]
+        self.assertListEqual(results, reviews)
