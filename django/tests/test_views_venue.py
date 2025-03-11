@@ -9,19 +9,15 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 
-def decimal_to_str(d: Any) -> str | Any:
-    '''Convert d to a str if it is a Decimal'''
-    if isinstance(d, Decimal):
-        return str(d)
-    return d
-
-
 class VenueTestCase(TestCase):
     '''TestCase for inclusivevenues.views'''
+    credentials = {'username': 'user', 'password': 'password'}
+    credentials2 = {'username': 'venue_user2', 'password': 'password2'}
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user('user', password='password')
+        cls.user = User.objects.create_user(**cls.credentials)
+        cls.user2 = User.objects.create_user(**cls.credentials2)
         cls.venue_category = models.VenueCategory.objects.create(
             name='category1')
         cls.venue_subcategory = models.VenueSubcategory.objects.create(
@@ -31,20 +27,29 @@ class VenueTestCase(TestCase):
 
     def test_venue_detail(self):
         '''Test the Venue detail view contains the correct properties'''
-        venue: dict = self.client.get(f'/api/venue/{self.venue.pk}').json()
-        self.assertIsInstance(venue, dict)
-        self.assertSetEqual(set(venue.keys()), {
-            'id',
-            'name',
-            'description',
-            'longitude',
-            'latitude',
-            'address',
-            'subcategory',
-            'score',
-            'map',
-            'images',
-        })
+        result: dict = self.client.get(f'/api/venue/{self.venue.pk}').json()
+        self.assertIsInstance(result, dict)
+
+        venue: dict | None = models.Venue.objects.filter(
+            pk=self.venue.pk).values().first()
+        if venue is None:
+            self.fail('Venue does not exist in database')
+        venue.pop('added_by_id')
+        venue['subcategory'] = venue.pop('subcategory_id')
+        score = venue['score']
+        if score is not None:
+            venue['score'] = str(score)
+        venue['latitude'] = str(venue['latitude'])
+        venue['longitude'] = str(venue['longitude'])
+        venue_map = venue['map']
+        if venue_map:
+            venue['map'] = 'http://testserver/media/' + venue_map
+        else:
+            venue['map'] = None
+        venue['images'] = list(models.Image.objects.filter(
+            venue_id=self.venue.pk).values())
+
+        self.assertDictEqual(result, venue)
 
     def test_venue_list(self):
         '''Test the Venue list view contains the correct properties'''
@@ -109,8 +114,7 @@ class VenueTestCase(TestCase):
 
     def test_create_venue(self):
         '''Test that a valid venue can be created'''
-        self.assertTrue(self.client.login(
-            username='user', password='password'))
+        self.assertTrue(self.client.login(**self.credentials))
         name = 'mynewvenue'
         data = self.client.post('/api/venue', {
             'name': name, 'latitude': 50.934672,
@@ -123,9 +127,11 @@ class VenueTestCase(TestCase):
             self.fail('Venue was not created')
 
         # Convert fields from models.Venue object to same format as from API
-        venue['score'] = decimal_to_str(venue.get('score'))
-        venue['latitude'] = decimal_to_str(venue.get('latitude'))
-        venue['longitude'] = decimal_to_str(venue.get('longitude'))
+        score = venue['score']
+        if score is not None:
+            venue['score'] = str(venue['score'])
+        venue['latitude'] = str(venue['latitude'])
+        venue['longitude'] = str(venue['longitude'])
         venue.pop('added_by_id')
         venue['subcategory'] = venue.pop('subcategory_id', None)
         venue_map = venue['map']
@@ -133,15 +139,15 @@ class VenueTestCase(TestCase):
             venue['map'] = 'http://testserver/media/' + venue_map
         else:
             venue['map'] = None
-        venue['images'] = []
+        venue['images'] = list(
+            models.Image.objects.filter(venue__name=name).values())
 
         self.assertDictEqual(data, venue)
         self.client.logout()
 
     def test_create_venue_empty(self):
         '''Test that an empty venue cannot be created'''
-        self.assertTrue(self.client.login(
-            username='user', password='password'))
+        self.assertTrue(self.client.login(**self.credentials))
         response = self.client.post('/api/venue', {})
         self.assertEqual(response.status_code, 400)
         self.assertDictEqual(response.json(), {
@@ -154,8 +160,7 @@ class VenueTestCase(TestCase):
 
     def test_create_venue_blank(self):
         '''Test that an empty venue cannot be created'''
-        self.assertTrue(self.client.login(
-            username='user', password='password'))
+        self.assertTrue(self.client.login(**self.credentials))
         response = self.client.post('/api/venue', {
             'name': '', 'latitude': '',
             'longitude': '', 'subcategory': '',
@@ -179,3 +184,81 @@ class VenueTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
+
+    def test_update_venue_valid(self):
+        '''Test that a user can update a venue they added'''
+        self.assertTrue(self.client.login(**self.credentials))
+        response = self.client.put(f'/api/venue/{self.venue.pk}', {
+            'name': 'updated venue', 'latitude': 50.934673,
+            'longitude': -1.399776, 'subcategory': self.venue_subcategory.pk,
+        }, content_type='application/json')
+
+        venue = models.Venue.objects.filter(pk=self.venue.pk).values().first()
+        if venue is None:
+            self.fail('Venue to update not found in database')
+        # Convert fields from models.Venue object to same format as from API
+        score = venue['score']
+        if score is not None:
+            venue['score'] = str(score)
+        venue['latitude'] = str(venue.get('latitude'))
+        venue['longitude'] = str(venue.get('longitude'))
+        venue.pop('added_by_id')
+        venue['subcategory'] = venue.pop('subcategory_id', None)
+        venue_map = venue['map']
+        if venue_map:
+            venue['map'] = 'http://testserver/media/' + venue_map
+        else:
+            venue['map'] = None
+        venue['images'] = list(models.Image.objects.filter(
+            venue__name='updated venue').values())
+
+        self.assertDictEqual(response.json(), venue)
+        self.client.logout()
+
+    def test_update_other_venue(self):
+        '''Test a user can't update a venue added by someone else'''
+        self.assertTrue(self.client.login(**self.credentials2))
+        response = self.client.put(
+            f'/api/venue/{self.venue.pk}', {'name': 'updated venue?'})
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(response.json(), {
+            'detail': 'You do not have permission to perform this action.'
+        })
+        self.client.logout()
+
+    def test_update_venue_anonymous(self):
+        '''Test a logged-out user can't update a venue'''
+        self.client.logout()
+        response = self.client.put(
+            f'/api/venue/{self.venue.pk}', {'name': 'updated anonymous venue?'})
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(response.json(), {
+            'detail': 'Authentication credentials were not provided.'
+        })
+
+    def test_delete_venue_creator(self):
+        '''Test that the user who added a venue can't delete it'''
+        self.assertTrue(self.client.login(**self.credentials))
+        response = self.client.delete(f'/api/venue/{self.venue.pk}')
+        self.assertEqual(response.status_code, 405)
+        self.assertDictEqual(
+            response.json(), {'detail': 'Method "DELETE" not allowed.'})
+        self.client.logout()
+
+    def test_delete_venue_other(self):
+        '''Test that a user can't delete a venue added by someone else'''
+        self.assertTrue(self.client.login(**self.credentials2))
+        response = self.client.delete(f'/api/venue/{self.venue.pk}')
+        self.assertEqual(response.status_code, 405)
+        self.assertDictEqual(
+            response.json(), {'detail': 'Method "DELETE" not allowed.'})
+        self.client.logout()
+
+    def test_delete_venue_anonymous(self):
+        '''Test that a logged-out user can't delete a venue'''
+        self.client.logout()
+        response = self.client.delete(f'/api/venue/{self.venue.pk}')
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(response.json(), {
+            'detail': 'Authentication credentials were not provided.'
+        })
