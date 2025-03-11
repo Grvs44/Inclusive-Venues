@@ -4,10 +4,10 @@ ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/
 '''
 # pylint:disable=no-member
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -24,7 +24,7 @@ class ViewSet(ModelViewSet):
     pagination_class = Pagination
 
 
-class ListViewSet(ListModelMixin, GenericViewSet):
+class ListViewSet(mixins.ListModelMixin, GenericViewSet):
     pass
 
 
@@ -40,7 +40,8 @@ class VenueSubcategoryViewSet(ListViewSet):
     filterset_fields = ['category']
 
 
-class VenueViewSet(ViewSet):
+class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet):
+    pagination_class = Pagination
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
     filter_backends = [
