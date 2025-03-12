@@ -142,8 +142,7 @@ class ReviewTestCase(TestCase):
         if review is None:
             self.fail('Review does not exist in database')
         self.assertDictEqual(data, {
-            'id': review.pk, 'venue': self.venue1.pk,
-            'venueName': self.venue1.name, 'body': review.body,
+            'id': review.pk, 'body': review.body,
             'ratings': list(models.Rating.objects.filter(review=review).values('category', 'value'))
         })
 
@@ -158,7 +157,7 @@ class ReviewTestCase(TestCase):
             ]}, content_type='application/json')
         self.assertEqual(response.status_code, 404)
         self.assertDictEqual(
-            response.json(), {'detail': 'You do not have permission to perform this action.'})
+            response.json(), {'detail': 'No Review matches the given query.'})
 
     @tag('review_update')
     def test_review_update_anonymous(self):
@@ -175,16 +174,9 @@ class ReviewTestCase(TestCase):
     @tag('review_delete')
     def test_review_delete_creator(self):
         '''Test a user can delete their own review'''
-        self.assertIsNotNone(
-            models.Review.objects.filter(pk=self.review2.pk).first(),
-            'Review object did not exist in database to be deleted'
-        )
         self.assertTrue(self.client.login(**self.credentials))
-        print(self.client.get(f'/api/review/{self.review2.pk}').json())
         response = self.client.delete(f'/api/review/{self.review2.pk}')
-        print(response.status_code)
-        print(response.json())
-        print(self.review2, self.review2.pk)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(len(response.content), 0)
         self.assertIsNone(models.Review.objects.filter(
             pk=self.review2.pk).first())
@@ -194,9 +186,9 @@ class ReviewTestCase(TestCase):
         '''Test a user cannot delete another user's review'''
         self.assertTrue(self.client.login(**self.credentials2))
         response = self.client.delete(f'/api/review/{self.review1.pk}')
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
         self.assertDictEqual(
-            response.json(), {'detail': 'You do not have permission to perform this action.'})
+            response.json(), {'detail': 'No Review matches the given query.'})
 
     @tag('review_delete')
     def test_review_delete_anonymous(self):

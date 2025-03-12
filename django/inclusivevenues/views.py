@@ -108,12 +108,14 @@ class ReviewViewSet(ViewSet):
                 'You have already left a review for this venue') from e
 
     def perform_update(self, serializer):
+        venue = self.get_object().venue
         super().perform_update(serializer)
-        self.get_object().venue.update_score()
+        venue.update_score()
 
     def perform_destroy(self, instance):
+        venue = self.get_object().venue
         super().perform_destroy(instance)
-        self.get_object().venue.update_score()
+        venue.update_score()
 
 
 class RatingCategoryViewSet(ListViewSet):
