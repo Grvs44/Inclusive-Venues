@@ -4,10 +4,10 @@ ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/
 '''
 # pylint:disable=no-member
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -24,7 +24,7 @@ class ViewSet(ModelViewSet):
     pagination_class = Pagination
 
 
-class ListViewSet(ListModelMixin, GenericViewSet):
+class ListViewSet(mixins.ListModelMixin, GenericViewSet):
     pass
 
 
@@ -40,7 +40,8 @@ class VenueSubcategoryViewSet(ListViewSet):
     filterset_fields = ['category']
 
 
-class VenueViewSet(ViewSet):
+class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet):
+    pagination_class = Pagination
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
     filter_backends = [
@@ -64,7 +65,9 @@ class VenueViewSet(ViewSet):
             return Response(None, status.HTTP_401_UNAUTHORIZED)
         review = models.Review.objects.filter(
             venue_id=pk, author=request.user).first()
-        return Response(None if review is None else serializers.CreateReviewSerializer(review).data)
+        if review is None:
+            return Response(None, status.HTTP_204_NO_CONTENT)
+        return Response(serializers.CreateReviewSerializer(review).data)
 
 # Pagination adapted from ListModelMixin.list
 # from https://github.com/encode/django-rest-framework/blob/master/rest_framework/mixins.py
@@ -105,12 +108,14 @@ class ReviewViewSet(ViewSet):
                 'You have already left a review for this venue') from e
 
     def perform_update(self, serializer):
+        venue = self.get_object().venue
         super().perform_update(serializer)
-        self.get_object().venue.update_score()
+        venue.update_score()
 
     def perform_destroy(self, instance):
+        venue = self.get_object().venue
         super().perform_destroy(instance)
-        self.get_object().venue.update_score()
+        venue.update_score()
 
 
 class RatingCategoryViewSet(ListViewSet):
