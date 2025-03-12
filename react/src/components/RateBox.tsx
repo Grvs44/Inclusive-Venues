@@ -7,15 +7,9 @@ import Box from '@mui/material/Box'
 export type RateBoxProps = {
   value: number
   onRate: (value: number) => void
-  onDelete: () => void
 } & SvgIconProps
 
-export default function RateBox({
-  value,
-  onRate,
-  onDelete,
-  ...props
-}: RateBoxProps) {
+export default function RateBox({ value, onRate, ...props }: RateBoxProps) {
   const stars = []
   for (let i = 1; i <= value; i++) {
     stars.push(<Star key={i} onClick={() => onRate(i)} {...props} />)

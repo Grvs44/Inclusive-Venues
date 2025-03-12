@@ -1,4 +1,5 @@
 import React from 'react'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import {
   Button,
   CircularProgress,
@@ -8,6 +9,7 @@ import {
   DialogTitle,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   TextField,
 } from '@mui/material'
@@ -131,8 +133,14 @@ export default function ReviewDialog(props: ReviewDialogProps) {
                   <RateBox
                     value={rating.value}
                     onRate={onRatingChange(rating)}
-                    onDelete={() => deleteRating(rating.category)}
                   />
+                  <ListItemButton
+                    onClick={() => deleteRating(rating.category)}
+                    aria-label="Remove rating"
+                    title="Remove rating"
+                  >
+                    <DeleteOutlineOutlinedIcon />
+                  </ListItemButton>
                 </ListItem>
               ))}
             </List>
