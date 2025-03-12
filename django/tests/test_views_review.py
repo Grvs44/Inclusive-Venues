@@ -25,14 +25,21 @@ class ReviewTestCase(TestCase):
         cls.venue2 = models.Venue.objects.create(
             name='review_venue2', added_by=cls.user, subcategory=venue_sub,
             longitude=50.937662, latitude=-1.395652)
+
         cls.ratingcat1 = models.RatingCategory.objects.create(
             name='review_ratingcat1', description='d1')
         cls.ratingcat2 = models.RatingCategory.objects.create(
             name='review_ratingcat2', description='d2')
+
         cls.review1 = models.Review.objects.create(
             author=cls.user, venue=cls.venue1, body='review1 body')
         models.Rating.objects.create(
             review=cls.review1, category=cls.ratingcat1, value=4)
+
+        cls.review2 = models.Review.objects.create(
+            author=cls.user, venue=cls.venue2, body='review2 body')
+        models.Rating.objects.create(
+            review=cls.review2, category=cls.ratingcat2, value=2)
 
     def tearDown(self):
         # Log out after each test
@@ -110,10 +117,91 @@ class ReviewTestCase(TestCase):
     @tag('review_create')
     def test_review_create_anonymous(self):
         '''Test a logged-out user can't create a review'''
-        response = self.client.post('/api/review', {'venue': self.venue1.pk, 'body': 'my review?', 'ratings': [
-            {'category': self.ratingcat1.pk, 'value': 2},
-            {'category': self.ratingcat2.pk, 'value': 4},
-        ]}, content_type='application/json')
+        response = self.client.post('/api/review', {
+            'venue': self.venue1.pk, 'body': 'my review?', 'ratings': [
+                {'category': self.ratingcat1.pk, 'value': 2},
+                {'category': self.ratingcat2.pk, 'value': 4},
+            ]}, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(
+            response.json(), {'detail': 'Authentication credentials were not provided.'})
+
+    @tag('review_update')
+    def test_review_update_valid(self):
+        '''Test a user can update their review'''
+        self.assertTrue(self.client.login(**self.credentials))
+        response = self.client.put(f'/api/review/{self.review1.pk}', {
+            'venue': self.venue1.pk, 'body': 'my updated review!', 'ratings': [
+                {'category': self.ratingcat1.pk, 'value': 2},
+                {'category': self.ratingcat2.pk, 'value': 4},
+            ]}, content_type='application/json')
+        self.assertTrue(response.status_code, 200)
+        data = response.json()
+        self.assertIsInstance(data, dict)
+        review = models.Review.objects.filter(pk=self.review1.pk).first()
+        if review is None:
+            self.fail('Review does not exist in database')
+        self.assertDictEqual(data, {
+            'id': review.pk, 'venue': self.venue1.pk,
+            'venueName': self.venue1.name, 'body': review.body,
+            'ratings': list(models.Rating.objects.filter(review=review).values('category', 'value'))
+        })
+
+    @tag('review_update')
+    def test_review_update_other(self):
+        '''Test a user can't update another user's review'''
+        self.assertTrue(self.client.login(**self.credentials2))
+        response = self.client.put(f'/api/review/{self.review1.pk}', {
+            'venue': self.venue1.pk, 'body': 'my updated review?', 'ratings': [
+                {'category': self.ratingcat1.pk, 'value': 2},
+                {'category': self.ratingcat2.pk, 'value': 4},
+            ]}, content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        self.assertDictEqual(
+            response.json(), {'detail': 'You do not have permission to perform this action.'})
+
+    @tag('review_update')
+    def test_review_update_anonymous(self):
+        '''Test a logged-out user can't update a user's review'''
+        response = self.client.put(f'/api/review/{self.review1.pk}', {
+            'venue': self.venue1.pk, 'body': 'my updated review?', 'ratings': [
+                {'category': self.ratingcat1.pk, 'value': 2},
+                {'category': self.ratingcat2.pk, 'value': 4},
+            ]}, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(
+            response.json(), {'detail': 'Authentication credentials were not provided.'})
+
+    @tag('review_delete')
+    def test_review_delete_creator(self):
+        '''Test a user can delete their own review'''
+        self.assertIsNotNone(
+            models.Review.objects.filter(pk=self.review2.pk).first(),
+            'Review object did not exist in database to be deleted'
+        )
+        self.assertTrue(self.client.login(**self.credentials))
+        print(self.client.get(f'/api/review/{self.review2.pk}').json())
+        response = self.client.delete(f'/api/review/{self.review2.pk}')
+        print(response.status_code)
+        print(response.json())
+        print(self.review2, self.review2.pk)
+        self.assertEqual(len(response.content), 0)
+        self.assertIsNone(models.Review.objects.filter(
+            pk=self.review2.pk).first())
+
+    @tag('review_delete')
+    def test_review_delete_other(self):
+        '''Test a user cannot delete another user's review'''
+        self.assertTrue(self.client.login(**self.credentials2))
+        response = self.client.delete(f'/api/review/{self.review1.pk}')
+        self.assertEqual(response.status_code, 403)
+        self.assertDictEqual(
+            response.json(), {'detail': 'You do not have permission to perform this action.'})
+
+    @tag('review_delete')
+    def test_review_delete_anonymous(self):
+        '''Test a logged-out user cannot delete a user's review'''
+        response = self.client.delete(f'/api/review/{self.review1.pk}')
         self.assertEqual(response.status_code, 403)
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
