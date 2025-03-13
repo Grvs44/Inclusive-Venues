@@ -1,35 +1,40 @@
 import React from 'react'
 import NavigationIcon from '@mui/icons-material/Navigation'
-import { Typography } from '@mui/material'
+import { ListItem, ListItemButton, Typography } from '@mui/material'
 import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import type { ListVenue } from '../redux/types'
-import LinkListItem from './LinkListItem'
 import StarBox from './StarBox'
 
 export type VenueListItemProps = {
   venue: ListVenue
+  onClick?: () => void
 }
 
-export default function VenueListItem({ venue }: VenueListItemProps) {
+export default function VenueListItem({ venue, onClick }: VenueListItemProps) {
   return (
-    <LinkListItem to={`venue/${venue.id}`}>
-      <ListItemText
-        primary={
-          <Stack direction="row" spacing={4}>
-            <Typography>{venue.name}</Typography>
-            <StarBox value={Number(venue.score)} sx={{ fontSize: 'inherit' }} />
-          </Stack>
-        }
-        secondary={
-          venue.distance ? (
-            <>
-              <NavigationIcon sx={{ fontSize: 'inherit' }} />
-              {venue.distance + 'km'}
-            </>
-          ) : null
-        }
-      />
-    </LinkListItem>
+    <ListItem>
+      <ListItemButton onClick={onClick}>
+        <ListItemText
+          primary={
+            <Stack direction="row" spacing={4}>
+              <Typography>{venue.name}</Typography>
+              <StarBox
+                value={Number(venue.score)}
+                sx={{ fontSize: 'inherit' }}
+              />
+            </Stack>
+          }
+          secondary={
+            venue.distance ? (
+              <>
+                <NavigationIcon sx={{ fontSize: 'inherit' }} />
+                {venue.distance + 'km'}
+              </>
+            ) : null
+          }
+        />
+      </ListItemButton>
+    </ListItem>
   )
 }

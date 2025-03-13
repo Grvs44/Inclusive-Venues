@@ -1,8 +1,14 @@
 import React from 'react'
 import 'azure-maps-control/dist/atlas.min.css'
-import { Box, Card, CircularProgress, Paper, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Paper,
+  Typography,
+} from '@mui/material'
 import { useAzureMaps } from 'react-azure-maps'
-import Link from '../components/Link'
 import LocationMarker from '../components/LocationMarker'
 import Map from '../components/Map'
 import StarBox from '../components/StarBox'
@@ -10,7 +16,11 @@ import VenueMarker from '../components/VenueMarker'
 import { ListVenue } from '../redux/types'
 import type { ResultsViewProps } from './ListResultsView'
 
-export default function MapResultsView({ data, isLoading }: ResultsViewProps) {
+export default function MapResultsView({
+  data,
+  isLoading,
+  onClick,
+}: ResultsViewProps) {
   const { isMapReady } = useAzureMaps()
   const [locationLoading, setLocationLoading] = React.useState<boolean>(true)
   const [selectedVenue, setSelectedVenue] = React.useState<
@@ -47,7 +57,9 @@ export default function MapResultsView({ data, isLoading }: ResultsViewProps) {
             {selectedVenue.name}
           </Typography>
           <StarBox value={selectedVenue.score} />
-          <Link to={selectedVenue.id.toString()}>View details</Link>
+          <Button onClick={() => onClick(selectedVenue.id)}>
+            View details
+          </Button>
         </Card>
       ) : null}
     </Paper>

@@ -1,27 +1,30 @@
 import React from 'react'
 import List from '@mui/material/List'
-import Skeleton from '@mui/material/Skeleton'
+import LoadingSkeleton from '../components/LoadingSkeleton'
 import VenueListItem from '../components/VenueListItem'
 import { ListVenue, PageState } from '../redux/types'
 
 export type ResultsViewProps = {
   data?: PageState<ListVenue>
   isLoading: boolean
+  onClick: (venueId: number) => void
 }
 
-export default function ListResultsView({ data, isLoading }: ResultsViewProps) {
+export default function ListResultsView({
+  data,
+  isLoading,
+  onClick,
+}: ResultsViewProps) {
   return (
     <List>
       {data?.results.map((venue) => (
-        <VenueListItem key={venue.id} venue={venue} />
+        <VenueListItem
+          key={venue.id}
+          venue={venue}
+          onClick={() => onClick(venue.id)}
+        />
       ))}
-      {isLoading ? (
-        <>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-        </>
-      ) : null}
+      <LoadingSkeleton isLoading={isLoading} />
     </List>
   )
 }
