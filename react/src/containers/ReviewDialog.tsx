@@ -41,11 +41,11 @@ export default function ReviewDialog(props: ReviewDialogProps) {
   const [updateReview] = useUpdateReviewMutation()
   const [ratings, setRatings] = React.useState<ListRating[]>([])
   const [submitting, setSubmitting] = React.useState<boolean>(false)
-  const bodyRef = React.useRef<HTMLInputElement | null>(null)
+  const [body, setBody] = React.useState<string>('')
 
   React.useEffect(() => {
     if (data) {
-      if (bodyRef.current) bodyRef.current.value = data.body
+      setBody(data.body)
       setRatings(data.ratings)
     }
   }, [data])
@@ -76,7 +76,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     if (props.venueId == undefined) return
     console.log('submit')
     console.log(ratings)
-    console.log(bodyRef.current?.value)
+    console.log(body)
     if (ratings.length == 0) {
       alert('You must rate at least one category to leave a review')
       return
@@ -89,12 +89,12 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     const result = await (data
       ? updateReview({
           id: data.id,
-          body: bodyRef.current?.value || '',
+          body,
           ratings,
         })
       : createReview({
           venue: props.venueId,
-          body: bodyRef.current?.value || '',
+          body,
           ratings,
         }))
     if (result.error) {
@@ -176,7 +176,12 @@ export default function ReviewDialog(props: ReviewDialogProps) {
               getLabel={(c) => c.name}
               disabled={categories.data == undefined}
             />
-            <TextField inputRef={bodyRef} label="Review body" fullWidth />
+            <TextField
+              value={body}
+              onChange={(event) => setBody(event.target.value)}
+              label="Review body"
+              fullWidth
+            />
           </>
         )}
       </DialogContent>
