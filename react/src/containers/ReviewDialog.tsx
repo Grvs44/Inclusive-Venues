@@ -1,4 +1,5 @@
 import React from 'react'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import {
   Button,
   CircularProgress,
@@ -6,11 +7,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  List,
-  ListItem,
   ListItemText,
   TextField,
 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import DropDown from '../components/DropDown'
 import RateBox from '../components/RateBox'
 import {
@@ -115,27 +115,44 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           <CircularProgress />
         ) : (
           <>
-            <List>
+            <Grid
+              container
+              spacing={2}
+              sx={{ overflowX: 'hidden', alignItems: 'center' }}
+            >
               {ratings.map((rating) => (
-                <ListItem key={rating.category}>
-                  <ListItemText
-                    primary={
-                      categories.data?.find(({ id }) => id == rating.category)
-                        ?.name
-                    }
-                    secondary={
-                      categories.data?.find((c) => c.id == rating.category)
-                        ?.description
-                    }
-                  />
-                  <RateBox
-                    value={rating.value}
-                    onRate={onRatingChange(rating)}
-                    onDelete={() => deleteRating(rating.category)}
-                  />
-                </ListItem>
+                <React.Fragment key={rating.category}>
+                  <Grid size={7}>
+                    <ListItemText
+                      primary={
+                        categories.data?.find(({ id }) => id == rating.category)
+                          ?.name
+                      }
+                      secondary={
+                        categories.data?.find((c) => c.id == rating.category)
+                          ?.description
+                      }
+                    />
+                  </Grid>
+                  <Grid size={3}>
+                    <RateBox
+                      value={rating.value}
+                      onRate={onRatingChange(rating)}
+                    />
+                  </Grid>
+                  <Grid size={1}>
+                    <Button
+                      onClick={() => deleteRating(rating.category)}
+                      aria-label="Remove rating"
+                      title="Remove rating"
+                      color="error"
+                    >
+                      <DeleteOutlineOutlinedIcon />
+                    </Button>
+                  </Grid>
+                </React.Fragment>
               ))}
-            </List>
+            </Grid>
             <DropDown
               data={categories.data || []}
               isLoading={categories.isLoading}
