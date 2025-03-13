@@ -22,6 +22,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_AZURE_MAP_KEY: ${{ secrets.AZURE_MAP_KEY }}
+          directory: django
+
       - name: Install pipenv
         run: pip install pipenv
 
