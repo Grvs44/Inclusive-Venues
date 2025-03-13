@@ -10,7 +10,8 @@ import ListResultsView from '../containers/ListResultsView'
 import MapResultsView from '../containers/MapResultsView'
 import NewVenueDialog from '../containers/NewVenueDialog'
 import ResultsFilters from '../containers/ResultsFilters'
-import VenueOutlet from '../containers/VenueOutlet'
+import ReviewDialog from '../containers/ReviewDialog'
+import VenueDetailDialog from '../containers/VenueDetailDialog'
 import { useFilters } from '../providers/FilterProvider'
 import { useGetVenuesQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
@@ -22,11 +23,19 @@ export default function VenueResultsPage() {
   const { id } = useParams()
   const { showMap } = useSelector((state: State) => state.results)
   const [page, setPage] = React.useState<number>(1)
+  const [detailOpen, setDetailOpen] = React.useState<boolean>(false)
+  const [detailId, setDetailId] = React.useState<number | undefined>(undefined)
+  const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
   const [newVenueOpen, setNewVenueOpen] = React.useState<boolean>(false)
   const { data, isLoading, error, isError } = useGetVenuesQuery(
     { page, ...filters?.getFilters() },
     { skip: id != undefined },
   )
+
+  const onItemClick = (venueId: number) => {
+    setDetailId(venueId)
+    setDetailOpen(true)
+  }
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
@@ -46,12 +55,19 @@ export default function VenueResultsPage() {
         </Box>
       ) : showMap ? (
         <AzureMapsProvider>
-          <MapResultsView data={data} isLoading={isLoading} />
+          <MapResultsView
+            data={data}
+            isLoading={isLoading}
+            onClick={onItemClick}
+          />
         </AzureMapsProvider>
       ) : (
-        <ListResultsView data={data} isLoading={isLoading} />
+        <ListResultsView
+          data={data}
+          isLoading={isLoading}
+          onClick={onItemClick}
+        />
       )}
-      <VenueOutlet id={id} />
       {data?.next ? (
         <Button variant="contained" onClick={() => setPage((page) => page + 1)}>
           Load more
@@ -67,6 +83,17 @@ export default function VenueResultsPage() {
         <AddIcon sx={{ mr: 1 }} />
         New venue
       </Fab>
+      <VenueDetailDialog
+        open={detailOpen}
+        onClose={() => setDetailOpen(false)}
+        id={detailId}
+        openReview={() => setReviewOpen(true)}
+      />
+      <ReviewDialog
+        open={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        venueId={detailId}
+      />
       <NewVenueDialog
         open={newVenueOpen}
         onClose={() => setNewVenueOpen(false)}

@@ -4,13 +4,13 @@ import type { SvgIconProps } from '@mui/material'
 import Box from '@mui/material/Box'
 
 export type StarBoxProps = {
-  value?: number
+  value?: number | string
 } & SvgIconProps
 
 export default function StarBox({ value, ...props }: StarBoxProps) {
   if (!value) return null
   const stars = []
-  for (let i = 0; i < Math.round(value); i++) {
+  for (let i = 0; i < Math.round(Number(value)); i++) {
     stars.push(<Star key={i} {...props} />)
   }
   return (
