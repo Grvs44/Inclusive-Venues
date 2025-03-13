@@ -84,7 +84,6 @@ class Review(models.Model):
 
 class RatingCategory(models.Model):
     name = models.CharField(max_length=20)
-    # TODO: add to ER diagram
     description = models.TextField()
 
     def __str__(self):
