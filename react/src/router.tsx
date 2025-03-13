@@ -4,7 +4,6 @@ import App from './App'
 import HomePage from './pages/HomePage'
 import LoginTestPage from './pages/LoginTestPage'
 import ReviewListPage from './pages/ReviewListPage'
-import VenueDetailPage from './pages/VenueDetailPage'
 import VenueResultsPage from './pages/VenueResultsPage'
 
 export default createBrowserRouter([
@@ -22,7 +21,6 @@ export default createBrowserRouter([
         children: [
           {
             path: ':id',
-            element: <VenueDetailPage />,
           },
         ],
       },

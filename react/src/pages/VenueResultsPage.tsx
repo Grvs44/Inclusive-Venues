@@ -27,10 +27,10 @@ export default function VenueResultsPage() {
   const [detailId, setDetailId] = React.useState<number | undefined>(undefined)
   const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
   const [newVenueOpen, setNewVenueOpen] = React.useState<boolean>(false)
-  const { data, isLoading, error, isError } = useGetVenuesQuery(
-    { page, ...filters?.getFilters() },
-    { skip: id != undefined },
-  )
+  const { data, isLoading, error, isError } = useGetVenuesQuery({
+    page,
+    ...filters?.getFilters(),
+  })
 
   const onItemClick = (venueId: number) => {
     setDetailId(venueId)
@@ -39,7 +39,12 @@ export default function VenueResultsPage() {
 
   React.useEffect(() => {
     dispatch(setTitle('Venues'))
-  }, [id])
+    const venueId = Number(id)
+    if (isNaN(venueId)) return
+    setDetailId(venueId)
+    setDetailOpen(true)
+    history.replaceState(null, '', '/venue')
+  }, [])
 
   return (
     <Container>
