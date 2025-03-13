@@ -1,4 +1,5 @@
 import React from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import {
   Button,
@@ -7,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   ListItemText,
   TextField,
 } from '@mui/material'
@@ -19,7 +21,7 @@ import {
   useGetVenueReviewQuery,
   useUpdateReviewMutation,
 } from '../redux/apiSlice'
-import { ListRating, VenueCategory } from '../redux/types'
+import type { ListRating, VenueCategory } from '../redux/types'
 
 export type ReviewDialogProps = {
   venueId?: number
@@ -110,6 +112,19 @@ export default function ReviewDialog(props: ReviewDialogProps) {
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{data ? data.venueName : 'New review'}</DialogTitle>
+      <IconButton
+        // Adapted from https://mui.com/material-ui/react-dialog/#customization
+        aria-label="close"
+        onClick={props.onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <CloseIcon />
+      </IconButton>
       <DialogContent>
         {isLoading || categories.isLoading ? (
           <CircularProgress />
