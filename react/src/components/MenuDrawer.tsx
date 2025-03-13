@@ -20,7 +20,7 @@ export type MenuDrawerProps = SwipeableDrawerProps & {
   user?: User
 }
 
-export default function MenuDrawer(props: MenuDrawerProps) {
+export default function MenuDrawer({ user, ...props }: MenuDrawerProps) {
   return (
     <SwipeableDrawer anchor="left" {...props}>
       <List onClick={props.onClose}>
@@ -44,7 +44,7 @@ export default function MenuDrawer(props: MenuDrawerProps) {
         </LinkListItem>
         <Divider component="li" />
         <InstallPwaListItem />
-        <AccountListItem user={props.user} />
+        <AccountListItem user={user} />
         <LinkListItem to="settings">
           <ListItemIcon>
             <SettingsIcon />
