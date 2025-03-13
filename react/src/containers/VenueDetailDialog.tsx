@@ -1,5 +1,4 @@
 import React from 'react'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CloseIcon from '@mui/icons-material/Close'
 import {
   Button,
@@ -7,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
   Skeleton,
 } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -33,12 +33,20 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
 
   return (
     <Dialog fullScreen={fullScreen} open={props.open} onClose={props.onClose}>
-      <DialogTitle>
-        <Button onClick={props.onClose}>
-          {fullScreen ? <ArrowBackIcon /> : <CloseIcon />}
-        </Button>
-        {data ? data.name : <Skeleton />}
-      </DialogTitle>
+      <DialogTitle>{data ? data.name : <Skeleton />}</DialogTitle>
+      <IconButton
+        // Adapted from https://mui.com/material-ui/react-dialog/#customization
+        aria-label="close"
+        onClick={props.onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <CloseIcon />
+      </IconButton>
       <DialogContent>
         {isLoading || data == undefined ? (
           <CircularProgress />
