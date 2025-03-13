@@ -9,9 +9,7 @@ import {
   IconButton,
   Skeleton,
 } from '@mui/material'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useGetUserDetailsQuery, useGetVenueQuery } from '../redux/apiSlice'
-import theme from '../theme'
 import VenueImageList from './VenueImageList'
 import VenueInfo from './VenueInfo'
 import VenueLocation from './VenueLocation'
@@ -25,14 +23,13 @@ export type VenueDetailDialogProps = {
 }
 
 export default function VenueDetailDialog(props: VenueDetailDialogProps) {
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
   const { data, isLoading } = useGetVenueQuery(props.id, {
     skip: !props.open || props.id == undefined,
   })
   const user = useGetUserDetailsQuery()
 
   return (
-    <Dialog fullScreen={fullScreen} open={props.open} onClose={props.onClose}>
+    <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{data ? data.name : <Skeleton />}</DialogTitle>
       <IconButton
         // Adapted from https://mui.com/material-ui/react-dialog/#customization
