@@ -1,10 +1,10 @@
 '''Module for clearing the database for the inclusivevenues app
 Run with `python manage.py clearvenuedata`'''
 # pylint:disable=no-member
+from inclusivevenues import models
+
 from django.core.management.base import BaseCommand
 from django.db.transaction import atomic
-
-from inclusivevenues import models
 
 
 class Command(BaseCommand):

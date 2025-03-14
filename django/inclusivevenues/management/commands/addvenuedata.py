@@ -3,11 +3,12 @@ Run with `python manage.py addvenuedata FILE`
 where FILE is a JSON file containing the venue data'''
 # pylint:disable=no-member
 import json
+
+from inclusivevenues import models
+
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandParser
 from django.db.transaction import atomic
-
-from inclusivevenues import models
 
 
 def add_venue(venue, user: User):
