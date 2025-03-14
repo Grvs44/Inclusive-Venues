@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Stack, TextField, Typography } from '@mui/material'
-import { AzureMapsProvider } from 'react-azure-maps'
 import LocationPicker from './LocationPicker'
 
 export default function CoordinatesInput() {
@@ -64,15 +63,13 @@ export default function CoordinatesInput() {
           fullWidth
           required
         />
-        <AzureMapsProvider>
-          <LocationPicker
-            open={pickerOpen}
-            onClose={() => setPickerOpen(false)}
-            latitude={latitude}
-            longitude={longitude}
-            onSubmit={onLocationPicked}
-          />
-        </AzureMapsProvider>
+        <LocationPicker
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          latitude={latitude}
+          longitude={longitude}
+          onSubmit={onLocationPicked}
+        />
       </Stack>
     </fieldset>
   )

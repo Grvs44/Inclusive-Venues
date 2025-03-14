@@ -8,7 +8,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material'
-import { AzureMapHtmlMarker, useAzureMaps } from 'react-azure-maps'
+import { AzureMapHtmlMarker, AzureMapsProvider } from 'react-azure-maps'
 import Map from './Map'
 
 export type LocationPickerProps = {
@@ -20,7 +20,6 @@ export type LocationPickerProps = {
 }
 
 export default function LocationPicker(props: LocationPickerProps) {
-  const { isMapReady, mapRef } = useAzureMaps()
   const [latitude, setLatitude] = React.useState<number>(
     Number(import.meta.env.VITE_DEFAULT_LATITUDE),
   )
@@ -44,23 +43,13 @@ export default function LocationPicker(props: LocationPickerProps) {
       <DialogContent>
         <Typography>Move the marker on the map to choose a location</Typography>
         <Box sx={{ height: 200 }}>
-          {props.open?<Map options={{center:[longitude, latitude], zoom: 12}}>
-            <AzureMapHtmlMarker
-              options={{ position: [longitude, latitude], draggable: true }}
-              events={[
-                {
-                  eventName: 'dragend',
-                  callback(e) {
-                    const position = e.target?.getOptions().position
-                    if (position) {
-                      setLongitude(position[0])
-                      setLatitude(position[1])
-                    }
-                  },
-                },
-              ]}
-            />
-          </Map>:null}
+          {props.open ? (
+            <AzureMapsProvider>
+              <MapArea
+                {...{ latitude, longitude, setLatitude, setLongitude }}
+              />
+            </AzureMapsProvider>
+          ) : null}
         </Box>
         <Typography>
           {latitude},{longitude}
@@ -70,12 +59,45 @@ export default function LocationPicker(props: LocationPickerProps) {
         <Button onClick={props.onClose}>Close</Button>
         <Button
           onClick={() => props.onSubmit(latitude, longitude)}
-          loading={!isMapReady}
           loadingPosition="start"
         >
           Choose
         </Button>
       </DialogActions>
     </Dialog>
+  )
+}
+
+type MapAreaProps = {
+  latitude: number
+  longitude: number
+  setLatitude: (latitude: number) => void
+  setLongitude: (longitude: number) => void
+}
+
+function MapArea({
+  latitude,
+  longitude,
+  setLatitude,
+  setLongitude,
+}: MapAreaProps) {
+  return (
+    <Map options={{ center: [longitude, latitude], zoom: 12 }}>
+      <AzureMapHtmlMarker
+        options={{ position: [longitude, latitude], draggable: true }}
+        events={[
+          {
+            eventName: 'dragend',
+            callback(e) {
+              const position = e.target?.getOptions().position
+              if (position) {
+                setLongitude(position[0])
+                setLatitude(position[1])
+              }
+            },
+          },
+        ]}
+      />
+    </Map>
   )
 }
