@@ -31,10 +31,10 @@ export default function LocationPicker(props: LocationPickerProps) {
   React.useEffect(() => {
     if (!open) return
 
-    const latitude = Number(props.latitude)
+    const latitude = props.latitude == '' ? NaN : Number(props.latitude)
     if (!isNaN(latitude)) setLatitude(latitude)
 
-    const longitude = Number(props.longitude)
+    const longitude = props.longitude == '' ? NaN : Number(props.longitude)
     if (!isNaN(longitude)) setLongitude(longitude)
   }, [props.open, props.latitude, props.longitude])
 
