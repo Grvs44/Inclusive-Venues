@@ -4,6 +4,7 @@ import App from './App'
 import HomePage from './pages/HomePage'
 import LoginTestPage from './pages/LoginTestPage'
 import ReviewListPage from './pages/ReviewListPage'
+import SettingsPage from './pages/SettingsPage'
 import VenueResultsPage from './pages/VenueResultsPage'
 
 export default createBrowserRouter([
@@ -27,6 +28,10 @@ export default createBrowserRouter([
       {
         path: 'review',
         element: <ReviewListPage />,
+      },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
       },
       {
         path: 'logintest',
