@@ -4,7 +4,6 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import { useLoginMutation, useLogoutMutation } from '../redux/apiSlice'
 import { User } from '../redux/types'
 import AccountDialog from './AccountDialog'
 import LoginDialog from './LoginDialog'
@@ -15,8 +14,6 @@ export type AccountListItemProps = {
 
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/components/AccountListItem.tsx
 const AccountListItem = (props: AccountListItemProps) => {
-  const [login] = useLoginMutation()
-  const [logout] = useLogoutMutation()
   const [open, setOpen] = React.useState<boolean>(false)
 
   return (
@@ -31,15 +28,10 @@ const AccountListItem = (props: AccountListItemProps) => {
         <AccountDialog
           open={open}
           onClose={() => setOpen(false)}
-          onLogout={logout}
           user={props.user}
         />
       ) : (
-        <LoginDialog
-          open={open}
-          onClose={() => setOpen(false)}
-          onLogin={login}
-        />
+        <LoginDialog open={open} onClose={() => setOpen(false)} />
       )}
     </ListItem>
   )

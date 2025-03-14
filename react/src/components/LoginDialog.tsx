@@ -5,22 +5,39 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
+import { useLoginMutation } from '../redux/apiSlice'
 import { UserLogin } from '../redux/types'
 
 export type LoginDialogProps = {
   open: boolean
   onClose: () => void
-  onLogin: (details: UserLogin) => void
 }
 
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function LoginDialog(props: LoginDialogProps) {
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const [loading, setLoading] = React.useState<boolean>(false)
+  const [login] = useLoginMutation()
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const data = Object.fromEntries(formData.entries())
-    if (data.username && data.password) props.onLogin(data as UserLogin)
-    props.onClose()
+    if (data.username && data.password) {
+      setLoading(true)
+      const result = await login(data as UserLogin)
+      setLoading(false)
+      if (result.error) {
+        alert(
+          'data' in result.error && 'detail' in result.error.data
+            ? 'Login error: ' + result.error.data.detail
+            : 'Unknown error logging in',
+        )
+      } else {
+        props.onClose()
+      }
+    } else {
+      alert('Username and password are required')
+    }
   }
 
   return (
@@ -54,7 +71,12 @@ export default function LoginDialog(props: LoginDialogProps) {
         <Button type="button" onClick={props.onClose}>
           Close
         </Button>
-        <Button type="submit" variant="contained">
+        <Button
+          type="submit"
+          variant="contained"
+          loading={loading}
+          loadingPosition="start"
+        >
           Login
         </Button>
       </DialogActions>

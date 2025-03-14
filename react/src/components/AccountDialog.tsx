@@ -5,19 +5,33 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Typography from '@mui/material/Typography'
+import { useLogoutMutation } from '../redux/apiSlice'
 import { LoggedInUser } from '../redux/types'
 
 export type AccountDialogProps = {
   open: boolean
   onClose: () => void
   user: LoggedInUser
-  onLogout: () => void
 }
 
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/components/AccountListItem.tsx
 export default function AccountDialog(props: AccountDialogProps) {
-  const logout = () => {
-    props.onLogout()
+  const [loading, setLoading] = React.useState<boolean>(false)
+  const [logout] = useLogoutMutation()
+
+  const onLogout = async () => {
+    setLoading(true)
+    const result = await logout()
+    setLoading(false)
+    if (result.error) {
+      alert(
+        'data' in result.error && 'detail' in result.error.data
+          ? 'Logout error: ' + result.error.data.detail
+          : 'Unknown error logging out',
+      )
+    } else {
+      props.onClose()
+    }
   }
 
   return (
@@ -35,7 +49,13 @@ export default function AccountDialog(props: AccountDialogProps) {
         <Button type="button" onClick={props.onClose}>
           Close
         </Button>
-        <Button onClick={logout} type="submit" variant="contained">
+        <Button
+          onClick={onLogout}
+          type="submit"
+          variant="contained"
+          loading={loading}
+          loadingPosition="start"
+        >
           Logout
         </Button>
       </DialogActions>
