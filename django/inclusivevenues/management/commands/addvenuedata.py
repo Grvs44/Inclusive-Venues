@@ -3,6 +3,7 @@ Run with `python manage.py addvenuedata FILE`
 where FILE is a JSON file containing the venue data'''
 # pylint:disable=no-member
 import json
+from random import Random
 
 from inclusivevenues import models
 
@@ -11,13 +12,12 @@ from django.core.management.base import BaseCommand, CommandParser
 from django.db.transaction import atomic
 
 
-@atomic
-def add_data(import_data: list[dict], no_reviews: bool):
+def add_venue_data(import_data: list[dict]):
     user = User.objects.first()
     if user is None:
         user = User.objects.create_user('user1')
-    
-    venues:list[models.Venue] = []
+
+    venues: list[models.Venue] = []
     for category_data in import_data:
         subcategories = category_data.pop('subcategories', [])
         category = models.VenueCategory.objects.create(**category_data)
@@ -32,27 +32,56 @@ def add_data(import_data: list[dict], no_reviews: bool):
                 venue.generate_map()
                 venue.save()
                 venues.append(venue)
+    return venues
 
+
+def add_rating_categories():
     ratingcat1 = models.RatingCategory.objects.create(
         name='Trans-friendliness', description='How accepting/friendly staff and the environment are to trans people')
     ratingcat2 = models.RatingCategory.objects.create(
         name='Accessibility', description='How easy the venue is to access by wheelchair users')
-    if no_reviews:
-        return
-    # Create reviews here
+    return [ratingcat1, ratingcat2]
+
+
+def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
+    usernames = ['Alex', 'Ben', 'Carly', 'Derek', 'Ed', 'Felicity']
+    users = [User.objects.create_user(username) for username in usernames]
+    reviews: list[models.Review] = []
+    ratings: list[models.Rating] = []
+    r = Random()
+    for venue in venues:
+        for user in users:
+            review = models.Review(
+                author=user, venue=venue, body=f'{user.username}\'s review for {venue.name}')
+            reviews.append(review)
+            for rating_cat in rating_categories:
+                ratings.append(
+                    models.Rating(review=review, category=rating_cat, value=r.randint(1, 5)))
+    models.Review.objects.bulk_create(reviews)
+    models.Rating.objects.bulk_create(ratings)
+
+    for venue in venues:
+        venue.update_score()
 
 
 class Command(BaseCommand):
-    help = __doc__ # type: ignore
+    help = __doc__  # type: ignore
 
     def add_arguments(self, parser: CommandParser):
         parser.add_argument(
             'venue_file', help='Path to the JSON file containing the venues')
+        parser.add_argument('--no-rating', action='store_true',
+                            help='Don\'t add any rating categories (or reviews)')
         parser.add_argument('--no-review', action='store_true',
                             help='Don\'t add any reviews')
 
+    @atomic
     def handle(self, *args, **options):
         with (open(options['venue_file'])) as file:
             venue_data = json.load(file)
-        add_data(venue_data, options['no_review'])
+        venues = add_venue_data(venue_data)
+        if not options['no_rating']:
+            categories = add_rating_categories()
+            if not options['no_review']:
+                add_reviews(venues, categories)
         self.stdout.write(self.style.SUCCESS('Imported data'))
