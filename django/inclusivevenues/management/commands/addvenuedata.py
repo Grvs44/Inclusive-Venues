@@ -17,18 +17,15 @@ def add_venue_data(import_data: list[dict]):
     if user is None:
         user = User.objects.create_user('user1')
 
-    categories: list[models.VenueCategory] = []
-    subcategories: list[models.VenueSubcategory] = []
     venues: list[models.Venue] = []
-    images: list[models.Image] = []
     for category_data in import_data:
         subcategories_data = category_data.pop('subcategories', [])
-        category = models.VenueCategory(**category_data)
-        categories.append(category)
+        category = models.VenueCategory.objects.create(**category_data)
         for subcategory_data in subcategories_data:
             venues_data = subcategory_data.pop('venues', [])
             name = subcategory_data['name']
-            subcategory = models.VenueSubcategory(name=name, category=category)
+            subcategory = models.VenueSubcategory.objects.create(
+                name=name, category=category)
             for venue_data in venues_data:
                 images_data = venue_data.pop('images', [])
                 venue = models.Venue(
@@ -36,11 +33,7 @@ def add_venue_data(import_data: list[dict]):
                 venue.generate_map()
                 venues.append(venue)
                 for image_data in images_data:
-                    images.append(models.Image(venue=venue, **image_data))
-    models.VenueCategory.objects.bulk_create(categories)
-    models.VenueSubcategory.objects.bulk_create(subcategories)
-    models.Venue.objects.bulk_create(venues)
-    models.Image.objects.bulk_create(images)
+                    models.Image.objects.create(venue=venue, **image_data)
     return venues
 
 
