@@ -1,4 +1,4 @@
-'''Module for importing sample data
+'''Import sample data to the inclusivevenues app.
 Run with `python manage.py addvenuedata FILE`
 where FILE is a JSON file containing the venue data'''
 # pylint:disable=no-member
@@ -11,32 +11,28 @@ from django.core.management.base import BaseCommand, CommandParser
 from django.db.transaction import atomic
 
 
-def add_venue(venue, user: User):
-    venue = models.Venue(added_by=user, **venue)
-    venue.generate_map()
-    venue.save()
-    return venue
-
-
 @atomic
-def add_data(venue_data: list[dict], no_reviews: bool):
+def add_data(import_data: list[dict], no_reviews: bool):
     user = User.objects.first()
     if user is None:
         user = User.objects.create_user('user1')
-    food = models.VenueCategory.objects.create(name='Food')
-    supermarkets = models.VenueSubcategory.objects.create(
-        name='Supermarkets', category=food)
-    restaurants = models.VenueSubcategory.objects.create(
-        name='Restaurants', category=food)
-    goingout = models.VenueCategory.objects.create(name='Going out')
-    clubs = models.VenueSubcategory.objects.create(
-        name='Night clubs', category=goingout)
-    bars = models.VenueSubcategory.objects.create(
-        name='Bars', category=goingout)
+    
+    venues:list[models.Venue] = []
+    for category_data in import_data:
+        subcategories = category_data.pop('subcategories', [])
+        category = models.VenueCategory.objects.create(**category_data)
+        for subcategory_data in subcategories:
+            venues_data = subcategory_data.pop('venues', [])
+            name = subcategory_data['name']
+            subcategory = models.VenueSubcategory.objects.create(
+                name=name, category=category)
+            for venue_data in venues_data:
+                venue = models.Venue(
+                    added_by=user, subcategory=subcategory, **venue_data)
+                venue.generate_map()
+                venue.save()
+                venues.append(venue)
 
-    venues = []
-    for venue in venue_data:
-        venues.append(add_venue(venue, user))
     ratingcat1 = models.RatingCategory.objects.create(
         name='Trans-friendliness', description='How accepting/friendly staff and the environment are to trans people')
     ratingcat2 = models.RatingCategory.objects.create(
@@ -47,7 +43,7 @@ def add_data(venue_data: list[dict], no_reviews: bool):
 
 
 class Command(BaseCommand):
-    help = 'Import data to the inclusivevenues app'
+    help = __doc__ # type: ignore
 
     def add_arguments(self, parser: CommandParser):
         parser.add_argument(
@@ -56,8 +52,7 @@ class Command(BaseCommand):
                             help='Don\'t add any reviews')
 
     def handle(self, *args, **options):
-        print(options)
         with (open(options['venue_file'])) as file:
             venue_data = json.load(file)
-        add_data(venue_data, options['no-review'])
+        add_data(venue_data, options['no_review'])
         self.stdout.write(self.style.SUCCESS('Imported data'))
