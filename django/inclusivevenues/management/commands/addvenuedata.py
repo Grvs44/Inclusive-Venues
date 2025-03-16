@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandParser
 from django.db.transaction import atomic
 
+USERNAMES = ['Alex', 'Ben', 'Carly', 'Derek', 'Ed', 'Felicity']
+
 
 def add_venue_data(import_data: list[dict]):
     user = User.objects.first()
@@ -46,9 +48,8 @@ def add_rating_categories():
 
 
 def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
-    usernames = ['Alex', 'Ben', 'Carly', 'Derek', 'Ed', 'Felicity']
     users: list[User] = []
-    for username in usernames:
+    for username in USERNAMES:
         user = User.objects.filter(username=username).first()
         if user is None:
             user = User.objects.create_user(username)
