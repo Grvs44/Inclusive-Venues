@@ -1,20 +1,24 @@
 import React from 'react'
-import ImageList from '@mui/material/ImageList'
-import ImageListItem from '@mui/material/ImageListItem'
+import Stack from '@mui/material/Stack'
 import { VenueImage } from '../redux/types'
 
 export default function VenueImageList({ images }: { images?: VenueImage[] }) {
   return images ? (
-    <ImageList
-      cols={images.length}
+    <Stack
+      direction="row"
       sx={{ overflowX: 'auto', overflowY: 'hidden' }}
-      rowHeight={200}
+      spacing={1}
     >
       {images.map(({ id, src, alt }) => (
-        <ImageListItem key={id}>
-          <img src={src} alt={alt} title={alt} loading="lazy" />
-        </ImageListItem>
+        <img
+          key={id}
+          src={src}
+          alt={alt}
+          title={alt}
+          height={200}
+          loading="lazy"
+        />
       ))}
-    </ImageList>
+    </Stack>
   ) : null
 }
