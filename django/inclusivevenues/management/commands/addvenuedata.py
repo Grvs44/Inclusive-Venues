@@ -39,12 +39,11 @@ def add_venue_data(import_data: list[dict]):
     return venues
 
 
-def add_rating_categories():
-    ratingcat1 = models.RatingCategory.objects.create(
-        name='Trans-friendliness', description='How accepting/friendly staff and the environment are to trans people')
-    ratingcat2 = models.RatingCategory.objects.create(
-        name='Accessibility', description='How easy the venue is to access by wheelchair users')
-    return [ratingcat1, ratingcat2]
+def add_rating_categories(import_data: list[dict]):
+    categories: list[models.RatingCategory] = []
+    for category in import_data:
+        categories.append(models.RatingCategory(**category))
+    return models.RatingCategory.objects.bulk_create(categories)
 
 
 def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
@@ -78,18 +77,28 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser):
         parser.add_argument(
             'venue_file', help='Path to the JSON file containing the venues')
-        parser.add_argument('--no-rating', action='store_true',
-                            help='Don\'t add any rating categories (or reviews)')
-        parser.add_argument('--no-review', action='store_true',
-                            help='Don\'t add any reviews')
+        parser.add_argument(
+            '-r', '--rating-file',
+            help='''Path to the JSON file containing the rating categories.
+            Omit to not import rating categories or generate reviews'''
+        )
+        parser.add_argument(
+            '--no-review', action='store_true',
+            help='Don\'t add any reviews'
+        )
 
     @atomic
     def handle(self, *args, **options):
         with (open(options['venue_file'])) as file:
             venue_data = json.load(file)
         venues = add_venue_data(venue_data)
-        if not options['no_rating']:
-            categories = add_rating_categories()
+        self.stdout.write(self.style.SUCCESS('Imported venue data'))
+        if options['rating_file']:
+            with (open(options['rating_file'])) as file:
+                rating_data = json.load(file)
+            categories = add_rating_categories(rating_data)
+            self.stdout.write(self.style.SUCCESS(
+                'Imported rating category data'))
             if not options['no_review']:
                 add_reviews(venues, categories)
-        self.stdout.write(self.style.SUCCESS('Imported data'))
+                self.stdout.write(self.style.SUCCESS('Generated review data'))
