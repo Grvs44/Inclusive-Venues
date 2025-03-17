@@ -111,6 +111,7 @@ export const apiSlice = createApi({
     getVenueCategories: builder.query<VenueCategory[], void>({
       query: () => 'venuecat',
       providesTags: [{ type: 'venuecat', id: LIST }],
+      keepUnusedDataFor: 600000,
     }),
 
     // Venue subcategories
@@ -120,6 +121,12 @@ export const apiSlice = createApi({
     >({
       query: (id) => 'venuesub?category=' + id,
       providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg }],
+      keepUnusedDataFor: 600000,
+    }),
+    getVenueSubcategory: builder.query<VenueSubcategory, number | undefined>({
+      query: (id) => 'venuesub/' + id,
+      providesTags: (_r, _e, arg) => [{ type: 'venuesub', id: arg }],
+      keepUnusedDataFor: 600000,
     }),
 
     // Venues
@@ -230,6 +237,7 @@ export const {
   useLogoutMutation,
   useGetVenueCategoriesQuery,
   useGetVenueSubcategoriesQuery,
+  useGetVenueSubcategoryQuery,
   useGetVenuesQuery,
   useGetVenueQuery,
   useGetVenueReviewQuery,

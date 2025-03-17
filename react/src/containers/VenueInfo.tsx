@@ -2,15 +2,23 @@ import React from 'react'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Card from '@mui/material/Card'
+import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import StarBox from '../components/StarBox'
-import { Venue } from '../redux/types'
-
-//Test data
-const category = { data: { id: 1, name: 'Category' } }
-const subcategory = { data: { id: 1, name: 'Subcategory' } }
+import {
+  useGetVenueCategoriesQuery,
+  useGetVenueSubcategoryQuery,
+} from '../redux/apiSlice'
+import type { Venue } from '../redux/types'
 
 export default function VenueInfo({ venue }: { venue: Venue }) {
+  const subcategory = useGetVenueSubcategoryQuery(venue.subcategory)
+  const categories = useGetVenueCategoriesQuery()
+
+  const category = subcategory.data
+    ? categories.data?.find(({ id }) => id == subcategory.data?.category)
+    : undefined
+
   return (
     <Card>
       <Typography component="h1" variant="h4">
@@ -18,8 +26,8 @@ export default function VenueInfo({ venue }: { venue: Venue }) {
       </Typography>
       <Breadcrumbs separator={<NavigateNextIcon fontSize="inherit" />}>
         <>Venues</>
-        <>{category.data.name}</>
-        <>{subcategory.data.name}</>
+        <>{category?.name || <Skeleton width="6em" />}</>
+        <>{subcategory.data?.name || <Skeleton width="6em" />}</>
       </Breadcrumbs>
       <StarBox value={venue.score} />
       <Typography>{venue.description}</Typography>
