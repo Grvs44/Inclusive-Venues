@@ -33,7 +33,7 @@ class VenueCategoryViewSet(ListViewSet):
     serializer_class = serializers.VenueCategorySerializer
 
 
-class VenueSubcategoryViewSet(ListViewSet):
+class VenueSubcategoryViewSet(mixins.RetrieveModelMixin, ListViewSet):
     queryset = models.VenueSubcategory.objects.all()
     serializer_class = serializers.VenueSubcategorySerializer
     filter_backends = [DjangoFilterBackend]
