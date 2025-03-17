@@ -3,7 +3,7 @@ Run with `python manage.py addvenuedata FILE`
 where FILE is a JSON file containing the venue data'''
 # pylint:disable=no-member
 import json
-from random import Random
+from random import randint
 
 from inclusivevenues import models
 
@@ -46,24 +46,34 @@ def add_rating_categories(import_data: list[dict]):
     return models.RatingCategory.objects.bulk_create(categories)
 
 
+def select_rating_categories(categories: list[models.RatingCategory]):
+    if len(categories) <= 1:
+        return categories
+    selection: list[models.RatingCategory] = []
+    start = randint(0, len(categories)-2)
+    step = randint(start + 1, len(categories) - 1)
+    for i in range(start, len(categories), step):
+        selection.append(categories[i])
+    return selection
+
+
 def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
-    users: list[User] = []
+    users: list[tuple[User, list[models.RatingCategory]]] = []
     for username in USERNAMES:
         user = User.objects.filter(username=username).first()
         if user is None:
             user = User.objects.create_user(username)
-        users.append(user)
+        users.append((user, select_rating_categories(rating_categories)))
     reviews: list[models.Review] = []
     ratings: list[models.Rating] = []
-    r = Random()
     for venue in venues:
-        for user in users:
+        for user, rating_selection in users:
             review = models.Review(
                 author=user, venue=venue, body=f'{user.username}\'s review for {venue.name}')
             reviews.append(review)
-            for rating_cat in rating_categories:
+            for rating_cat in rating_selection:
                 ratings.append(
-                    models.Rating(review=review, category=rating_cat, value=r.randint(1, 5)))
+                    models.Rating(review=review, category=rating_cat, value=randint(1, 5)))
     models.Review.objects.bulk_create(reviews)
     models.Rating.objects.bulk_create(ratings)
 
