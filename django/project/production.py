@@ -21,16 +21,16 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 INSTALLED_APPS.append('storages')
 
 # Adapted from https://medium.com/@hellenwain_54279/uploading-django-static-and-media-files-to-azure-blob-storage-9f5e1e33725f
-AZURE_ACCOUNT_NAME = 'inclusivevenues'
+AZURE_ACCOUNT_NAME = os.getenv('AZURE_STORAGE_NAME')
 AZURE_ACCOUNT_KEY = os.getenv('AZURE_STORAGE_KEY')
 AZURE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION')
-STATIC_ROOT = 'https://inclusivevenues.blob.core.windows.net/static/'
-MEDIA_URL = 'https://inclusivevenues.blob.core.windows.net/media/'
+STATIC_ROOT = os.getenv('STATIC_ROOT')
+MEDIA_URL = os.getenv('MEDIA_URL')
 STORAGES = {
     'default': {
         'BACKEND': 'storages.backends.azure_storage.AzureStorage',
         'OPTIONS': {
-            'azure_container': 'media',
+            'azure_container': os.getenv('AZURE_MEDIA_CONTAINER'),
             'account_name': AZURE_ACCOUNT_NAME,
             'account_key': AZURE_ACCOUNT_KEY,
             'connection_string': AZURE_CONNECTION_STRING,
@@ -39,7 +39,7 @@ STORAGES = {
     'staticfiles': {
         'BACKEND': 'storages.backends.azure_storage.AzureStorage',
         'OPTIONS': {
-            'azure_container': 'static',
+            'azure_container': os.getenv('AZURE_STATIC_CONTAINER'),
             'account_name': AZURE_ACCOUNT_NAME,
             'account_key': AZURE_ACCOUNT_KEY,
             'connection_string': AZURE_CONNECTION_STRING,
