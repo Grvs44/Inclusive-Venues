@@ -14,6 +14,7 @@ from django.db.transaction import atomic
 USERNAMES = ['Alex', 'Ben', 'Carly', 'Derek', 'Ed', 'Felicity']
 
 
+@atomic
 def add_venue_data(import_data: list[dict]):
     user = User.objects.first()
     if user is None:
@@ -33,12 +34,15 @@ def add_venue_data(import_data: list[dict]):
                 venue = models.Venue(
                     added_by=user, subcategory=subcategory, **venue_data)
                 venue.generate_map()
+                if venue.map.name is None:
+                    venue.save()
                 venues.append(venue)
                 for image_data in images_data:
                     models.Image.objects.create(venue=venue, **image_data)
     return venues
 
 
+@atomic
 def add_rating_categories(import_data: list[dict]):
     categories: list[models.RatingCategory] = []
     for category in import_data:
@@ -57,6 +61,7 @@ def select_rating_categories(categories: list[models.RatingCategory]):
     return selection
 
 
+@atomic
 def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
     users: list[tuple[User, list[models.RatingCategory]]] = []
     for username in USERNAMES:
@@ -97,7 +102,6 @@ class Command(BaseCommand):
             help='Don\'t add any reviews'
         )
 
-    @atomic
     def handle(self, *args, **options):
         with (open(options['venue_file'])) as file:
             venue_data = json.load(file)
