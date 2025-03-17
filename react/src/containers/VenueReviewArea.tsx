@@ -6,16 +6,21 @@ import { useGetVenueReviewsQuery } from '../redux/apiSlice'
 
 export type VenueReviewAreaProps = {
   id: number
+  children?: React.ReactNode
 }
 
-export default function VenueReviewArea({ id }: VenueReviewAreaProps) {
+export default function VenueReviewArea({
+  id,
+  children,
+}: VenueReviewAreaProps) {
   const [page, setPage] = React.useState<number>(1)
   const { data, isLoading } = useGetVenueReviewsQuery({ id, page })
   return (
     <Box>
-      <Typography component="h2" variant="h4">
+      <Typography component="h2" variant="h5">
         Reviews
       </Typography>
+      {children}
       <List>
         {data?.results.map((review) => (
           <VenueReviewListItem key={review.id} review={review} />

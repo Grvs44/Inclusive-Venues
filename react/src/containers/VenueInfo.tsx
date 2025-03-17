@@ -14,7 +14,9 @@ const subcategory = { data: { id: 1, name: 'Subcategory' } }
 export default function VenueInfo({ venue }: { venue: Venue }) {
   return (
     <Card>
-      <Typography>{venue.name}</Typography>
+      <Typography component="h1" variant="h4">
+        {venue.name}
+      </Typography>
       <Breadcrumbs separator={<NavigateNextIcon fontSize="inherit" />}>
         <Link to="/venue">Venues</Link>
         <Link to={`/venue?cat=${category.data.id}`}>{category.data.name}</Link>

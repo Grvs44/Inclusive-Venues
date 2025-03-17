@@ -51,12 +51,13 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
           <>
             <VenueImageList images={data.images} />
             <VenueInfo venue={data} />
-            {user.data ? (
-              <Button onClick={props.openReview}>Leave a review</Button>
-            ) : (
-              <Button disabled>Sign in to leave a review</Button>
-            )}
-            <VenueReviewArea id={data.id} />
+            <VenueReviewArea id={data.id}>
+              {user.data ? (
+                <Button onClick={props.openReview}>Leave a review</Button>
+              ) : (
+                <Button disabled>Sign in to leave a review</Button>
+              )}
+            </VenueReviewArea>
             <VenueLocation venue={data} />
           </>
         )}
