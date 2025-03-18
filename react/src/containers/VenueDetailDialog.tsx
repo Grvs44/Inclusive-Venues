@@ -23,9 +23,11 @@ export type VenueDetailDialogProps = {
 }
 
 export default function VenueDetailDialog(props: VenueDetailDialogProps) {
-  const { data, isLoading } = useGetVenueQuery(props.id, {
+  const { data, isFetching } = useGetVenueQuery(props.id, {
     skip: !props.open || props.id == undefined,
   })
+  console.log(props.id)
+  console.log(data)
   const user = useGetUserDetailsQuery()
 
   return (
@@ -45,7 +47,7 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        {isLoading || data == undefined ? (
+        {isFetching || data == undefined ? (
           <CircularProgress />
         ) : (
           <>
