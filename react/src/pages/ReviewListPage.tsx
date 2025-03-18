@@ -15,7 +15,7 @@ export default function ReviewListPage() {
   const [venueId, setVenueId] = React.useState<number | undefined>(undefined)
   const [venueOpen, setVenueOpen] = React.useState<boolean>(false)
   const [page, setPage] = React.useState<number>(1)
-  const { data, isLoading } = useGetReviewsQuery({ page })
+  const { data, isFetching } = useGetReviewsQuery({ page })
 
   const onOpenVenue = (venueId: number) => {
     setVenueId(venueId)
@@ -35,7 +35,7 @@ export default function ReviewListPage() {
     <Container>
       <ReviewList
         data={data}
-        isLoading={isLoading}
+        isFetching={isFetching}
         onEdit={onEdit}
         onOpenVenue={onOpenVenue}
       />

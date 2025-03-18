@@ -16,14 +16,14 @@ export type DropDownProps<T extends Entity> = {
   onChange: (value: T | null) => void
   getLabel: (value: T) => string
   data: T[]
-  isLoading: boolean
+  isFetching: boolean
 }
 
 export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
   const [open, setOpen] = React.useState(false)
   const [input, setInput] = React.useState('')
   const [currentData, setCurrentData] = React.useState<T[]>(props.data)
-  const loading = open && props.isLoading
+  const loading = open && props.isFetching
 
   React.useEffect(() => {
     if (input == '') {

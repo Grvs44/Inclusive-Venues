@@ -27,7 +27,7 @@ export default function VenueResultsPage() {
   const [detailId, setDetailId] = React.useState<number | undefined>(undefined)
   const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
   const [newVenueOpen, setNewVenueOpen] = React.useState<boolean>(false)
-  const { data, isLoading, error, isError } = useGetVenuesQuery({
+  const { data, isFetching, error, isError } = useGetVenuesQuery({
     page,
     ...filters?.getFilters(),
   })
@@ -62,14 +62,14 @@ export default function VenueResultsPage() {
         <AzureMapsProvider>
           <MapResultsView
             data={data}
-            isLoading={isLoading}
+            isFetching={isFetching}
             onClick={onItemClick}
           />
         </AzureMapsProvider>
       ) : (
         <ListResultsView
           data={data}
-          isLoading={isLoading}
+          isFetching={isFetching}
           onClick={onItemClick}
         />
       )}

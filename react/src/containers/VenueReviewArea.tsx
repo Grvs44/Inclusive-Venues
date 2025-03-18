@@ -27,7 +27,7 @@ export default function VenueReviewArea({
           : data?.results.map((review) => (
               <VenueReviewListItem key={review.id} review={review} />
             ))}
-        <LoadingSkeleton isLoading={isFetching} />
+        <LoadingSkeleton isFetching={isFetching} />
       </List>
       {data?.next ? (
         <Button

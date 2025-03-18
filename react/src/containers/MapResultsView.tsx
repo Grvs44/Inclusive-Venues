@@ -18,7 +18,7 @@ import type { ResultsViewProps } from './ListResultsView'
 
 export default function MapResultsView({
   data,
-  isLoading,
+  isFetching,
   onClick,
 }: ResultsViewProps) {
   const { isMapReady } = useAzureMaps()
@@ -47,7 +47,7 @@ export default function MapResultsView({
             ))}
           </>
         </Map>
-        {!isMapReady || isLoading || locationLoading ? (
+        {!isMapReady || isFetching || locationLoading ? (
           <CircularProgress />
         ) : null}
       </Box>

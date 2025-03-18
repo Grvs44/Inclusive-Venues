@@ -6,13 +6,13 @@ import { ListVenue, PageState } from '../redux/types'
 
 export type ResultsViewProps = {
   data?: PageState<ListVenue>
-  isLoading: boolean
+  isFetching: boolean
   onClick: (venueId: number) => void
 }
 
 export default function ListResultsView({
   data,
-  isLoading,
+  isFetching,
   onClick,
 }: ResultsViewProps) {
   return (
@@ -24,7 +24,7 @@ export default function ListResultsView({
           onClick={() => onClick(venue.id)}
         />
       ))}
-      <LoadingSkeleton isLoading={isLoading} />
+      <LoadingSkeleton isFetching={isFetching} />
     </List>
   )
 }

@@ -32,7 +32,7 @@ export type ReviewDialogProps = {
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
   const skip = !props.open || props.venueId == undefined
-  const { data, isLoading } = useGetVenueReviewQuery(props.venueId, {
+  const { data, isFetching } = useGetVenueReviewQuery(props.venueId, {
     skip,
   })
   const categories = useGetRatingCategoriesQuery(undefined, {
@@ -127,7 +127,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        {isLoading || categories.isLoading ? (
+        {isFetching || categories.isFetching ? (
           <CircularProgress />
         ) : (
           <>
@@ -171,7 +171,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
             </Grid>
             <DropDown
               data={categories.data || []}
-              isLoading={categories.isLoading}
+              isFetching={categories.isFetching}
               label="Add category"
               onChange={addRating}
               getLabel={(c) => c.name}
@@ -193,7 +193,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
         <Button
           type="submit"
           variant="contained"
-          disabled={isLoading || submitting}
+          disabled={isFetching || submitting}
           onClick={onSubmit}
         >
           Submit
