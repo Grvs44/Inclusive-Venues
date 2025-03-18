@@ -21,10 +21,10 @@ export type LocationPickerProps = {
 
 export default function LocationPicker(props: LocationPickerProps) {
   const [latitude, setLatitude] = React.useState<number>(
-    Number(import.meta.env.VITE_DEFAULT_LATITUDE),
+    Number(import.meta.env.VITE_DEFAULT_LATITUDE) || 0,
   )
   const [longitude, setLongitude] = React.useState<number>(
-    Number(import.meta.env.VITE_DEFAULT_LONGITUDE),
+    Number(import.meta.env.VITE_DEFAULT_LONGITUDE) || 0,
   )
 
   React.useEffect(() => {
