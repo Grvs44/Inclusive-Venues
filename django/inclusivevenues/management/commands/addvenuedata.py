@@ -76,17 +76,15 @@ def add_reviews(venues: list[models.Venue], rating_categories: list[models.Ratin
     ratings: list[models.Rating] = []
     for venue in venues:
         for user, rating_selection in users:
-            review = models.Review(
+            review = models.Review.objects.create(
                 author=user, venue=venue, body=f'{user.username}\'s review for {venue.name}')
             reviews.append(review)
             for cat_index in rating_selection:
-                ratings.append(models.Rating(
+                ratings.append(models.Rating.objects.create(
                     review=review,
                     category=rating_categories[cat_index],
                     value=randint(1, 5)
                 ))
-    models.Review.objects.bulk_create(reviews)
-    models.Rating.objects.bulk_create(ratings)
 
     for venue in venues:
         venue.update_score()
