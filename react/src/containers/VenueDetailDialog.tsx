@@ -30,7 +30,9 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
 
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{data ? data.name : <Skeleton />}</DialogTitle>
+      <DialogTitle>
+        {!isFetching && data ? data.name : <Skeleton sx={{ width: '10em' }} />}
+      </DialogTitle>
       <IconButton
         // Adapted from https://mui.com/material-ui/react-dialog/#customization
         aria-label="close"
