@@ -46,8 +46,9 @@ def add_venue_data(import_data: list[dict]):
 def add_rating_categories(import_data: list[dict]):
     categories: list[models.RatingCategory] = []
     for category in import_data:
-        categories.append(models.RatingCategory(**category))
-    return models.RatingCategory.objects.bulk_create(categories)
+        print('category', category)
+        categories.append(models.RatingCategory.objects.create(**category))
+    return categories
 
 
 def select_rating_categories(categories: list[models.RatingCategory]):
@@ -66,8 +67,10 @@ def add_reviews(venues: list[models.Venue], rating_categories: list[models.Ratin
     users: list[tuple[User, list[int]]] = []
     for username in USERNAMES:
         user = User.objects.filter(username=username).first()
+        print('finding user', username)
         if user is None:
             user = User.objects.create_user(username)
+            print('created user', username)
         users.append((user, select_rating_categories(rating_categories)))
     reviews: list[models.Review] = []
     ratings: list[models.Rating] = []
