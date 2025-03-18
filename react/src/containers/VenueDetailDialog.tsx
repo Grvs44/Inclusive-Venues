@@ -26,8 +26,6 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
   const { data, isFetching } = useGetVenueQuery(props.id, {
     skip: !props.open || props.id == undefined,
   })
-  console.log(props.id)
-  console.log(data)
   const user = useGetUserDetailsQuery()
 
   return (
