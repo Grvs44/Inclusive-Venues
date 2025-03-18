@@ -4,7 +4,7 @@ Adapted from https://github.com/Azure-Samples/msdocs-django-postgresql-sample-ap
 '''
 import os
 
-from .settings import *  # noqa
+from .settings import *
 
 ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = []
