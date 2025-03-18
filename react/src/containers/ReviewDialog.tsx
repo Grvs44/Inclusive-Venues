@@ -10,6 +10,7 @@ import {
   DialogTitle,
   IconButton,
   ListItemText,
+  Skeleton,
   TextField,
 } from '@mui/material'
 import Grid from '@mui/material/Grid2'
@@ -48,6 +49,9 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     if (data) {
       setBody(data.body)
       setRatings(data.ratings)
+    } else {
+      setRatings([])
+      setBody('')
     }
   }, [data])
 
@@ -112,7 +116,15 @@ export default function ReviewDialog(props: ReviewDialogProps) {
 
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{data ? data.venueName : 'New review'}</DialogTitle>
+      <DialogTitle>
+        {isFetching ? (
+          <Skeleton sx={{ width: '10em' }} />
+        ) : data ? (
+          data.venueName
+        ) : (
+          'New review'
+        )}
+      </DialogTitle>
       <IconButton
         // Adapted from https://mui.com/material-ui/react-dialog/#customization
         aria-label="close"
