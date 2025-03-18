@@ -31,6 +31,8 @@ jobs:
         with:
           envkey_VITE_API_URL: api/
           envkey_VITE_AZURE_MAP_KEY: ${{ secrets.AZURE_MAP_KEY }}
+          envkey_VITE_DEFAULT_LATITUDE: 50.937494
+          envkey_VITE_DEFAULT_LONGITUDE: -1.395864
           directory: react
       - name: Build And Deploy
         id: builddeploy
