@@ -6,14 +6,14 @@ import { PageState, Review } from '../redux/types'
 
 export type ReviewListProps = {
   data?: PageState<Review>
-  isLoading: boolean
+  isFetching: boolean
   onOpenVenue: (venueId:number)=>void
   onEdit: (review: Review) => void
 }
 
 export default function ReviewList({
   data,
-  isLoading,
+  isFetching,
   onOpenVenue,
   onEdit,
 }: ReviewListProps) {
@@ -22,7 +22,7 @@ export default function ReviewList({
       {data?.results.map((review) => (
         <ReviewListItem key={review.id} review={review} onOpenVenue={onOpenVenue} onEdit={onEdit} />
       ))}
-      <LoadingSkeleton isLoading={isLoading} />
+      <LoadingSkeleton isFetching={isFetching} />
     </List>
   )
 }

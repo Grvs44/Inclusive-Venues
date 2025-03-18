@@ -19,7 +19,7 @@ export default function SubcategoryFilterList(
   props: SubcategoryFilterListProps,
 ) {
   const filters = useFilters()
-  const { data, isLoading } = useGetVenueSubcategoriesQuery(props.id, {
+  const { data, isFetching } = useGetVenueSubcategoriesQuery(props.id, {
     skip: !props.open,
   })
 
@@ -44,7 +44,7 @@ export default function SubcategoryFilterList(
               }
             />
           ))}
-          <LoadingSkeleton isLoading={isLoading} />
+          <LoadingSkeleton isFetching={isFetching} />
         </FormGroup>
       </FormControl>
     </Box>

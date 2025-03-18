@@ -14,7 +14,7 @@ export default function VenueReviewArea({
   children,
 }: VenueReviewAreaProps) {
   const [page, setPage] = React.useState<number>(1)
-  const { data, isLoading } = useGetVenueReviewsQuery({ id, page })
+  const { data, isFetching } = useGetVenueReviewsQuery({ id, page })
   return (
     <Box>
       <Typography component="h2" variant="h5">
@@ -22,15 +22,17 @@ export default function VenueReviewArea({
       </Typography>
       {children}
       <List>
-        {data?.results.map((review) => (
-          <VenueReviewListItem key={review.id} review={review} />
-        ))}
-        <LoadingSkeleton isLoading={isLoading} />
+        {isFetching
+          ? null
+          : data?.results.map((review) => (
+              <VenueReviewListItem key={review.id} review={review} />
+            ))}
+        <LoadingSkeleton isFetching={isFetching} />
       </List>
       {data?.next ? (
         <Button
           onClick={() => setPage((page) => page + 1)}
-          disabled={isLoading}
+          disabled={isFetching}
         >
           Load more
         </Button>

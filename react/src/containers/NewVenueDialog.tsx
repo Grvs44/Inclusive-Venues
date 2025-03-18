@@ -120,7 +120,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
         <DropDown
           label="Category"
           data={categories.data || []}
-          isLoading={categories.isLoading}
+          isFetching={categories.isFetching}
           getLabel={(x) => x.name}
           onChange={setCategory}
           value={category}
@@ -131,7 +131,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
         <DropDown
           label="Subcategory"
           data={subcategories.data || []}
-          isLoading={false}
+          isFetching={false}
           getLabel={(x) => x.name}
           onChange={setSubcategory}
           value={subcategory}

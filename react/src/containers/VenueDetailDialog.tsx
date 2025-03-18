@@ -23,14 +23,16 @@ export type VenueDetailDialogProps = {
 }
 
 export default function VenueDetailDialog(props: VenueDetailDialogProps) {
-  const { data, isLoading } = useGetVenueQuery(props.id, {
+  const { data, isFetching } = useGetVenueQuery(props.id, {
     skip: !props.open || props.id == undefined,
   })
   const user = useGetUserDetailsQuery()
 
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{data ? data.name : <Skeleton />}</DialogTitle>
+      <DialogTitle>
+        {!isFetching && data ? data.name : <Skeleton sx={{ width: '10em' }} />}
+      </DialogTitle>
       <IconButton
         // Adapted from https://mui.com/material-ui/react-dialog/#customization
         aria-label="close"
@@ -45,7 +47,7 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        {isLoading || data == undefined ? (
+        {isFetching || data == undefined ? (
           <CircularProgress />
         ) : (
           <>
