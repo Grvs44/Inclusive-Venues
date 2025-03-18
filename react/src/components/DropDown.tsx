@@ -22,7 +22,21 @@ export type DropDownProps<T extends Entity> = {
 export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
   const [open, setOpen] = React.useState(false)
   const [input, setInput] = React.useState('')
+  const [currentData, setCurrentData] = React.useState<T[]>(props.data)
   const loading = open && props.isLoading
+
+  React.useEffect(() => {
+    if (input == '') {
+      setCurrentData(props.data)
+    } else {
+      const lower = input.toLowerCase()
+      setCurrentData(
+        props.data.filter((x) =>
+          props.getLabel(x).toLowerCase().includes(lower),
+        ),
+      )
+    }
+  }, [input])
 
   return (
     <Autocomplete
@@ -40,7 +54,7 @@ export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
       getOptionLabel={(option) => props.getLabel(option)}
       onChange={(event, value) => props.onChange(value)}
       onInputChange={(event, value) => setInput(value)}
-      options={props.data ? props.data : []}
+      options={currentData}
       loading={loading}
       renderInput={(params) => (
         <TextField
