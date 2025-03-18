@@ -52,18 +52,18 @@ def add_rating_categories(import_data: list[dict]):
 
 def select_rating_categories(categories: list[models.RatingCategory]):
     if len(categories) <= 1:
-        return categories
-    selection: list[models.RatingCategory] = []
+        return [category.pk for category in categories]
+    selection: list[int] = []
     start = randint(0, len(categories)-2)
     step = randint(start + 1, len(categories) - 1)
     for i in range(start, len(categories), step):
-        selection.append(categories[i])
+        selection.append(i)
     return selection
 
 
 @atomic
 def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
-    users: list[tuple[User, list[models.RatingCategory]]] = []
+    users: list[tuple[User, list[int]]] = []
     for username in USERNAMES:
         user = User.objects.filter(username=username).first()
         if user is None:
@@ -76,9 +76,12 @@ def add_reviews(venues: list[models.Venue], rating_categories: list[models.Ratin
             review = models.Review(
                 author=user, venue=venue, body=f'{user.username}\'s review for {venue.name}')
             reviews.append(review)
-            for rating_cat in rating_selection:
-                ratings.append(
-                    models.Rating(review=review, category=rating_cat, value=randint(1, 5)))
+            for cat_index in rating_selection:
+                ratings.append(models.Rating(
+                    review=review,
+                    category=rating_categories[cat_index],
+                    value=randint(1, 5)
+                ))
     models.Review.objects.bulk_create(reviews)
     models.Rating.objects.bulk_create(ratings)
 
