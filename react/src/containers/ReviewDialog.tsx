@@ -31,11 +31,12 @@ export type ReviewDialogProps = {
 
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
+  const skip = !props.open || props.venueId == undefined
   const { data, isLoading } = useGetVenueReviewQuery(props.venueId, {
-    skip: !props.open || props.venueId == undefined,
+    skip,
   })
   const categories = useGetRatingCategoriesQuery(undefined, {
-    skip: data == undefined,
+    skip,
   })
   const [createReview] = useCreateReviewMutation()
   const [updateReview] = useUpdateReviewMutation()
