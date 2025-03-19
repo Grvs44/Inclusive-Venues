@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListItem, ListItemText, Stack, Typography } from '@mui/material'
+import { Box, ListItem, ListItemText, Stack, Typography } from '@mui/material'
 import { Review } from '../redux/types'
 import StarBox from './StarBox'
 
@@ -15,10 +15,10 @@ export default function VenueReviewListItem({
       <ListItemText primary={review.body} />
       <Stack spacing={4} direction="row">
         {review.ratings.map((rating) => (
-          <Typography key={rating.category}>
-            {rating.category}:{' '}
+          <Box key={rating.category}>
+            <Typography>{rating.category}: </Typography>
             <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
-          </Typography>
+          </Box>
         ))}
       </Stack>
     </ListItem>
