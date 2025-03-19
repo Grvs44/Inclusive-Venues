@@ -30,9 +30,17 @@ export default defineConfig({
     assetsDir: 'static',
     rollupOptions: {
       output: {
-        preserveModules: true,
+        manualChunks: {
+          emotion: ['@emotion/react', '@emotion/styled'],
+          material: ['@mui/material'],
+          icons: ['@mui/icons-material'],
+          react: ['react', 'react-dom'],
+          redux: ['react-redux'],
+          router: ['react-router'],
+          maps: ['react-azure-maps'],
+          cookie: ['js-cookie'],
+        },
       },
-      preserveEntrySignatures: 'exports-only',
     },
   },
 })
