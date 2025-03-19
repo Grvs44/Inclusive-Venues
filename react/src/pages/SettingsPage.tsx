@@ -15,6 +15,10 @@ export default function SettingsPage() {
       <Typography variant="h6" component="p">
         Settings page not yet implemented
       </Typography>
+      <hr />
+      <Typography color="textSecondary">
+        Version {import.meta.env.VITE_VERSION}
+      </Typography>
     </Container>
   )
 }
