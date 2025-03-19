@@ -26,6 +26,12 @@ jobs:
             const coredemo = require('@actions/core')
             return await coredemo.getIDToken()
           result-encoding: string
+      - name: Get React app version
+        uses: actions/github-script@v6
+        id: appversion
+        with:
+          script: cd react && npm pkg get version
+          result-encoding: string
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v2.0
         with:
@@ -33,6 +39,7 @@ jobs:
           envkey_VITE_AZURE_MAP_KEY: ${{ secrets.AZURE_MAP_KEY }}
           envkey_VITE_DEFAULT_LATITUDE: 50.937494
           envkey_VITE_DEFAULT_LONGITUDE: -1.395864
+          envkey_VITE_VERSION: ${{ steps.appversion.outputs.result }}
           directory: react
       - name: Build And Deploy
         id: builddeploy
