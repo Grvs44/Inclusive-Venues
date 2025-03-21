@@ -18,7 +18,7 @@ export default function ReviewList({
   onOpenVenue,
   onEdit,
 }: ReviewListProps) {
-  return data || isFetching ? (
+  return data?.results.length || isFetching ? (
     <List>
       {data?.results.map((review) => (
         <ReviewListItem

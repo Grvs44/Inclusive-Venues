@@ -189,12 +189,15 @@ export const apiSlice = createApi({
           if (reason.meta?.response?.status == 403) {
             console.log('Clearing reviews')
             dispatch(
-              apiSlice.util.updateQueryData('getReviews', {}, () => ({
-                count: 0,
-                next: null,
-                previous: null,
-                results: [],
-              })),
+              apiSlice.util.upsertQueryData(
+                'getReviews',
+                {},
+                {
+                  count: 0,
+                  next: null,
+                  results: [],
+                },
+              ),
             )
           }
         })
