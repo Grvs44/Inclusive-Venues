@@ -187,7 +187,6 @@ export const apiSlice = createApi({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         queryFulfilled.catch((reason) => {
           if (reason.meta?.response?.status == 403) {
-            console.log('Clearing reviews')
             dispatch(
               apiSlice.util.upsertQueryData(
                 'getReviews',
