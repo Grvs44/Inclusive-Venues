@@ -1,0 +1,45 @@
+name: Test workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy_job:
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
+      - name: Get Id Token
+        uses: actions/github-script@v6
+        id: idtoken
+        with:
+          script: |
+            const coredemo = require('@actions/core')
+            return await coredemo.getIDToken()
+          result-encoding: string
+      - name: Get React app version
+        id: appversion
+        run: |
+          cd react
+          echo name=APPVERSION::$(npm pkg get version) >> $GITHUB_ENV
+      - name: Print appversion
+        env:
+          APPVERSION: ${{ steps.appversion.outputs.APPVERSION }}
+        run: echo $APPVERSION
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_VITE_API_URL: api/
+          envkey_VITE_AZURE_MAP_KEY: ${{ secrets.AZURE_MAP_KEY }}
+          envkey_VITE_DEFAULT_LATITUDE: 50.937494
+          envkey_VITE_DEFAULT_LONGITUDE: -1.395864
+          envkey_VITE_VERSION: ${{ steps.appversion.outputs.APPVERSION }}
+          directory: react
