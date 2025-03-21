@@ -30,7 +30,7 @@ jobs:
         id: appversion
         run: |
           cd react
-          echo ::set-env name=APPVERSION::$(npm pkg get version)
+          echo name=APPVERSION::$(npm pkg get version) >> $GITHUB_ENV
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v2.0
         with:
