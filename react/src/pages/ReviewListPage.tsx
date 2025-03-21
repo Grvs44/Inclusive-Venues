@@ -28,7 +28,7 @@ export default function ReviewListPage() {
   }
 
   React.useEffect(() => {
-    dispatch(setTitle('Reviews'))
+    dispatch(setTitle('My reviews'))
   }, [])
 
   return (
