@@ -79,6 +79,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body,
       }),
+      invalidatesTags: [{ type: 'review' }],
       async onQueryStarted(_a, { dispatch, queryFulfilled }) {
         const query = await queryFulfilled
         dispatch(
@@ -95,6 +96,7 @@ export const apiSlice = createApi({
         url: 'logout',
         method: 'POST',
       }),
+      invalidatesTags: [{ type: 'review' }],
       async onQueryStarted(_a, { dispatch, queryFulfilled }) {
         await queryFulfilled
         dispatch(
@@ -182,6 +184,21 @@ export const apiSlice = createApi({
       serializeQueryArgs,
       merge,
       forceRefetch,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        queryFulfilled.catch((reason) => {
+          if (reason.meta?.response?.status == 403) {
+            console.log('Clearing reviews')
+            dispatch(
+              apiSlice.util.updateQueryData('getReviews', {}, () => ({
+                count: 0,
+                next: null,
+                previous: null,
+                results: [],
+              })),
+            )
+          }
+        })
+      },
     }),
     createReview: builder.mutation<Review, CreateReview>({
       query: (body) => ({
