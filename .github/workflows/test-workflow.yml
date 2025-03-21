@@ -29,7 +29,7 @@ jobs:
         id: appversion
         run: |
           cd react
-          echo 'APPVERSION=$(npm pkg get version)' >> $GITHUB_ENV
+          echo APPVERSION=$(npm pkg get version) >> $GITHUB_ENV
       - name: Print appversion
         env:
           APPVERSION: ${{ steps.appversion.outputs.APPVERSION }}
@@ -41,5 +41,5 @@ jobs:
           envkey_VITE_AZURE_MAP_KEY: ${{ secrets.AZURE_MAP_KEY }}
           envkey_VITE_DEFAULT_LATITUDE: 50.937494
           envkey_VITE_DEFAULT_LONGITUDE: -1.395864
-          envkey_VITE_VERSION: ${{ steps.appversion.outputs.APPVERSION }}
+          envkey_VITE_VERSION: ${{ env.APPVERSION }}
           directory: react
