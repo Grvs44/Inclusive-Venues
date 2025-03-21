@@ -17,8 +17,11 @@ export default function ReviewListPage() {
   const [venueId, setVenueId] = React.useState<number | undefined>(undefined)
   const [venueOpen, setVenueOpen] = React.useState<boolean>(false)
   const [page, setPage] = React.useState<number>(1)
-  const { data, isFetching } = useGetReviewsQuery({ page })
   const user = useGetUserDetailsQuery()
+  const { data, isFetching } = useGetReviewsQuery(
+    { page },
+    { skip: !user.data },
+  )
 
   const onOpenVenue = (venueId: number) => {
     setVenueId(venueId)
