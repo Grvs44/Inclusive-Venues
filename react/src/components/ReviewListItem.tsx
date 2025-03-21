@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Box,
   Button,
   ListItem,
   ListItemText,
@@ -29,10 +30,10 @@ export default function ReviewListItem({
             {review.body}
             <Stack spacing={4} direction="row">
               {review.ratings.map((rating) => (
-                <Typography key={rating.category}>
-                  {rating.category}:{' '}
+                <Box key={rating.category}>
+                  <Typography>{rating.category}: </Typography>
                   <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
-                </Typography>
+                </Box>
               ))}
             </Stack>
           </>

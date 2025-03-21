@@ -47,7 +47,7 @@ export default function MenuDrawer({ user, ...props }: MenuDrawerProps) {
           <ListItemIcon>
             <ThumbUpIcon />
           </ListItemIcon>
-          <ListItemText>Reviews</ListItemText>
+          <ListItemText>My reviews</ListItemText>
         </LinkListItem>
         <div style={{ marginTop: 'auto' }}>
           <Divider component="li" />
