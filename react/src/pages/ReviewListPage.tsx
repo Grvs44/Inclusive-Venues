@@ -1,11 +1,13 @@
 import React from 'react'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
 import { useDispatch } from 'react-redux'
 import ReviewDialog from '../containers/ReviewDialog'
 import ReviewList from '../containers/ReviewList'
 import VenueDetailDialog from '../containers/VenueDetailDialog'
-import { useGetReviewsQuery } from '../redux/apiSlice'
+import { useGetReviewsQuery, useGetUserDetailsQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import { Review } from '../redux/types'
 
@@ -16,6 +18,7 @@ export default function ReviewListPage() {
   const [venueOpen, setVenueOpen] = React.useState<boolean>(false)
   const [page, setPage] = React.useState<number>(1)
   const { data, isFetching } = useGetReviewsQuery({ page })
+  const user = useGetUserDetailsQuery()
 
   const onOpenVenue = (venueId: number) => {
     setVenueId(venueId)
@@ -31,7 +34,7 @@ export default function ReviewListPage() {
     dispatch(setTitle('My reviews'))
   }, [])
 
-  return (
+  return user?.data ? (
     <Container>
       <ReviewList
         data={data}
@@ -55,6 +58,14 @@ export default function ReviewListPage() {
         openReview={() => setReviewOpen(true)}
         id={venueId}
       />
+    </Container>
+  ) : user.isFetching ? (
+    <Container>
+      <CircularProgress />
+    </Container>
+  ) : (
+    <Container>
+      <Typography>Sign in to view your reviews</Typography>
     </Container>
   )
 }
