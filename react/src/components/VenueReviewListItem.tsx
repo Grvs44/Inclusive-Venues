@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, ListItem, ListItemText, Stack, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { Review } from '../redux/types'
 import StarBox from './StarBox'
 
@@ -12,15 +13,23 @@ export default function VenueReviewListItem({
 }: VenueReviewListItemProps) {
   return (
     <ListItem>
-      <ListItemText primary={review.body} />
-      <Stack spacing={4} direction="row">
-        {review.ratings.map((rating) => (
-          <Box key={rating.category}>
-            <Typography>{rating.category}: </Typography>
-            <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
-          </Box>
-        ))}
-      </Stack>
+      <ListItemText
+        primary={review.body}
+        secondary={
+          <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 8, md: 12, lg: 16, xl: 20 }}
+          >
+            {review.ratings.map((rating) => (
+              <Grid key={rating.category} size={4}>
+                <Typography>{rating.category}</Typography>
+                <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
+              </Grid>
+            ))}
+          </Grid>
+        }
+      />
     </ListItem>
   )
 }
