@@ -20,6 +20,7 @@ import type { State } from '../redux/types'
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
   const filters = useFilters()
+  const filterSelection = filters?.getFilters()
   const { id } = useParams()
   const { showMap } = useSelector((state: State) => state.results)
   const [page, setPage] = React.useState<number>(1)
@@ -29,7 +30,7 @@ export default function VenueResultsPage() {
   const [newVenueOpen, setNewVenueOpen] = React.useState<boolean>(false)
   const { data, isFetching, error, isError } = useGetVenuesQuery({
     page,
-    ...filters?.getFilters(),
+    ...filterSelection,
   })
 
   const onItemClick = (venueId: number) => {
@@ -46,6 +47,13 @@ export default function VenueResultsPage() {
     history.replaceState(null, '', '/venue')
   }, [])
 
+  React.useEffect(() => {
+    if (isError) console.error(error)
+  }, [isError])
+
+  // Reset page on filter change to prevent 404
+  React.useEffect(() => setPage(1), [filterSelection])
+
   return (
     <Container>
       <ResultsFilters />
@@ -55,7 +63,7 @@ export default function VenueResultsPage() {
             Error
           </Typography>
           <Typography>
-            {'data' in error ? `${error.data}` : 'Unknown error'}
+            {'status' in error ? `Code ${error.status}` : 'Unknown error'}
           </Typography>
         </Box>
       ) : showMap ? (
