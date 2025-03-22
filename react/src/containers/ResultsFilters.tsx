@@ -13,7 +13,6 @@ export default function ResultsFilters() {
   return (
     <Box>
       <LocationInput
-        onLoadChange={() => {}}
         location={filters.location}
         setLocation={filters.setLocation}
       />

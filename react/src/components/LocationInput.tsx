@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 
 export type LocationInputProps = {
-  onLoadChange: (loading: boolean) => void
+  onLoadChange?: (loading: boolean) => void
   location: string
   setLocation: (location: string) => void
 }
@@ -20,18 +20,18 @@ export default function LocationInput(props: LocationInputProps) {
   const getLocation = () => {
     if (navigator.geolocation) {
       setLoading(true)
-      props.onLoadChange(true)
+      if (props.onLoadChange) props.onLoadChange!!(true)
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
           setLoading(false)
-          props.onLoadChange(false)
+          if (props.onLoadChange) props.onLoadChange(false)
           props.setLocation(
             `${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`,
           )
         },
         (error) => {
           setLoading(false)
-          props.onLoadChange(false)
+          if (props.onLoadChange) props.onLoadChange(false)
           switch (error.code) {
             case error.PERMISSION_DENIED:
               alert('Please allow location access to use this feature')
