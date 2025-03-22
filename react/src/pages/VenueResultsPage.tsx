@@ -46,6 +46,10 @@ export default function VenueResultsPage() {
     history.replaceState(null, '', '/venue')
   }, [])
 
+  React.useEffect(() => {
+    if (isError) console.error(error)
+  }, [isError])
+
   return (
     <Container>
       <ResultsFilters />
@@ -55,7 +59,7 @@ export default function VenueResultsPage() {
             Error
           </Typography>
           <Typography>
-            {'data' in error ? `${error.data}` : 'Unknown error'}
+            {'status' in error ? `Code ${error.status}` : 'Unknown error'}
           </Typography>
         </Box>
       ) : showMap ? (
