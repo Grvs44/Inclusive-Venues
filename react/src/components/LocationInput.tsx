@@ -21,13 +21,38 @@ export default function LocationInput(props: LocationInputProps) {
     if (navigator.geolocation) {
       setLoading(true)
       props.onLoadChange(true)
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        setLoading(false)
-        props.onLoadChange(false)
-        props.setLocation(
-          `${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`,
-        )
-      })
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          setLoading(false)
+          props.onLoadChange(false)
+          props.setLocation(
+            `${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`,
+          )
+        },
+        (error) => {
+          setLoading(false)
+          props.onLoadChange(false)
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              alert('Please allow location access to use this feature')
+              break
+            case error.POSITION_UNAVAILABLE:
+              alert(
+                'Your location is currently unavailable, please check your GPS signal and try again',
+              )
+              break
+            case error.TIMEOUT:
+              alert(
+                'Timed-out while retrieving your location, please try again',
+              )
+              break
+            default:
+              alert(error.message)
+          }
+        },
+      )
+    } else {
+      alert("Your browser doesn't support location services")
     }
   }
   return (
