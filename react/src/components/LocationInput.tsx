@@ -7,6 +7,7 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material'
+import { getLocationErrorMessage } from './utils'
 
 export type LocationInputProps = {
   onLoadChange?: (loading: boolean) => void
@@ -32,23 +33,7 @@ export default function LocationInput(props: LocationInputProps) {
         (error) => {
           setLoading(false)
           if (props.onLoadChange) props.onLoadChange(false)
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              alert('Please allow location access to use this feature')
-              break
-            case error.POSITION_UNAVAILABLE:
-              alert(
-                'Your location is currently unavailable, please check your GPS signal and try again',
-              )
-              break
-            case error.TIMEOUT:
-              alert(
-                'Timed-out while retrieving your location, please try again',
-              )
-              break
-            default:
-              alert(error.message)
-          }
+          alert(getLocationErrorMessage(error))
         },
       )
     } else {

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Stack, TextField, Typography } from '@mui/material'
 import LocationPicker from './LocationPicker'
+import { getLocationErrorMessage } from './utils'
 
 export default function CoordinatesInput() {
   const [latitude, setLatitude] = React.useState<string>('')
@@ -18,12 +19,12 @@ export default function CoordinatesInput() {
           setLoading(false)
         },
         (error) => {
-          alert("Couldn't retrieve location: " + error.message)
           setLoading(false)
+          alert(getLocationErrorMessage(error))
         },
       )
     } else {
-      alert('Geolocation not supported by browser')
+      alert("Your browser doesn't support location services")
     }
   }
 
