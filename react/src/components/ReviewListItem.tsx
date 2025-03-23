@@ -1,12 +1,6 @@
 import React from 'react'
-import {
-  Box,
-  Button,
-  ListItem,
-  ListItemText,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { Button, ListItem, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { Review } from '../redux/types'
 import StarBox from './StarBox'
 
@@ -21,30 +15,32 @@ export default function ReviewListItem({
   onOpenVenue,
   onEdit,
 }: ReviewListItemProps) {
+  const columns = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20 }
   return (
     <ListItem>
-      <ListItemText
-        primary={review.venueName}
-        secondary={
-          <>
-            {review.body}
-            <Stack spacing={4} direction="row">
-              {review.ratings.map((rating) => (
-                <Box key={rating.category}>
-                  <Typography>{rating.category}: </Typography>
-                  <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
-                </Box>
-              ))}
-            </Stack>
-          </>
-        }
-      />
-      <Button variant="contained" onClick={() => onOpenVenue(review.venue)}>
-        View venue
-      </Button>
-      <Button variant="contained" onClick={() => onEdit(review)}>
-        Edit review
-      </Button>
+      <Grid
+        container
+        columnSpacing={{ xs: 2, md: 3 }}
+        rowSpacing={0}
+        columns={columns}
+      >
+        <Grid size={columns}>{`${review.venueName} (${review.date})`}</Grid>
+        <Grid size={columns}>{review.body}</Grid>
+        {review.ratings.map((rating) => (
+          <Grid key={rating.category} size={4}>
+            <Typography>{rating.category}</Typography>
+            <StarBox value={rating.value} sx={{ fontSize: 'inherit' }} />
+          </Grid>
+        ))}
+        <Grid size={columns}>
+          <Button variant="outlined" onClick={() => onOpenVenue(review.venue)}>
+            View venue
+          </Button>
+          <Button variant="outlined" onClick={() => onEdit(review)}>
+            Edit review
+          </Button>
+        </Grid>
+      </Grid>
     </ListItem>
   )
 }

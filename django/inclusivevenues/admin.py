@@ -25,6 +25,7 @@ class VenueAdmin(ModelAdmin):
 @admin.register(models.Review)
 class ReviewAdmin(ModelAdmin):
     list_display = ['author__username', 'venue__name']
+    readonly_fields = ['date']
 
 
 @admin.register(models.RatingCategory)

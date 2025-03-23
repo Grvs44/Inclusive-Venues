@@ -15,6 +15,7 @@ import type {
   Venue,
   VenueCategory,
   VenueQuery,
+  VenueReview,
   VenueReviewQuery,
   VenueSubcategory,
 } from './types'
@@ -148,7 +149,7 @@ export const apiSlice = createApi({
       query: (id) => `venue/${id}/review`,
       providesTags: (_r, _e, id) => [{ type: 'review', id }],
     }),
-    getVenueReviews: builder.query<PageState<Review>, VenueReviewQuery>({
+    getVenueReviews: builder.query<PageState<VenueReview>, VenueReviewQuery>({
       query: ({ id, ...filters }) =>
         `venue/${id}/reviews` + getFilterQuery(filters),
       serializeQueryArgs,

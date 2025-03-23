@@ -68,6 +68,7 @@ class Review(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
+    date = models.DateField(auto_now=True, verbose_name='Last modified')
 
     def __str__(self):
         return f'{self.venue.name} by {self.author.username}'

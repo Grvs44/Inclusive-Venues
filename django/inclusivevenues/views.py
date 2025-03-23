@@ -76,7 +76,7 @@ class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
         '''List the reviews of this venue'''
         queryset = models.Review.objects.filter(venue=pk)
         results = self.paginate_queryset(queryset)
-        data = serializers.ReviewListSerializer(results, many=True).data
+        data = serializers.VenueReviewListSerializer(results, many=True).data
         return self.get_paginated_response(data)
 
 
