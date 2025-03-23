@@ -129,6 +129,13 @@ class ReviewListSerializer(ModelSerializer):
         fields = ['id', 'venue', 'venueName', 'body', 'ratings', 'date']
 
 
+class VenueReviewListSerializer(ReviewListSerializer):
+    author = CharField(source='author.username', read_only=True)
+
+    class Meta (ReviewListSerializer.Meta):
+        fields = ['id', 'venue', 'venueName', 'body', 'ratings', 'date', 'author']
+
+
 class RatingCategorySerializer(ModelSerializer):
     class Meta:
         model = models.RatingCategory
