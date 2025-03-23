@@ -110,6 +110,11 @@ export type Review = {
   venueName: string
   body: string
   ratings: ListRating[]
+  date: string
+}
+
+export type VenueReview = Review & {
+  author: string
 }
 
 export type CreateReview = {

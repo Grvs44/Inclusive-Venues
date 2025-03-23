@@ -24,7 +24,7 @@ export default function ReviewListItem({
   return (
     <ListItem>
       <ListItemText
-        primary={review.venueName}
+        primary={`${review.venueName} (${review.date})`}
         secondary={
           <>
             {review.body}
