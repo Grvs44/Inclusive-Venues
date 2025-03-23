@@ -63,7 +63,7 @@ class VenueListSerializer(ModelSerializer):
 class ReviewSerializer(ModelSerializer):
     class Meta:
         model = models.Review
-        fields = ['id', 'author', 'venue', 'body']
+        fields = ['id', 'author', 'venue', 'body', 'date']
 
 
 class RatingListSerializer(ModelSerializer):
@@ -97,7 +97,7 @@ class CreateReviewSerializer(ModelSerializer):
 
     class Meta:
         model = models.Review
-        fields = ['id', 'venue', 'venueName', 'body', 'ratings']
+        fields = ['id', 'venue', 'venueName', 'body', 'ratings', 'date']
 
 
 class UpdateReviewSerializer(ModelSerializer):
@@ -126,7 +126,7 @@ class ReviewListSerializer(ModelSerializer):
 
     class Meta:
         model = models.Review
-        fields = ['id', 'venue', 'venueName', 'body', 'ratings']
+        fields = ['id', 'venue', 'venueName', 'body', 'ratings', 'date']
 
 
 class RatingCategorySerializer(ModelSerializer):
