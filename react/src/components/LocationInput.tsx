@@ -7,9 +7,10 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material'
+import { getLocationErrorMessage } from './utils'
 
 export type LocationInputProps = {
-  onLoadChange: (loading: boolean) => void
+  onLoadChange?: (loading: boolean) => void
   location: string
   setLocation: (location: string) => void
 }
@@ -20,14 +21,23 @@ export default function LocationInput(props: LocationInputProps) {
   const getLocation = () => {
     if (navigator.geolocation) {
       setLoading(true)
-      props.onLoadChange(true)
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        setLoading(false)
-        props.onLoadChange(false)
-        props.setLocation(
-          `${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`,
-        )
-      })
+      if (props.onLoadChange) props.onLoadChange!!(true)
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          setLoading(false)
+          if (props.onLoadChange) props.onLoadChange(false)
+          props.setLocation(
+            `${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`,
+          )
+        },
+        (error) => {
+          setLoading(false)
+          if (props.onLoadChange) props.onLoadChange(false)
+          alert(getLocationErrorMessage(error))
+        },
+      )
+    } else {
+      alert("Your browser doesn't support location services")
     }
   }
   return (
