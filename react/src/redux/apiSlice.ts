@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 import type {
   CreateReview,
   Image,
+  ListRating,
   ListVenue,
   NewVenue,
   PageState,
@@ -65,7 +66,15 @@ export const apiSlice = createApi({
       if (csrfToken) headers.set('X-CSRFToken', csrfToken)
     },
   }),
-  tagTypes: ['user', 'venuecat', 'venuesub', 'venue', 'ratingcat', 'review'],
+  tagTypes: [
+    'user',
+    'venuecat',
+    'venuesub',
+    'venue',
+    'ratingcat',
+    'review',
+    'reviewavg',
+  ],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
     // Authentication
@@ -155,6 +164,10 @@ export const apiSlice = createApi({
       serializeQueryArgs,
       merge,
       forceRefetch,
+    }),
+    getVenueReviewAggregation: builder.query<ListRating[], number | undefined>({
+      query: (id) => `venue/${id}/reviewavg`,
+      providesTags: (_r, _e, id) => [{ type: 'reviewavg', id }],
     }),
     createVenue: builder.mutation<Venue, NewVenue>({
       query: (body) => ({
@@ -262,6 +275,7 @@ export const {
   useGetVenueQuery,
   useGetVenueReviewQuery,
   useGetVenueReviewsQuery,
+  useGetVenueReviewAggregationQuery,
   useCreateVenueMutation,
   useGetRatingCategoriesQuery,
   useGetReviewsQuery,
