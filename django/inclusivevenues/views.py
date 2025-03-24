@@ -3,6 +3,7 @@ Views for the Inclusive Venues Django app
 ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset
 '''
 # pylint:disable=no-member
+from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -192,3 +193,7 @@ class LogoutView(APIView):
             logout(request)
             return Response(None, status.HTTP_204_NO_CONTENT)
         return Response({'detail': 'Not logged in'}, status.HTTP_401_UNAUTHORIZED)
+
+
+def index_view(request):
+    return render(request, 'inclusivevenues/index.html')
