@@ -41,6 +41,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
   const [updateReview] = useUpdateReviewMutation()
   const [ratings, setRatings] = React.useState<ListRating[]>([])
   const [submitting, setSubmitting] = React.useState<boolean>(false)
+  const [selectedCategory, setSelectedCategory] = React.useState(null)
   const [body, setBody] = React.useState<string>('')
 
   React.useEffect(() => {
@@ -53,12 +54,14 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     }
   }, [data])
 
-  const addRating = (category: VenueCategory | null) =>
-    category && !ratings.find((r) => r.category == category.id)
-      ? setRatings((ratings) =>
-          ratings.concat({ category: category.id, value: 0 }),
-        )
-      : null
+  const addRating = (category: VenueCategory | null) => {
+    if (category && !ratings.find((r) => r.category == category.id)) {
+      setRatings((ratings) =>
+        ratings.concat({ category: category.id, value: 0 }),
+      )
+    }
+    setSelectedCategory(null)
+  }
 
   const onRatingChange = (rating: ListRating) => (value: number) =>
     setRatings((ratings) => {
@@ -168,6 +171,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
               onChange={addRating}
               getLabel={(c) => c.name}
               disabled={categories.data == undefined}
+              value={selectedCategory}
             />
             <TextField
               value={body}
