@@ -14,6 +14,13 @@ export type RatingInputProps = {
 }
 
 export default function RatingInput(props: RatingInputProps) {
+  const [value, setValue] = React.useState<number>(props.rating.value)
+
+  const onRate = (value: number) => {
+    setValue(value)
+    props.onRatingChange(value)
+  }
+
   return (
     <>
       <Grid size={7}>
@@ -23,7 +30,7 @@ export default function RatingInput(props: RatingInputProps) {
         />
       </Grid>
       <Grid size={3}>
-        <RateBox value={props.rating.value} onRate={props.onRatingChange} />
+        <RateBox value={value} onRate={onRate} />
       </Grid>
       <Grid size={1}>
         <Button
