@@ -1,6 +1,5 @@
 import React from 'react'
 import CloseIcon from '@mui/icons-material/Close'
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import {
   Button,
   CircularProgress,
@@ -9,13 +8,12 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  ListItemText,
   Skeleton,
   TextField,
 } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import DropDown from '../components/DropDown'
-import RateBox from '../components/RateBox'
+import RatingInput from '../components/RatingInput'
 import {
   useCreateReviewMutation,
   useGetRatingCategoriesQuery,
@@ -148,38 +146,20 @@ export default function ReviewDialog(props: ReviewDialogProps) {
               spacing={2}
               sx={{ overflowX: 'hidden', alignItems: 'center' }}
             >
-              {ratings.map((rating) => (
-                <React.Fragment key={rating.category}>
-                  <Grid size={7}>
-                    <ListItemText
-                      primary={
-                        categories.data?.find(({ id }) => id == rating.category)
-                          ?.name
-                      }
-                      secondary={
-                        categories.data?.find((c) => c.id == rating.category)
-                          ?.description
-                      }
-                    />
-                  </Grid>
-                  <Grid size={3}>
-                    <RateBox
-                      value={rating.value}
-                      onRate={onRatingChange(rating)}
-                    />
-                  </Grid>
-                  <Grid size={1}>
-                    <Button
-                      onClick={() => deleteRating(rating.category)}
-                      aria-label="Remove rating"
-                      title="Remove rating"
-                      color="error"
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                    </Button>
-                  </Grid>
-                </React.Fragment>
-              ))}
+              {ratings.map((rating) => {
+                const category = categories.data?.find(
+                  (c) => c.id == rating.category,
+                )
+                return category ? (
+                  <RatingInput
+                    key={rating.category}
+                    rating={rating}
+                    category={category}
+                    onRatingChange={() => onRatingChange(rating)}
+                    deleteRating={() => deleteRating(rating.category)}
+                  />
+                ) : null
+              })}
             </Grid>
             <DropDown
               data={categories.data || []}

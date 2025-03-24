@@ -10,6 +10,7 @@ import {
   Skeleton,
 } from '@mui/material'
 import { useGetUserDetailsQuery, useGetVenueQuery } from '../redux/apiSlice'
+import AverageRatingsArea from './AverageRatingsArea'
 import VenueImageList from './VenueImageList'
 import VenueInfo from './VenueInfo'
 import VenueLocation from './VenueLocation'
@@ -53,6 +54,7 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
           <>
             <VenueImageList images={data.images} />
             <VenueInfo venue={data} />
+            <AverageRatingsArea id={data.id} />
             <VenueReviewArea id={data.id}>
               {user.data ? (
                 <Button onClick={props.openReview}>Leave a review</Button>
