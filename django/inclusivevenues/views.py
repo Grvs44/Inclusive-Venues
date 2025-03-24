@@ -82,7 +82,7 @@ class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
 
     @action(methods=['GET'], detail=True, url_path='reviewavg')
     def get_rating_aggregation(self, request, pk):
-        '''Get the average Rating values for each RatingCategory rated on this review'''
+        '''Get the average Rating values for each RatingCategory rated on this Venue'''
         results = models.Rating.objects.filter(review__venue=pk)\
             .values('category').annotate(value=Avg('value'))
         for item in results:
