@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login, logout
 from django.db.utils import IntegrityError
+from django.db.models import Avg
 
 from . import models, permissions, serializers
 from .filters import CategoryFilter, LocationFilter
@@ -78,6 +79,15 @@ class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
         results = self.paginate_queryset(queryset)
         data = serializers.VenueReviewListSerializer(results, many=True).data
         return self.get_paginated_response(data)
+
+    @action(methods=['GET'], detail=True, url_path='reviewavg')
+    def get_rating_aggregation(self, request, pk):
+        '''Get the average Rating values for each RatingCategory rated on this review'''
+        results = models.Rating.objects.filter(review__venue=pk)\
+            .values('category').annotate(value=Avg('value'))
+        for item in results:
+            item['value'] = round(item['value'], 1)
+        return Response(results)
 
 
 class ReviewViewSet(ViewSet):
