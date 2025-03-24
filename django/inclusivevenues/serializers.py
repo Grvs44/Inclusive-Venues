@@ -113,6 +113,8 @@ class UpdateReviewSerializer(ModelSerializer):
             value = rating.pop('value', 0)
             models.Rating.objects.update_or_create(
                 defaults={'value': value}, review=instance, **rating)
+        models.Rating.objects.filter(review=instance)\
+            .exclude(category__in=[r['category'] for r in ratings]).delete()
         return super().update(instance, validated_data)
 
     class Meta:
@@ -133,7 +135,8 @@ class VenueReviewListSerializer(ReviewListSerializer):
     author = CharField(source='author.username', read_only=True)
 
     class Meta (ReviewListSerializer.Meta):
-        fields = ['id', 'venue', 'venueName', 'body', 'ratings', 'date', 'author']
+        fields = ['id', 'venue', 'venueName',
+                  'body', 'ratings', 'date', 'author']
 
 
 class RatingCategorySerializer(ModelSerializer):
