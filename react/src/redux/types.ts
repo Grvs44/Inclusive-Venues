@@ -4,7 +4,7 @@ export type State = ReturnType<typeof store.getState>
 
 export type InstallState = {
   show: boolean
-  deferredPrompt?: Event
+  deferredPrompt?: Event | null
 }
 
 export type TitleState = {
