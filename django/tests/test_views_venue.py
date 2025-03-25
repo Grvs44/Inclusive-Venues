@@ -42,7 +42,7 @@ class VenueTestCase(TestCase):
         cls.review2 = models.Review.objects.create(
             author=cls.user2, venue=cls.venue, body='review2 body')
         cls.rating2_1 = models.Rating.objects.create(
-            category=cls.ratingcat1, review=cls.review2, value=3)
+            category=cls.ratingcat1, review=cls.review2, value=1)
         cls.rating2_2 = models.Rating.objects.create(
             category=cls.ratingcat2, review=cls.review2, value=2)
 
@@ -368,3 +368,14 @@ class VenueTestCase(TestCase):
              ]},
         ]
         self.assertListEqual(results, reviews)
+
+    def test_venue_rating_aggregation(self):
+        '''Test the rating aggregation returns the expected values'''
+        data = self.client.get(f'/api/venue/{self.venue.pk}/reviewavg').json()
+        expected = [
+            {'category': self.ratingcat1.pk,
+             'value': (self.rating1.value + self.rating2_1.value) / 2},
+            {'category': self.ratingcat2.pk,
+             'value': (self.rating2.value + self.rating2_2.value) / 2}
+        ]
+        self.assertListEqual(data, expected)
