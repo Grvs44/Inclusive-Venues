@@ -1,14 +1,13 @@
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/redux/installSlice.ts
 import { createSlice } from '@reduxjs/toolkit'
-import { PwaState } from './types'
+import { InstallState } from './types'
 
-const initialState: PwaState = {
+const initialState: InstallState = {
   show: false,
-  offline: false,
 }
 
-export const pwaSlice = createSlice({
-  name: 'pwa',
+export const installSlice = createSlice({
+  name: 'install',
   initialState,
   reducers: {
     setShow(state, action: { payload: boolean }) {
@@ -17,15 +16,8 @@ export const pwaSlice = createSlice({
     setDeferredPrompt(state, action: { payload: Event | null }) {
       state.deferredPrompt = action.payload
     },
-    setOnline(state) {
-      state.offline = false
-    },
-    setOffline(state) {
-      state.offline = true
-    },
   },
 })
 
-export const { setShow, setDeferredPrompt, setOnline, setOffline } =
-  pwaSlice.actions
-export default pwaSlice.reducer
+export const { setShow, setDeferredPrompt } = installSlice.actions
+export default installSlice.reducer

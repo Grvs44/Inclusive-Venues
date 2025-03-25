@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { apiSlice } from './apiSlice'
+import installReducer from './installSlice'
 import offlineMiddleware from './offlineMiddleware'
-import pwaReducer from './pwaSlice'
 import resultsReducer from './resultsSlice'
 import titleReducer from './titleSlice'
 
 export default configureStore({
   reducer: {
-    pwa: pwaReducer,
+    install: installReducer,
     results: resultsReducer,
     title: titleReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -16,8 +16,8 @@ export default configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['pwa/setDeferredPrompt'],
-        ignoredPaths: ['pwa.deferredPrompt'],
+        ignoredActions: ['install/setDeferredPrompt'],
+        ignoredPaths: ['install.deferredPrompt'],
       },
     }).concat(apiSlice.middleware, offlineMiddleware),
 })

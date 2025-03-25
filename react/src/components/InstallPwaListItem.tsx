@@ -6,12 +6,12 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import { useDispatch, useSelector } from 'react-redux'
-import { setDeferredPrompt, setShow } from '../redux/pwaSlice'
+import { setDeferredPrompt, setShow } from '../redux/installSlice'
 import { State } from '../redux/types'
 
 const InstallPwaListItem = () => {
   const dispatch = useDispatch()
-  const { show, deferredPrompt } = useSelector((state: State) => state.pwa)
+  const { show, deferredPrompt } = useSelector((state: State) => state.install)
 
   const onClick = async () => {
     if (deferredPrompt) {
