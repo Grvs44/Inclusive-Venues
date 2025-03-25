@@ -1,7 +1,13 @@
 from decimal import Decimal, InvalidOperation
+import re
+import requests
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
 from django.db.models import F, Func, Q
+
+from .settings import MAP_KEY
+
+postcode_pattern = re.compile('[A-Z][A-Z][0-9][0-9]?[ ]?[0-9][A-Z][A-Z]')
 
 
 def split_params(arg: str) -> list[int]:
@@ -29,20 +35,49 @@ class CategoryFilter(BaseFilterBackend):
 def get_location(location: str) -> tuple[Decimal, Decimal] | None:
     if location == '':
         return None
+    coords = get_coordinates(location)
+    if coords is not None:
+        return coords
+    location = location.upper()
+    if postcode_pattern.match(location):
+        return get_postcode_coordinates(location)
+    else:
+        raise ValidationError(
+            'Invalid location: must be coordinates (latitude,longitude) or a postcode')
+
+
+def get_coordinates(location: str) -> tuple[Decimal, Decimal] | None:
     try:
         lat, lon = location.split(',', 2)
-    except ValueError as e:
-        raise ValidationError(
-            'Invalid coordinates: must be of the form (latitude, longitude)') from e
-    try:
         lat_d = Decimal(lat)
-    except InvalidOperation as e:
-        raise ValidationError('Latitude must be a number') from e
-    try:
         lon_d = Decimal(lon)
-    except InvalidOperation as e:
-        raise ValidationError('Longitude must be a number') from e
+    except (ValueError, InvalidOperation):
+        return None
     return lat_d, lon_d
+
+
+def get_postcode_coordinates(location: str) -> tuple[Decimal, Decimal]:
+    if MAP_KEY is None:
+        raise ValidationError(
+            'Search by postcode is unavailable (missing Azure Maps key)')
+    params = {
+        'subscription-key': MAP_KEY,
+        'api-version': '1.0',
+        'language': 'en-GB',
+        'query': location,
+    }
+    response = requests.get(
+        'https://atlas.microsoft.com/search/address/json', params=params, timeout=20)
+    results = response.json().get('results', [])
+    if results == []:
+        lat = lon = None
+    else:
+        coords = results[0].get('position', {})
+        lat = coords.get('lat', None)
+        lon = coords.get('lon', None)
+    if lat is None or lon is None:
+        raise ValidationError("Couldn't retrieve location from postcode")
+    return Decimal(lat), Decimal(lon)
 
 
 # Adapted from https://geoscience.blog/how-do-you-convert-latitude-and-longitude-to-kilometers/
