@@ -13,7 +13,7 @@ export const pwaSlice = createSlice({
     setShow(state, action: { payload: boolean }) {
       state.show = action.payload
     },
-    setDeferredPrompt(state, action: { payload: Event }) {
+    setDeferredPrompt(state, action: { payload: Event | null }) {
       state.deferredPrompt = action.payload
     },
   },
