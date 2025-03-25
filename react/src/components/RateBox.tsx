@@ -3,6 +3,7 @@ import Star from '@mui/icons-material/Star'
 import StarBorder from '@mui/icons-material/StarBorder'
 import type { SvgIconProps } from '@mui/material'
 import Box from '@mui/material/Box'
+import { starColours } from '../theme'
 
 export type RateBoxProps = {
   value: number
@@ -12,7 +13,14 @@ export type RateBoxProps = {
 export default function RateBox({ value, onRate, ...props }: RateBoxProps) {
   const stars = []
   for (let i = 1; i <= value; i++) {
-    stars.push(<Star key={i} onClick={() => onRate(i)} {...props} />)
+    stars.push(
+      <Star
+        key={i}
+        onClick={() => onRate(i)}
+        style={{ color: starColours[value - 1] }}
+        {...props}
+      />,
+    )
   }
   for (let i = value + 1; i <= 5; i++) {
     stars.push(<StarBorder key={i} onClick={() => onRate(i)} {...props} />)

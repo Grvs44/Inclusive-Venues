@@ -31,3 +31,11 @@ const theme = createTheme({
 })
 
 export default theme
+
+export const starColours = [
+  'darkred',
+  'red',
+  'orange',
+  'yellowgreen',
+  'lawngreen',
+]
