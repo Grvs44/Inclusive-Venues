@@ -94,7 +94,7 @@ export default function VenueResultsPage() {
           onClick={onItemClick}
         />
       )}
-      {data?.next ? (
+      {!isError && data?.next ? (
         <Button variant="contained" onClick={() => setPage((page) => page + 1)}>
           Load more
         </Button>
