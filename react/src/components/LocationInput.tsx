@@ -9,6 +9,10 @@ import {
 } from '@mui/material'
 import { getLocationErrorMessage } from './utils'
 
+// Coordinates regex (between |s) adapted from https://stackoverflow.com/a/3518546
+const locationPattern =
+  /^$|^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$|^[A-Z][A-Z][0-9][0-9]?[ ]?[0-9][A-Z][A-Z]$/
+
 export type LocationInputProps = {
   onLoadChange?: (loading: boolean) => void
   location: string
@@ -17,6 +21,19 @@ export type LocationInputProps = {
 
 export default function LocationInput(props: LocationInputProps) {
   const [loading, setLoading] = React.useState<boolean>(false)
+  const [value, setValue] = React.useState<string>(props.location)
+  const [error, setError] = React.useState<boolean>(false)
+
+  React.useEffect(() => setValue(props.location), [props.location])
+
+  React.useEffect(() => {
+    if (locationPattern.test(value.toUpperCase())) {
+      props.setLocation(value)
+      setError(false)
+    } else {
+      setError(true)
+    }
+  }, [value])
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -44,9 +61,11 @@ export default function LocationInput(props: LocationInputProps) {
     <TextField
       name="location"
       label="Location"
-      value={props.location}
-      onChange={(event) => props.setLocation(event.currentTarget.value)}
+      value={value}
+      onChange={(event) => setValue(event.currentTarget.value)}
       disabled={loading}
+      error={error}
+      helperText={error ? 'Location should be a postcode or coordinates' : ''}
       // Adapted from https://mui.com/material-ui/react-text-field/#icons
       slotProps={{
         input: {
