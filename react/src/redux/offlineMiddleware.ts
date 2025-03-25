@@ -3,16 +3,17 @@ import { isRejectedWithValue } from '@reduxjs/toolkit'
 import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 import toast from 'react-hot-toast'
 
+const offlineMessage =
+  'You are currently offline, please check your connection and try again'
+
 const offlineMiddleware: Middleware =
   (api: MiddlewareAPI) => (next) => (action) => {
     if (
       isRejectedWithValue(action) &&
       (action.payload as any)?.status == 'FETCH_ERROR'
     ) {
-      toast.error(
-        'You are currently offline, please check your connection and try again',
-        { duration: 5000 },
-      )
+      ;(action.payload as any).error = offlineMessage
+      toast.error(offlineMessage, { duration: 5000 })
     }
 
     return next(action)
