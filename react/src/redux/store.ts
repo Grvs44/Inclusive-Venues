@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { apiSlice } from './apiSlice'
+import offlineMiddleware from './offlineMiddleware'
 import pwaReducer from './pwaSlice'
 import resultsReducer from './resultsSlice'
 import titleReducer from './titleSlice'
@@ -18,5 +19,5 @@ export default configureStore({
         ignoredActions: ['pwa/setDeferredPrompt'],
         ignoredPaths: ['pwa.deferredPrompt'],
       },
-    }).concat(apiSlice.middleware),
+    }).concat(apiSlice.middleware, offlineMiddleware),
 })
