@@ -4,6 +4,7 @@ import { PwaState } from './types'
 
 const initialState: PwaState = {
   show: false,
+  offline: false,
 }
 
 export const pwaSlice = createSlice({
@@ -16,8 +17,15 @@ export const pwaSlice = createSlice({
     setDeferredPrompt(state, action: { payload: Event | null }) {
       state.deferredPrompt = action.payload
     },
+    setOnline(state) {
+      state.offline = false
+    },
+    setOffline(state) {
+      state.offline = true
+    },
   },
 })
 
-export const { setShow, setDeferredPrompt } = pwaSlice.actions
+export const { setShow, setDeferredPrompt, setOnline, setOffline } =
+  pwaSlice.actions
 export default pwaSlice.reducer

@@ -5,6 +5,7 @@ export type State = ReturnType<typeof store.getState>
 export type PwaState = {
   show: boolean
   deferredPrompt?: Event | null
+  offline: boolean
 }
 
 export type TitleState = {
