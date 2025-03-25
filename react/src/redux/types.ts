@@ -2,7 +2,7 @@ import store from './store'
 
 export type State = ReturnType<typeof store.getState>
 
-export type InstallState = {
+export type PwaState = {
   show: boolean
   deferredPrompt?: Event
 }

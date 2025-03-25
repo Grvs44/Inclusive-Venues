@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import TopBar from './containers/TopBar'
-import { setDeferredPrompt, setShow } from './redux/installSlice'
+import { setDeferredPrompt, setShow } from './redux/pwaSlice'
 
 export default function App() {
   const dispatch = useDispatch()
