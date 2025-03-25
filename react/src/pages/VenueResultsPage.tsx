@@ -3,6 +3,8 @@ import AddIcon from '@mui/icons-material/Add'
 import { Box, Fab, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
+import { SerializedError } from '@reduxjs/toolkit'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { AzureMapsProvider } from 'react-azure-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -16,6 +18,19 @@ import { useFilters } from '../providers/FilterProvider'
 import { useGetVenuesQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import type { State } from '../redux/types'
+
+const getErrorMessage = (error: FetchBaseQueryError | SerializedError) => {
+  if ('data' in error) {
+    if (Array.isArray(error.data)) {
+      return error.data[0]
+    } else if ('detail' in (error.data as any)) {
+      return (error.data as any).detail
+    }
+  } else if ('error' in error) {
+    return error.error
+  }
+  return 'Unknown error'
+}
 
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
@@ -62,9 +77,7 @@ export default function VenueResultsPage() {
           <Typography component="h2" variant="h4">
             Error
           </Typography>
-          <Typography>
-            {'status' in error ? `Code ${error.status}` : 'Unknown error'}
-          </Typography>
+          <Typography>{getErrorMessage(error)}</Typography>
         </Box>
       ) : showMap ? (
         <AzureMapsProvider>
