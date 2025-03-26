@@ -2,7 +2,7 @@ import React from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import HomePage from './pages/HomePage'
-import ReviewListPage from './pages/ReviewListPage'
+import MyReviewsPage from './pages/MyReviewsPage'
 import SettingsPage from './pages/SettingsPage'
 import VenueResultsPage from './pages/VenueResultsPage'
 
@@ -26,7 +26,7 @@ export default createBrowserRouter([
       },
       {
         path: 'review',
-        element: <ReviewListPage />,
+        element: <MyReviewsPage />,
       },
       {
         path: 'settings',
