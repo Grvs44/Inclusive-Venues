@@ -39,6 +39,7 @@ export default defineConfig({
           router: ['react-router'],
           maps: ['react-azure-maps'],
           cookie: ['js-cookie'],
+          toast: ['react-hot-toast'],
         },
       },
     },
