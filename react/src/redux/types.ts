@@ -63,8 +63,8 @@ export type Venue = {
   longitude: number
   latitude: number
   score?: string
-  description: string
-  address?: string
+  description: string | null
+  address: string | null
   subcategory: number
   map: string | null
   images?: VenueImage[]
