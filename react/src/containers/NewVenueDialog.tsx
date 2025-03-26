@@ -8,11 +8,13 @@ import {
   Skeleton,
   TextField,
 } from '@mui/material'
+import toast from 'react-hot-toast'
 import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ImageUploadBox from '../components/ImageUploadBox'
 import type { ImageFile } from '../components/ImageViewDialog'
+import { to_number } from '../components/utils'
 import {
   useCreateImageMutation,
   useCreateVenueMutation,
@@ -21,7 +23,7 @@ import {
   useGetVenueSubcategoriesQuery,
   useGetVenueSubcategoryQuery,
 } from '../redux/apiSlice'
-import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
+import type { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 
 export type NewVenueDialogProps = {
   open: boolean
@@ -30,7 +32,6 @@ export type NewVenueDialogProps = {
 }
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
-  console.log(`venueId=${props.venueId}`)
   const [createVenue] = useCreateVenueMutation()
   const [createImage] = useCreateImageMutation()
 
@@ -89,32 +90,34 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSubmitting(true)
-    const formData = new FormData(event.currentTarget)
-    const data = Object.fromEntries(formData.entries())
-    if (!('name' in data)) {
-      alert('Venue name is required')
-      return setSubmitting(false)
-    }
-    if (!('description' in data)) {
-      alert('Venue description is required')
+
+    if (name.trim().length == 0) {
+      toast.error('Venue name is required')
       return setSubmitting(false)
     }
     if (subcategory == null) {
-      alert('Venue subcategory is required')
+      toast.error('Venue subcategory is required')
+      return setSubmitting(false)
+    }
+    const latitudeValue = to_number(latitude)
+    const longitudeValue = to_number(longitude)
+    if (isNaN(latitudeValue) || isNaN(longitudeValue)) {
+      toast.error('Coordinates must be valid numbers')
       return setSubmitting(false)
     }
     for (const image of images) {
       if (image.alt == '') {
-        alert(`Image ${image.file.name} is missing alternative text`)
+        toast.error(`Image ${image.file.name} is missing alternative text`)
         return setSubmitting(false)
       }
     }
+
     const newVenue: NewVenue = {
-      name: data.name.toString(),
+      name,
       subcategory: subcategory.id,
-      description: data.description.toString(),
-      latitude: Number(data.latitude),
-      longitude: Number(data.longitude),
+      description,
+      latitude: latitudeValue,
+      longitude: longitudeValue,
     }
     const result = await createVenue(newVenue)
     if (result.data) {
@@ -137,6 +140,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       )
     }
     setSubmitting(false)
+    toast.success('Venue updated successfully')
   }
 
   return (
@@ -224,7 +228,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           variant="contained"
           disabled={submitting || venue.isFetching}
         >
-          Create
+          {props.venueId ? 'Save' : 'Create'}
         </Button>
       </DialogActions>
     </Dialog>
