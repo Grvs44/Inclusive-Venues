@@ -19,6 +19,7 @@ import {
   useGetVenueCategoriesQuery,
   useGetVenueQuery,
   useGetVenueSubcategoriesQuery,
+  useGetVenueSubcategoryQuery,
 } from '../redux/apiSlice'
 import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 
@@ -52,6 +53,10 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   const venue = useGetVenueQuery(props.venueId, {
     skip: !props.open || props.venueId == undefined,
   })
+  const subcategoryQuery = useGetVenueSubcategoryQuery(
+    venue.data?.subcategory,
+    { skip: venue.data == undefined },
+  )
 
   React.useEffect(() => setSubcategory(null), [category])
 
@@ -63,19 +68,17 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       setDescription('')
       setAddress('')
       setImages([])
-    } else if (venue.data && categories.data && subcategories.data) {
+    } else if (venue.data && categories.data && subcategoryQuery.data) {
       setName(venue.data.name)
-      const subcategory = subcategories.data.find(
-        (s) => s.id == venue.data?.subcategory,
-      )
+      const subcategory = subcategoryQuery.data
       setCategory(
-        categories.data.find((c) => c.id == subcategory?.category) || null,
+        categories.data.find((c) => c.id == subcategory.category) || null,
       )
-      setSubcategory(subcategory || null)
-      setDescription(venue.data.description)
+      setSubcategory(subcategory)
+      setDescription(venue.data.description || '')
       setAddress(venue.data.address || '')
     }
-  }, [props.venueId, venue.data, categories.data, subcategories.data])
+  }, [props.venueId, venue.data, categories.data, subcategoryQuery.data])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
