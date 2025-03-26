@@ -40,6 +40,8 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
     null,
   )
+  const [latitude, setLatitude] = React.useState<string>('')
+  const [longitude, setLongitude] = React.useState<string>('')
   const [description, setDescription] = React.useState<string>('')
   const [address, setAddress] = React.useState<string>('')
   const [images, setImages] = React.useState<ImageFile[]>([])
@@ -70,11 +72,15 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       setImages([])
     } else if (venue.data && categories.data && subcategoryQuery.data) {
       setName(venue.data.name)
+
       const subcategory = subcategoryQuery.data
       setCategory(
         categories.data.find((c) => c.id == subcategory.category) || null,
       )
       setSubcategory(subcategory)
+
+      setLatitude(venue.data.latitude)
+      setLongitude(venue.data.longitude)
       setDescription(venue.data.description || '')
       setAddress(venue.data.address || '')
     }
@@ -181,7 +187,12 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           fullWidth
           disabled={subcategories.data == undefined || venue.isFetching}
         />
-        <CoordinatesInput />
+        <CoordinatesInput
+          latitude={latitude}
+          longitude={longitude}
+          setLatitude={setLatitude}
+          setLongitude={setLongitude}
+        />
         <TextField
           label="Description"
           name="description"

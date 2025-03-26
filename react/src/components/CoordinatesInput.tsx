@@ -3,9 +3,19 @@ import { Button, Stack, TextField, Typography } from '@mui/material'
 import LocationPicker from './LocationPicker'
 import { getLocationErrorMessage } from './utils'
 
-export default function CoordinatesInput() {
-  const [latitude, setLatitude] = React.useState<string>('')
-  const [longitude, setLongitude] = React.useState<string>('')
+export type CoordinatesInputProps = {
+  latitude: string
+  longitude: string
+  setLatitude: (latitude: string) => void
+  setLongitude: (longitude: string) => void
+}
+
+export default function CoordinatesInput({
+  latitude,
+  longitude,
+  setLatitude,
+  setLongitude,
+}: CoordinatesInputProps) {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [pickerOpen, setPickerOpen] = React.useState<boolean>(false)
 
