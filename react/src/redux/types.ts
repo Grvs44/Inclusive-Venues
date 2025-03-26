@@ -60,8 +60,8 @@ export type ListVenue = {
 export type Venue = {
   id: number
   name: string
-  longitude: number
-  latitude: number
+  longitude: string
+  latitude: string
   score?: string
   description: string | null
   address: string | null
