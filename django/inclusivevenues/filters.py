@@ -103,5 +103,5 @@ class CreatorFilter(BaseFilterBackend):
         if request.GET.get('my', None) is None:
             return queryset
         if request.user.is_authenticated:
-            return QuerySet()
-        return queryset.filter(added_by=request.user)
+            return queryset.filter(added_by=request.user)
+        return queryset.none()
