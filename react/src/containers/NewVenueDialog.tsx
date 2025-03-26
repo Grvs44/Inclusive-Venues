@@ -5,6 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Skeleton,
   TextField,
 } from '@mui/material'
 import { redirect } from 'react-router-dom'
@@ -16,6 +17,7 @@ import {
   useCreateImageMutation,
   useCreateVenueMutation,
   useGetVenueCategoriesQuery,
+  useGetVenueQuery,
   useGetVenueSubcategoriesQuery,
 } from '../redux/apiSlice'
 import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
@@ -23,17 +25,22 @@ import { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 export type NewVenueDialogProps = {
   open: boolean
   onClose: () => void
+  venueId?: number
 }
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
+  console.log(`venueId=${props.venueId}`)
   const [createVenue] = useCreateVenueMutation()
   const [createImage] = useCreateImageMutation()
 
   const [submitting, setSubmitting] = React.useState<boolean>(false)
+  const [name, setName] = React.useState<string>('')
   const [category, setCategory] = React.useState<VenueCategory | null>(null)
   const [subcategory, setSubcategory] = React.useState<VenueSubcategory | null>(
     null,
   )
+  const [description, setDescription] = React.useState<string>('')
+  const [address, setAddress] = React.useState<string>('')
   const [images, setImages] = React.useState<ImageFile[]>([])
 
   const categories = useGetVenueCategoriesQuery(undefined, {
@@ -42,8 +49,33 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   const subcategories = useGetVenueSubcategoriesQuery(category?.id, {
     skip: !props.open || category == null,
   })
+  const venue = useGetVenueQuery(props.venueId, {
+    skip: !props.open || props.venueId == undefined,
+  })
 
   React.useEffect(() => setSubcategory(null), [category])
+
+  React.useEffect(() => {
+    if (props.venueId == undefined) {
+      setName('')
+      setCategory(null)
+      setSubcategory(null)
+      setDescription('')
+      setAddress('')
+      setImages([])
+    } else if (venue.data && categories.data && subcategories.data) {
+      setName(venue.data.name)
+      const subcategory = subcategories.data.find(
+        (s) => s.id == venue.data?.subcategory,
+      )
+      setCategory(
+        categories.data.find((c) => c.id == subcategory?.category) || null,
+      )
+      setSubcategory(subcategory || null)
+      setDescription(venue.data.description)
+      setAddress(venue.data.address || '')
+    }
+  }, [props.venueId, venue.data, categories.data, subcategories.data])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -105,7 +137,11 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       onClose={props.onClose}
       slotProps={{ paper: { component: 'form', onSubmit } }}
     >
-      <DialogTitle>New venue</DialogTitle>
+      <DialogTitle>
+        {props.venueId
+          ? venue.data?.name || <Skeleton sx={{ width: '10em' }} />
+          : 'New venue'}
+      </DialogTitle>
       <DialogContent>
         <TextField
           name="name"
@@ -116,6 +152,9 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           fullWidth
           margin="dense"
           autoComplete="false"
+          disabled={venue.isFetching}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
         />
         <DropDown
           label="Category"
@@ -126,18 +165,18 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           value={category}
           required
           fullWidth
-          disabled={categories.data == undefined}
+          disabled={categories.data == undefined || venue.isFetching}
         />
         <DropDown
           label="Subcategory"
           data={subcategories.data || []}
-          isFetching={false}
+          isFetching={subcategories.isFetching}
           getLabel={(x) => x.name}
           onChange={setSubcategory}
           value={subcategory}
           required
           fullWidth
-          disabled={subcategories.data == undefined}
+          disabled={subcategories.data == undefined || venue.isFetching}
         />
         <CoordinatesInput />
         <TextField
@@ -146,6 +185,9 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           fullWidth
           margin="dense"
           multiline
+          disabled={venue.isFetching}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
         />
         <TextField
           label="Address"
@@ -153,6 +195,9 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           fullWidth
           margin="dense"
           multiline
+          disabled={venue.isFetching}
+          value={address}
+          onChange={(event) => setAddress(event.target.value)}
         />
         <ImageUploadBox images={images} setImages={setImages} />
       </DialogContent>
@@ -160,7 +205,11 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
         <Button type="button" onClick={props.onClose} disabled={submitting}>
           Close
         </Button>
-        <Button type="submit" variant="contained" disabled={submitting}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={submitting || venue.isFetching}
+        >
           Create
         </Button>
       </DialogActions>

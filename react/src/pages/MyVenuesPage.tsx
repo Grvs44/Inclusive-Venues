@@ -31,7 +31,7 @@ export default function MyVenuesPage() {
     setVenueId(venueId)
     setVenueOpen(true)
   }
-  
+
   return (
     <Container>
       {isError ? (
@@ -59,7 +59,11 @@ export default function MyVenuesPage() {
         </>
       )}
       <NewVenueFab onClick={newVenue} />
-      <NewVenueDialog open={venueOpen} onClose={() => setVenueOpen(false)} />
+      <NewVenueDialog
+        open={venueOpen}
+        onClose={() => setVenueOpen(false)}
+        venueId={venueId}
+      />
     </Container>
   )
 }
