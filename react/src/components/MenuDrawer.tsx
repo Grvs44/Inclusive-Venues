@@ -49,6 +49,12 @@ export default function MenuDrawer({ user, ...props }: MenuDrawerProps) {
           </ListItemIcon>
           <ListItemText>My reviews</ListItemText>
         </LinkListItem>
+        <LinkListItem to="myvenue">
+          <ListItemIcon>
+            <ThumbUpIcon />
+          </ListItemIcon>
+          <ListItemText>My venues</ListItemText>
+        </LinkListItem>
         <div style={{ marginTop: 'auto' }}>
           <Divider component="li" />
           <InstallPwaListItem />

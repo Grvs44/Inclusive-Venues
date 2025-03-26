@@ -81,6 +81,7 @@ export type NewVenue = {
 
 export interface PageQuery {
   page?: number
+  my?: boolean
 }
 
 export type VenueQuery = PageQuery & {
