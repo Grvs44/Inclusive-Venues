@@ -3,7 +3,7 @@ import re
 import requests
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
-from django.db.models import F, Func, Q
+from django.db.models import F, Func, Q, QuerySet
 
 from .settings import MAP_KEY
 
@@ -86,7 +86,7 @@ LON_KM = Decimal(70.1495605)
 
 
 class LocationFilter(BaseFilterBackend):
-    def filter_queryset(self, request, queryset, view):
+    def filter_queryset(self, request, queryset: QuerySet, view):
         location = get_location(request.GET.get('location', ''))
         if location is None:
             return queryset
@@ -96,3 +96,12 @@ class LocationFilter(BaseFilterBackend):
             .alias(distance=Func((F('lat_change')*F('lat_change')) + (F('lon_change')*F('lon_change')), function='SQRT'))\
             .order_by('distance')\
             .annotate(distance=F('distance'))
+
+
+class CreatorFilter(BaseFilterBackend):
+    def filter_queryset(self, request, queryset: QuerySet, view):
+        if request.GET.get('my', None) is None:
+            return queryset
+        if request.user.is_authenticated:
+            return QuerySet()
+        return queryset.filter(added_by=request.user)
