@@ -13,6 +13,7 @@ import ImageViewDialog, { ImageFile } from './ImageViewDialog'
 export type ImageUploadBoxProps = {
   images: ImageFile[]
   setImages: (value: React.SetStateAction<ImageFile[]>) => void
+  children?: React.ReactNode
 }
 
 export default function ImageUploadBox(props: ImageUploadBoxProps) {
@@ -58,6 +59,7 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
         accept="image/*"
       />
       <Button onClick={() => props.setImages([])}>Clear list</Button>
+      {props.children}
       <List>
         {props.images.map((image) => (
           <ListItem key={image.file.name}>

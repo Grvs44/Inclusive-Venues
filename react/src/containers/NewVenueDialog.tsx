@@ -84,6 +84,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       setLongitude(venue.data.longitude)
       setDescription(venue.data.description || '')
       setAddress(venue.data.address || '')
+      setImages([])
     }
   }, [props.venueId, venue.data, categories.data, subcategoryQuery.data])
 
@@ -142,6 +143,9 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
     setSubmitting(false)
     toast.success('Venue updated successfully')
   }
+
+  // TODO
+  const viewImages = () => {}
 
   return (
     // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
@@ -217,7 +221,13 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           value={address}
           onChange={(event) => setAddress(event.target.value)}
         />
-        <ImageUploadBox images={images} setImages={setImages} />
+        <ImageUploadBox images={images} setImages={setImages}>
+          {props.venueId && venue.data && venue.data.images?.length ? (
+            <Button disabled={venue.isFetching} onClick={viewImages}>
+              View existing images ({venue.data.images.length})
+            </Button>
+          ) : null}
+        </ImageUploadBox>
       </DialogContent>
       <DialogActions>
         <Button type="button" onClick={props.onClose} disabled={submitting}>
