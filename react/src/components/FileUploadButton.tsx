@@ -20,6 +20,7 @@ export type FileUploadButtonProps = {
   text: string
   onAdd: (files: FileList) => void
   accept?: string
+  disabled?: boolean
 }
 
 export default function FileUploadButton(props: FileUploadButtonProps) {
@@ -36,6 +37,7 @@ export default function FileUploadButton(props: FileUploadButtonProps) {
       variant="contained"
       tabIndex={-1}
       startIcon={<CloudUploadIcon />}
+      disabled={props.disabled}
     >
       {props.text}
       <VisuallyHiddenInput

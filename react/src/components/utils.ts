@@ -10,3 +10,6 @@ export const getLocationErrorMessage = (error: GeolocationPositionError) => {
       return error.message
   }
 }
+
+export const to_number = (value?: string | number) =>
+  value == '' ? NaN : Number(value)

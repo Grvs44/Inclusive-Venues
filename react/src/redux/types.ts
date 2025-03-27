@@ -60,11 +60,11 @@ export type ListVenue = {
 export type Venue = {
   id: number
   name: string
-  longitude: number
-  latitude: number
+  longitude: string
+  latitude: string
   score?: string
-  description: string
-  address?: string
+  description: string | null
+  address: string | null
   subcategory: number
   map: string | null
   images?: VenueImage[]
@@ -81,6 +81,7 @@ export type NewVenue = {
 
 export interface PageQuery {
   page?: number
+  my?: boolean
 }
 
 export type VenueQuery = PageQuery & {

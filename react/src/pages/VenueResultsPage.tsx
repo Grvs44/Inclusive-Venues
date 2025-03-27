@@ -1,6 +1,5 @@
 import React from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import { Box, Fab, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import { SerializedError } from '@reduxjs/toolkit'
@@ -8,6 +7,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { AzureMapsProvider } from 'react-azure-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import NewVenueFab from '../components/NewVenueFab'
 import ListResultsView from '../containers/ListResultsView'
 import MapResultsView from '../containers/MapResultsView'
 import NewVenueDialog from '../containers/NewVenueDialog'
@@ -19,7 +19,9 @@ import { useGetVenuesQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import type { State } from '../redux/types'
 
-const getErrorMessage = (error: FetchBaseQueryError | SerializedError) => {
+export const getErrorMessage = (
+  error: FetchBaseQueryError | SerializedError,
+) => {
   if ('data' in error) {
     if (Array.isArray(error.data)) {
       return error.data[0]
@@ -99,16 +101,7 @@ export default function VenueResultsPage() {
           Load more
         </Button>
       ) : null}
-      <Fab
-        // Fab adapted from https://mui.com/material-ui/react-floating-action-button/
-        color="primary"
-        onClick={() => setNewVenueOpen(true)}
-        variant="extended"
-        sx={{ position: 'fixed', right: 16, bottom: 16 }}
-      >
-        <AddIcon sx={{ mr: 1 }} />
-        New venue
-      </Fab>
+      <NewVenueFab onClick={() => setNewVenueOpen(true)} />
       <VenueDetailDialog
         open={detailOpen}
         onClose={() => setDetailOpen(false)}

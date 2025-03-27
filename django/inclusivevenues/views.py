@@ -3,22 +3,22 @@ Views for the Inclusive Venues Django app
 ViewSet documentation: https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset
 '''
 # pylint:disable=no-member
-from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response, status
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login, logout
-from django.db.utils import IntegrityError
 from django.db.models import Avg
+from django.db.utils import IntegrityError
+from django.shortcuts import render
 
 from . import models, permissions, serializers
-from .filters import CategoryFilter, LocationFilter
+from .filters import CategoryFilter, CreatorFilter, LocationFilter
 from .pagination import Pagination
 
 
@@ -47,7 +47,7 @@ class VenueViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
     queryset = models.Venue.objects.all()
     permission_classes = [permissions.VenuePermission]
     filter_backends = [
-        CategoryFilter, LocationFilter, OrderingFilter, SearchFilter
+        CreatorFilter, CategoryFilter, LocationFilter, OrderingFilter, SearchFilter
     ]
     ordering_fields = ['score']
     search_fields = ['name']

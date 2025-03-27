@@ -11,7 +11,7 @@ import { useGetReviewsQuery, useGetUserDetailsQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import { Review } from '../redux/types'
 
-export default function ReviewListPage() {
+export default function MyReviewsPage() {
   const dispatch = useDispatch()
   const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
   const [venueId, setVenueId] = React.useState<number | undefined>(undefined)

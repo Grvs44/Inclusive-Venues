@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { AzureMapHtmlMarker, AzureMapsProvider } from 'react-azure-maps'
 import Map from './Map'
+import { to_number } from './utils'
 
 export type LocationPickerProps = {
   open: boolean
@@ -29,8 +30,8 @@ export default function LocationPicker(props: LocationPickerProps) {
 
   React.useEffect(() => {
     if (!open) return
-    const latitude = props.latitude == '' ? NaN : Number(props.latitude)
-    const longitude = props.longitude == '' ? NaN : Number(props.longitude)
+    const latitude = to_number(props.latitude)
+    const longitude = to_number(props.longitude)
     if (!isNaN(latitude) && !isNaN(longitude)) {
       setLatitude(latitude)
       setLongitude(longitude)
@@ -60,6 +61,7 @@ export default function LocationPicker(props: LocationPickerProps) {
         <Button
           onClick={() => props.onSubmit(latitude, longitude)}
           loadingPosition="start"
+          variant="contained"
         >
           Choose
         </Button>
