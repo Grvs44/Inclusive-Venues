@@ -1,3 +1,4 @@
+import path from 'path'
 import react from '@vitejs/plugin-react'
 import license from 'rollup-plugin-license'
 import { defineConfig } from 'vite'
@@ -45,6 +46,10 @@ export default defineConfig({
       },
       plugins: [
         license({
+          sourcemap: true,
+          banner: {
+            content: { file: path.resolve('../LICENSE') },
+          },
           thirdParty: {
             includeSelf: true,
             output: { file: 'build/licenses.txt' },
