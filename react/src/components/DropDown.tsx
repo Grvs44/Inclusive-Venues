@@ -22,7 +22,7 @@ export type DropDownProps<T extends Entity> = {
 export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
   const [open, setOpen] = React.useState(false)
   const [input, setInput] = React.useState('')
-  const [currentData, setCurrentData] = React.useState<T[]>(props.data)
+  const [currentData, setCurrentData] = React.useState<T[]>([])
   const loading = open && props.isFetching
 
   React.useEffect(() => {
@@ -37,6 +37,8 @@ export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
       )
     }
   }, [input])
+
+  React.useEffect(() => setCurrentData(props.data), [props.data])
 
   return (
     <Autocomplete
