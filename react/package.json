@@ -2,6 +2,10 @@
   "name": "inclusivevenues",
   "version": "0.5.0-beta.1",
   "private": true,
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Elli Greaves"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
