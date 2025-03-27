@@ -23,6 +23,7 @@ import {
   useGetVenueQuery,
   useGetVenueSubcategoriesQuery,
   useGetVenueSubcategoryQuery,
+  useUpdateVenueMutation,
 } from '../redux/apiSlice'
 import type { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
 
@@ -34,6 +35,7 @@ export type NewVenueDialogProps = {
 
 export default function NewVenueDialog(props: NewVenueDialogProps) {
   const [createVenue] = useCreateVenueMutation()
+  const [updateVenue] = useUpdateVenueMutation()
   const [createImage] = useCreateImageMutation()
 
   const [submitting, setSubmitting] = React.useState<boolean>(false)
@@ -124,28 +126,41 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       latitude: latitudeValue,
       longitude: longitudeValue,
     }
-    const result = await createVenue(newVenue)
+    const result = await toast.promise(
+      props.venueId
+        ? updateVenue({ id: props.venueId, ...newVenue })
+        : createVenue(newVenue),
+      { loading: props.venueId ? 'Updating venue...' : 'Adding venue...' },
+    )
     if (result.data) {
-      console.log('uploading images')
-      images.forEach((image, index) => {
+      toast.success(
+        props.venueId
+          ? 'Sucessfully updated venue'
+          : 'Successfully added venue',
+      )
+      const imagePromises = images.map((image, index) => {
         const formData = new FormData()
         formData.append('venue', result.data.id.toString())
         formData.append('alt', image.alt)
         formData.append('order', index.toString())
         formData.append('src', image.file, image.file.name)
-        createImage(formData)
+        return createImage(formData).unwrap()
+      })
+      await toast.promise(Promise.all(imagePromises), {
+        loading: 'Uploading venue images...',
+        success: 'Finished uploading venue images',
+        error: "One or more venue images couldn't be uploaded",
       })
       redirect(`/venue/${result.data.id}`)
       props.onClose()
     } else {
-      alert(
+      toast.error(
         'data' in result.error && Array.isArray(result.error.data)
-          ? result.error.data
+          ? result.error.data.toString()
           : 'Unknown error',
       )
     }
     setSubmitting(false)
-    toast.success('Venue updated successfully')
   }
 
   return (
