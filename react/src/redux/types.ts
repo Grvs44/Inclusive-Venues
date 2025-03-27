@@ -79,6 +79,8 @@ export type NewVenue = {
   subcategory: number
 }
 
+export type UpdateVenue = Entity & NewVenue
+
 export interface PageQuery {
   page?: number
   my?: boolean

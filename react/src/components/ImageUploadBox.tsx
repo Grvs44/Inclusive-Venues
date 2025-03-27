@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Stack,
   Typography,
 } from '@mui/material'
 import FileUploadButton from './FileUploadButton'
@@ -68,17 +69,15 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
         {props.images.map((image) => (
           <ListItem key={image.file.name}>
             <ListItemButton onClick={() => openView(image)}>
-              <ListItemText
-                primary={image.file.name}
-                secondary={
-                  <>
-                    <Typography>
-                      {(image.file.size / 1000).toFixed(0)}KB
-                    </Typography>
-                    <Typography>{image.alt || '(missing alt text)'}</Typography>
-                  </>
-                }
-              />
+              <Stack>
+                <Typography>{image.file.name}</Typography>
+                <Typography color="textSecondary">
+                  {(image.file.size / 1000).toFixed(0)}KB
+                </Typography>
+                <Typography color="textSecondary">
+                  {image.alt || '(missing alt text)'}
+                </Typography>
+              </Stack>
             </ListItemButton>
           </ListItem>
         ))}
