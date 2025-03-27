@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react'
+import license from 'rollup-plugin-license'
 import { defineConfig } from 'vite'
 import jsconfigPaths from 'vite-jsconfig-paths'
 import { createHtmlPlugin } from 'vite-plugin-html'
@@ -42,6 +43,14 @@ export default defineConfig({
           toast: ['react-hot-toast'],
         },
       },
+      plugins: [
+        license({
+          thirdParty: {
+            includeSelf: true,
+            output: { file: 'build/licenses.txt' },
+          },
+        }),
+      ],
     },
   },
 })
