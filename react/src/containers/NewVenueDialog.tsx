@@ -78,7 +78,6 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       setCategory(
         categories.data.find((c) => c.id == subcategory.category) || null,
       )
-      setSubcategory(subcategory)
 
       setLatitude(venue.data.latitude)
       setLongitude(venue.data.longitude)
@@ -87,6 +86,10 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       setImages([])
     }
   }, [props.venueId, venue.data, categories.data, subcategoryQuery.data])
+
+  React.useEffect(() => {
+    if (subcategoryQuery.data) setSubcategory(subcategoryQuery.data)
+  }, [category])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
