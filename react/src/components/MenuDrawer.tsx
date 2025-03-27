@@ -1,5 +1,6 @@
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/components/MenuDrawer.tsx
 import React from 'react'
+import AddLocationIcon from '@mui/icons-material/AddLocation'
 import HomeIcon from '@mui/icons-material/Home'
 import PlaceIcon from '@mui/icons-material/Place'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -11,7 +12,7 @@ import ListItemText from '@mui/material/ListItemText'
 import SwipeableDrawer, {
   SwipeableDrawerProps,
 } from '@mui/material/SwipeableDrawer'
-import { User } from '../redux/types'
+import type { User } from '../redux/types'
 import AccountListItem from './AccountListItem'
 import InstallPwaListItem from './InstallPwaListItem'
 import LinkListItem from './LinkListItem'
@@ -51,7 +52,7 @@ export default function MenuDrawer({ user, ...props }: MenuDrawerProps) {
         </LinkListItem>
         <LinkListItem to="myvenue">
           <ListItemIcon>
-            <ThumbUpIcon />
+            <AddLocationIcon />
           </ListItemIcon>
           <ListItemText>My venues</ListItemText>
         </LinkListItem>
