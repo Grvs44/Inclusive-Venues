@@ -214,6 +214,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           longitude={longitude}
           setLatitude={setLatitude}
           setLongitude={setLongitude}
+          disabled={venue.isFetching}
         />
         <TextField
           label="Description"

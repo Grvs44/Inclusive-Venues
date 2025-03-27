@@ -8,6 +8,7 @@ export type CoordinatesInputProps = {
   longitude: string
   setLatitude: (latitude: string) => void
   setLongitude: (longitude: string) => void
+  disabled?: boolean
 }
 
 export default function CoordinatesInput({
@@ -15,6 +16,7 @@ export default function CoordinatesInput({
   longitude,
   setLatitude,
   setLongitude,
+  disabled,
 }: CoordinatesInputProps) {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [pickerOpen, setPickerOpen] = React.useState<boolean>(false)
@@ -49,10 +51,18 @@ export default function CoordinatesInput({
       <legend>
         <Typography>Location</Typography>
       </legend>
-      <Button onClick={getLocation} loading={loading} loadingPosition="start">
+      <Button
+        onClick={getLocation}
+        loading={loading}
+        loadingPosition="start"
+        disabled={disabled}
+      >
         Use current location
       </Button>
-      <Button onClick={() => setPickerOpen(true)} disabled={loading}>
+      <Button
+        onClick={() => setPickerOpen(true)}
+        disabled={loading || disabled}
+      >
         Choose location on map
       </Button>
       <Stack direction="row">
@@ -64,6 +74,7 @@ export default function CoordinatesInput({
           onChange={(event) => setLatitude(event.target.value)}
           fullWidth
           required
+          disabled={disabled}
         />
         <TextField
           type="number"
@@ -73,6 +84,7 @@ export default function CoordinatesInput({
           onChange={(event) => setLongitude(event.target.value)}
           fullWidth
           required
+          disabled={disabled}
         />
         <LocationPicker
           open={pickerOpen}
