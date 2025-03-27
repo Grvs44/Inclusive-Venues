@@ -159,7 +159,9 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
     >
       <DialogTitle>
         {props.venueId
-          ? venue.data?.name || <Skeleton sx={{ width: '10em' }} />
+          ? (!venue.isFetching && venue.data?.name) || (
+              <Skeleton sx={{ width: '10em' }} />
+            )
           : 'New venue'}
       </DialogTitle>
       <DialogContent>
@@ -185,7 +187,11 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           value={category}
           required
           fullWidth
-          disabled={categories.data == undefined || venue.isFetching}
+          disabled={
+            categories.data == undefined ||
+            venue.isFetching ||
+            subcategoryQuery.isFetching
+          }
         />
         <DropDown
           label="Subcategory"
@@ -196,7 +202,11 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           value={subcategory}
           required
           fullWidth
-          disabled={subcategories.data == undefined || venue.isFetching}
+          disabled={
+            subcategories.data == undefined ||
+            venue.isFetching ||
+            subcategoryQuery.isFetching
+          }
         />
         <CoordinatesInput
           latitude={latitude}
