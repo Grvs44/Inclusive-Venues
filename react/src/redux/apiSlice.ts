@@ -75,6 +75,7 @@ export const apiSlice = createApi({
     'ratingcat',
     'review',
     'reviewavg',
+    'license',
   ],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
@@ -288,6 +289,16 @@ export const apiSlice = createApi({
         )
       },
     }),
+
+    // License
+    getLicense: builder.query<string, void>({
+      query: () => ({
+        url: '../licenses.txt',
+        responseHandler: (response) => response.text(),
+      }),
+      providesTags: [{ type: 'license' }],
+      keepUnusedDataFor: Infinity,
+    }),
   }),
 })
 
@@ -310,4 +321,5 @@ export const {
   useCreateReviewMutation,
   useUpdateReviewMutation,
   useCreateImageMutation,
+  useGetLicenseQuery,
 } = apiSlice

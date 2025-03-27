@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Typography } from '@mui/material'
 import { useDispatch } from 'react-redux'
+import LicenseContainer from '../containers/LicenseContainer'
 import { setTitle } from '../redux/titleSlice'
 
 export default function SettingsPage() {
@@ -19,6 +20,7 @@ export default function SettingsPage() {
       <Typography color="textSecondary">
         Version {import.meta.env.VITE_VERSION} by Elli Greaves (2025)
       </Typography>
+      <LicenseContainer />
     </Container>
   )
 }
