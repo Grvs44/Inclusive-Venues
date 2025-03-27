@@ -61,6 +61,7 @@ export default function LocationPicker(props: LocationPickerProps) {
         <Button
           onClick={() => props.onSubmit(latitude, longitude)}
           loadingPosition="start"
+          variant="contained"
         >
           Choose
         </Button>
