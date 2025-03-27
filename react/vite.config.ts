@@ -45,7 +45,6 @@ export default defineConfig({
       },
       plugins: [
         license({
-          sourcemap: true,
           banner: {
             content: '/*! licenses: licenses.txt */',
           },
