@@ -17,7 +17,7 @@ export default function SettingsPage() {
       </Typography>
       <hr />
       <Typography color="textSecondary">
-        Version {import.meta.env.VITE_VERSION}
+        Version {import.meta.env.VITE_VERSION} by Elli Greaves (2025)
       </Typography>
     </Container>
   )
