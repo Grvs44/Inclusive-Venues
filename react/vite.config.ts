@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react'
+import license from 'rollup-plugin-license'
 import { defineConfig } from 'vite'
 import jsconfigPaths from 'vite-jsconfig-paths'
 import { createHtmlPlugin } from 'vite-plugin-html'
@@ -36,12 +37,23 @@ export default defineConfig({
           icons: ['@mui/icons-material'],
           react: ['react', 'react-dom'],
           redux: ['react-redux'],
-          router: ['react-router'],
+          router: ['react-router-dom'],
           maps: ['react-azure-maps'],
           cookie: ['js-cookie'],
           toast: ['react-hot-toast'],
         },
       },
+      plugins: [
+        license({
+          banner: {
+            content: '/*! licenses: licenses.txt */',
+          },
+          thirdParty: {
+            includeSelf: true,
+            output: { file: 'build/licenses.txt' },
+          },
+        }),
+      ],
     },
   },
 })

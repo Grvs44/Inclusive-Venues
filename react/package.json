@@ -2,6 +2,10 @@
   "name": "inclusivevenues",
   "version": "0.5.0-beta.1",
   "private": true,
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Elli Greaves"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -38,10 +42,12 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
     "@reduxjs/toolkit": "^2.5.0",
     "@types/js-cookie": "^3.0.6",
+    "@types/node": "^22.13.14",
     "@types/react-dom": "^19.0.3",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.1.1",
     "jsdom": "^22.1.0",
+    "rollup-plugin-license": "^3.6.0",
     "vite": "^4.5.9",
     "vite-jsconfig-paths": "^2.0.1",
     "vite-plugin-html": "^3.2.2",

@@ -26,6 +26,8 @@ jobs:
             const coredemo = require('@actions/core')
             return await coredemo.getIDToken()
           result-encoding: string
+      - name: Move license file
+        run: mv LICENSE react/LICENSE
       - name: Get React app version
         id: appversion
         run: |
