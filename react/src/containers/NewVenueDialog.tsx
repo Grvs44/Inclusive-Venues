@@ -9,7 +9,6 @@ import {
   TextField,
 } from '@mui/material'
 import toast from 'react-hot-toast'
-import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ExistingImageButton from '../components/ExistingImageButton'
@@ -153,7 +152,6 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           error: "One or more venue images couldn't be uploaded",
         })
       }
-      redirect(`/venue/${result.data.id}`)
       props.onClose()
     } else {
       toast.error(
