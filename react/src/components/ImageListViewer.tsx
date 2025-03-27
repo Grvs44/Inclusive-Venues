@@ -24,7 +24,13 @@ const ImageListViewer: React.FC<ImageListViewerProps> = (props) => (
         <ImageList>
           {props.images.map((image) => (
             <ImageListItem key={image.id}>
-              <img src={image.src} alt={image.alt} title={image.alt} />
+              <img
+                src={image.src}
+                alt={image.alt}
+                title={image.alt}
+                height={200}
+                loading="lazy"
+              />
             </ImageListItem>
           ))}
         </ImageList>
