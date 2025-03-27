@@ -146,11 +146,13 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
         formData.append('src', image.file, image.file.name)
         return createImage(formData).unwrap()
       })
-      await toast.promise(Promise.all(imagePromises), {
-        loading: 'Uploading venue images...',
-        success: 'Finished uploading venue images',
-        error: "One or more venue images couldn't be uploaded",
-      })
+      if (imagePromises.length) {
+        await toast.promise(Promise.all(imagePromises), {
+          loading: 'Uploading venue images...',
+          success: 'Finished uploading venue images',
+          error: "One or more venue images couldn't be uploaded",
+        })
+      }
       redirect(`/venue/${result.data.id}`)
       props.onClose()
     } else {
