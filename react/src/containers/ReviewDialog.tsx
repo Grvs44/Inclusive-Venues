@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import ListItemText from '@mui/material/ListItemText'
+import toast from 'react-hot-toast'
 import DropDown from '../components/DropDown'
 import RateBox from '../components/RateBox'
 import {
@@ -106,13 +107,16 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           ratings,
         }))
     if (result.error) {
-      alert(
+      toast.error(
         'data' in result.error && Array.isArray(result.error.data)
-          ? result.error.data
+          ? result.error.data.toString()
           : 'Unknown error',
       )
     } else {
       props.onClose()
+      toast.success(
+        data ? 'Review updated successfully' : 'Review created successfully',
+      )
     }
     setSubmitting(false)
   }

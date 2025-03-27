@@ -148,9 +148,6 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
     toast.success('Venue updated successfully')
   }
 
-  // TODO
-  const viewImages = () => {}
-
   return (
     // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
     <Dialog
