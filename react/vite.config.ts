@@ -37,7 +37,7 @@ export default defineConfig({
           icons: ['@mui/icons-material'],
           react: ['react', 'react-dom'],
           redux: ['react-redux'],
-          router: ['react-router'],
+          router: ['react-router-dom'],
           maps: ['react-azure-maps'],
           cookie: ['js-cookie'],
           toast: ['react-hot-toast'],
