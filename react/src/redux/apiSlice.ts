@@ -11,6 +11,7 @@ import type {
   Review,
   ReviewQuery,
   UpdateReview,
+  UpdateVenue,
   User,
   UserLogin,
   Venue,
@@ -183,6 +184,20 @@ export const apiSlice = createApi({
         )
       },
     }),
+    updateVenue: builder.mutation<Venue, UpdateVenue>({
+      query: ({ id, ...body }) => ({
+        url: 'venue/' + id,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: [{ type: 'venue', id: LIST }],
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.upsertQueryData('getVenue', query.data.id, query.data),
+        )
+      },
+    }),
 
     // Rating categories
     getRatingCategories: builder.query<RatingCategory[], void>({
@@ -277,6 +292,7 @@ export const {
   useGetVenueReviewsQuery,
   useGetVenueReviewAggregationQuery,
   useCreateVenueMutation,
+  useUpdateVenueMutation,
   useGetRatingCategoriesQuery,
   useGetReviewsQuery,
   useCreateReviewMutation,
