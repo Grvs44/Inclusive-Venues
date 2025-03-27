@@ -14,6 +14,7 @@ export type ImageUploadBoxProps = {
   images: ImageFile[]
   setImages: (value: React.SetStateAction<ImageFile[]>) => void
   children?: React.ReactNode
+  disabled?: boolean
 }
 
 export default function ImageUploadBox(props: ImageUploadBoxProps) {
@@ -57,8 +58,11 @@ export default function ImageUploadBox(props: ImageUploadBoxProps) {
         text="Upload images"
         onAdd={addFiles}
         accept="image/*"
+        disabled={props.disabled}
       />
-      <Button onClick={() => props.setImages([])}>Clear list</Button>
+      <Button onClick={() => props.setImages([])} disabled={props.disabled}>
+        Clear list
+      </Button>
       {props.children}
       <List>
         {props.images.map((image) => (

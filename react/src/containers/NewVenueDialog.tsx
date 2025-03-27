@@ -12,6 +12,7 @@ import toast from 'react-hot-toast'
 import { redirect } from 'react-router-dom'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
+import ExistingImageButton from '../components/ExistingImageButton'
 import ImageUploadBox from '../components/ImageUploadBox'
 import type { ImageFile } from '../components/ImageViewDialog'
 import { to_number } from '../components/utils'
@@ -234,12 +235,16 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
           value={address}
           onChange={(event) => setAddress(event.target.value)}
         />
-        <ImageUploadBox images={images} setImages={setImages}>
-          {props.venueId && venue.data && venue.data.images?.length ? (
-            <Button disabled={venue.isFetching} onClick={viewImages}>
-              View existing images ({venue.data.images.length})
-            </Button>
-          ) : null}
+        <ImageUploadBox
+          images={images}
+          setImages={setImages}
+          disabled={venue.isFetching}
+        >
+          <ExistingImageButton
+            show={props.venueId != undefined}
+            images={venue.data?.images}
+            disabled={venue.isFetching}
+          />
         </ImageUploadBox>
       </DialogContent>
       <DialogActions>
