@@ -275,6 +275,18 @@ export const apiSlice = createApi({
         method: 'POST',
         body,
       }),
+      async onQueryStarted(_a, { dispatch, queryFulfilled }) {
+        const query = await queryFulfilled
+        dispatch(
+          apiSlice.util.updateQueryData(
+            'getVenue',
+            query.data.venue,
+            (draft) => {
+              draft.images ? draft.images.push(query.data) : [query.data]
+            },
+          ),
+        )
+      },
     }),
   }),
 })
