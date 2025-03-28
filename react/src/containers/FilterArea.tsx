@@ -12,7 +12,7 @@ export default function FilterArea() {
   return isError ? (
     <ErrorBox error={error} retry={refetch} sx={{ textAlign: 'center' }} />
   ) : (
-    <List>
+    <List sx={{ width: '100%' }}>
       {data?.map((c) => <FilterCategoryItem key={c.id} category={c} />)}
       <LoadingSkeleton isFetching={isFetching} />
     </List>

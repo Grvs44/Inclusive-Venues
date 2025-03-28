@@ -28,7 +28,7 @@ export default function SubcategoryFilterList(
       {isError ? (
         <ErrorBox error={error} retry={refetch} sx={{ textAlign: 'center' }} />
       ) : (
-        <FormControl>
+        <FormControl sx={{ width: '100%' }}>
           <FormGroup>
             {data?.map((s) => (
               <FormControlLabel

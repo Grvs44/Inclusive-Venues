@@ -18,9 +18,12 @@ export default function FilterCategoryItem(props: FilterCategoryItemProps) {
   const [open, setOpen] = React.useState<boolean>(Boolean(subcatSelected))
 
   return (
-    <ListItem>
-      <Stack direction="column">
-        <ListItemButton onClick={() => setOpen((open) => !open)}>
+    <ListItem sx={{ width: '100%' }}>
+      <Stack direction="column" sx={{ width: '100%' }}>
+        <ListItemButton
+          onClick={() => setOpen((open) => !open)}
+          sx={{ width: '100%' }}
+        >
           <ListItemText
             primary={props.category.name}
             sx={{ fontStyle: subcatSelected ? 'italic' : 'normal' }}
