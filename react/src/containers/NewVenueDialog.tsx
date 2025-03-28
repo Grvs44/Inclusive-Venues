@@ -27,6 +27,7 @@ import {
   useUpdateVenueMutation,
 } from '../redux/apiSlice'
 import type { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
+import { getErrorMessage } from '../redux/utils'
 
 export type NewVenueDialogProps = {
   open: boolean
@@ -62,7 +63,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   })
   const subcategoryQuery = useGetVenueSubcategoryQuery(
     venue.data?.subcategory,
-    { skip: venue.data == undefined },
+    { skip: venue.data == undefined || venue.isFetching || venue.isError },
   )
   const isError =
     categories.isError || venue.isError || subcategoryQuery.isError
@@ -95,7 +96,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
 
   React.useEffect(() => {
     if (subcategoryQuery.data) setSubcategory(subcategoryQuery.data)
-  }, [category])
+  }, [category, subcategoryQuery.data])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -158,11 +159,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       }
       props.onClose()
     } else {
-      toast.error(
-        'data' in result.error && Array.isArray(result.error.data)
-          ? result.error.data.toString()
-          : 'Unknown error',
-      )
+      toast.error(getErrorMessage(result.error))
     }
     setSubmitting(false)
   }
