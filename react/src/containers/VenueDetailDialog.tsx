@@ -9,6 +9,7 @@ import {
   IconButton,
   Skeleton,
 } from '@mui/material'
+import ErrorBox from '../components/ErrorBox'
 import { useGetUserDetailsQuery, useGetVenueQuery } from '../redux/apiSlice'
 import AverageRatingsArea from './AverageRatingsArea'
 import VenueImageList from './VenueImageList'
@@ -24,9 +25,10 @@ export type VenueDetailDialogProps = {
 }
 
 export default function VenueDetailDialog(props: VenueDetailDialogProps) {
-  const { data, isFetching } = useGetVenueQuery(props.id, {
-    skip: !props.open || props.id == undefined,
-  })
+  const { data, error, isError, isFetching, refetch } = useGetVenueQuery(
+    props.id,
+    { skip: !props.open || props.id == undefined },
+  )
   const user = useGetUserDetailsQuery()
 
   return (
@@ -48,8 +50,10 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        {isFetching || data == undefined ? (
+        {isFetching ? (
           <CircularProgress />
+        ) : isError || data == undefined ? (
+          <ErrorBox error={error} retry={refetch} />
         ) : (
           <>
             <VenueImageList images={data.images} />
