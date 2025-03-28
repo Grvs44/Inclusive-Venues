@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Typography from '@mui/material/Typography'
+import toast from 'react-hot-toast'
 import { useLogoutMutation } from '../redux/apiSlice'
 import { LoggedInUser } from '../redux/types'
 
@@ -24,9 +25,9 @@ export default function AccountDialog(props: AccountDialogProps) {
     const result = await logout()
     setLoading(false)
     if (result.error) {
-      alert(
-        'data' in result.error && 'detail' in result.error.data
-          ? 'Logout error: ' + result.error.data.detail
+      toast.error(
+        'data' in result.error && 'detail' in (result.error.data as any)
+          ? 'Logout error: ' + (result.error.data as any).detail
           : 'Unknown error logging out',
       )
     } else {

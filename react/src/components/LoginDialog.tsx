@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
+import toast from 'react-hot-toast'
 import { useLoginMutation } from '../redux/apiSlice'
 import { UserLogin } from '../redux/types'
 
@@ -27,16 +28,16 @@ export default function LoginDialog(props: LoginDialogProps) {
       const result = await login(data as UserLogin)
       setLoading(false)
       if (result.error) {
-        alert(
-          'data' in result.error && 'detail' in result.error.data
-            ? 'Login error: ' + result.error.data.detail
+        toast.error(
+          'data' in result.error && 'detail' in (result.error.data as any)
+            ? 'Login error: ' + (result.error.data as any).detail
             : 'Unknown error logging in',
         )
       } else {
         props.onClose()
       }
     } else {
-      alert('Username and password are required')
+      toast.error('Username and password are required')
     }
   }
 

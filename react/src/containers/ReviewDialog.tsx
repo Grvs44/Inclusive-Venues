@@ -87,11 +87,11 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     console.log(ratings)
     console.log(body)
     if (ratings.length == 0) {
-      alert('You must rate at least one category to leave a review')
+      toast.error('You must rate at least one category to leave a review')
       return
     }
     if (ratings.filter((r) => r.value == 0).length) {
-      alert('Please rate all the chosen categories')
+      toast.error('Please rate all the chosen categories')
       return
     }
     setSubmitting(true)
