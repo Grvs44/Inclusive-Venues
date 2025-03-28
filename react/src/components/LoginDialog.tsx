@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField'
 import toast from 'react-hot-toast'
 import { useLoginMutation } from '../redux/apiSlice'
 import { UserLogin } from '../redux/types'
+import { getErrorMessage } from './ErrorBox'
 
 export type LoginDialogProps = {
   open: boolean
@@ -28,11 +29,7 @@ export default function LoginDialog(props: LoginDialogProps) {
       const result = await login(data as UserLogin)
       setLoading(false)
       if (result.error) {
-        toast.error(
-          'data' in result.error && 'detail' in (result.error.data as any)
-            ? 'Login error: ' + (result.error.data as any).detail
-            : 'Unknown error logging in',
-        )
+        toast.error(getErrorMessage(result.error))
       } else {
         props.onClose()
       }
