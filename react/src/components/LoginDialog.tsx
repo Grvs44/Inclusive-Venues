@@ -7,8 +7,8 @@ import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 import toast from 'react-hot-toast'
 import { useLoginMutation } from '../redux/apiSlice'
-import { UserLogin } from '../redux/types'
-import { getErrorMessage } from './ErrorBox'
+import type { UserLogin } from '../redux/types'
+import { getErrorMessage } from '../redux/utils'
 
 export type LoginDialogProps = {
   open: boolean
