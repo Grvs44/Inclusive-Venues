@@ -25,6 +25,7 @@ import {
   useUpdateReviewMutation,
 } from '../redux/apiSlice'
 import type { ListRating, VenueCategory } from '../redux/types'
+import { getErrorMessage } from '../redux/utils'
 
 export type ReviewDialogProps = {
   venueId?: number
@@ -109,11 +110,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           ratings,
         }))
     if (result.error) {
-      toast.error(
-        'data' in result.error && Array.isArray(result.error.data)
-          ? result.error.data.toString()
-          : 'Unknown error',
-      )
+      toast.error(getErrorMessage(result.error))
     } else {
       props.onClose()
       toast.success(
