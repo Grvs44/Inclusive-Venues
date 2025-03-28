@@ -5,8 +5,12 @@ import Typography from '@mui/material/Typography'
 import type { SerializedError } from '@reduxjs/toolkit'
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-const getErrorMessage = (error: FetchBaseQueryError | SerializedError) => {
-  if ('data' in error && error.data) {
+export const getErrorMessage = (
+  error?: FetchBaseQueryError | SerializedError,
+) => {
+  if (error == undefined) {
+    return 'Unkown error'
+  } else if ('data' in error && error.data) {
     if (Array.isArray(error.data)) {
       return error.data[0]
     } else if ('detail' in (error.data as any)) {
@@ -30,7 +34,7 @@ const getErrorMessage = (error: FetchBaseQueryError | SerializedError) => {
 }
 
 export type ErrorBoxProps = BoxProps & {
-  error: FetchBaseQueryError | SerializedError
+  error?: FetchBaseQueryError | SerializedError
   retry: () => void
 }
 
