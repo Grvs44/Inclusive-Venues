@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,6 +12,7 @@ import {
 import toast from 'react-hot-toast'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
+import ErrorBox from '../components/ErrorBox'
 import ExistingImageButton from '../components/ExistingImageButton'
 import ImageUploadBox from '../components/ImageUploadBox'
 import type { ImageFile } from '../components/ImageViewDialog'
@@ -25,6 +27,7 @@ import {
   useUpdateVenueMutation,
 } from '../redux/apiSlice'
 import type { NewVenue, VenueCategory, VenueSubcategory } from '../redux/types'
+import { getErrorMessage } from '../redux/utils'
 
 export type NewVenueDialogProps = {
   open: boolean
@@ -60,8 +63,10 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
   })
   const subcategoryQuery = useGetVenueSubcategoryQuery(
     venue.data?.subcategory,
-    { skip: venue.data == undefined },
+    { skip: venue.data == undefined || venue.isFetching || venue.isError },
   )
+  const isError =
+    categories.isError || venue.isError || subcategoryQuery.isError
 
   React.useEffect(() => setSubcategory(null), [category])
 
@@ -91,7 +96,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
 
   React.useEffect(() => {
     if (subcategoryQuery.data) setSubcategory(subcategoryQuery.data)
-  }, [category])
+  }, [category, subcategoryQuery.data])
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -154,11 +159,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       }
       props.onClose()
     } else {
-      toast.error(
-        'data' in result.error && Array.isArray(result.error.data)
-          ? result.error.data.toString()
-          : 'Unknown error',
-      )
+      toast.error(getErrorMessage(result.error))
     }
     setSubmitting(false)
   }
@@ -171,94 +172,96 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
       slotProps={{ paper: { component: 'form', onSubmit } }}
     >
       <DialogTitle>
-        {props.venueId
-          ? (!venue.isFetching && venue.data?.name) || (
-              <Skeleton sx={{ width: '10em' }} />
-            )
-          : 'New venue'}
+        {isError
+          ? 'Error'
+          : props.venueId
+            ? (!venue.isFetching && venue.data?.name) || (
+                <Skeleton sx={{ width: '10em' }} />
+              )
+            : 'New venue'}
       </DialogTitle>
       <DialogContent>
-        <TextField
-          name="name"
-          label="Name"
-          autoFocus
-          required
-          variant="standard"
-          fullWidth
-          margin="dense"
-          autoComplete="false"
-          disabled={venue.isFetching}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-        <DropDown
-          label="Category"
-          data={categories.data || []}
-          isFetching={categories.isFetching}
-          getLabel={(x) => x.name}
-          onChange={setCategory}
-          value={category}
-          required
-          fullWidth
-          disabled={
-            categories.data == undefined ||
-            venue.isFetching ||
-            subcategoryQuery.isFetching
-          }
-        />
-        <DropDown
-          label="Subcategory"
-          data={subcategories.data || []}
-          isFetching={subcategories.isFetching}
-          getLabel={(x) => x.name}
-          onChange={setSubcategory}
-          value={subcategory}
-          required
-          fullWidth
-          disabled={
-            subcategories.data == undefined ||
-            venue.isFetching ||
-            subcategoryQuery.isFetching
-          }
-        />
-        <CoordinatesInput
-          latitude={latitude}
-          longitude={longitude}
-          setLatitude={setLatitude}
-          setLongitude={setLongitude}
-          disabled={venue.isFetching}
-        />
-        <TextField
-          label="Description"
-          name="description"
-          fullWidth
-          margin="dense"
-          multiline
-          disabled={venue.isFetching}
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
-        <TextField
-          label="Address"
-          name="address"
-          fullWidth
-          margin="dense"
-          multiline
-          disabled={venue.isFetching}
-          value={address}
-          onChange={(event) => setAddress(event.target.value)}
-        />
-        <ImageUploadBox
-          images={images}
-          setImages={setImages}
-          disabled={venue.isFetching}
-        >
-          <ExistingImageButton
-            show={props.venueId != undefined}
-            images={venue.data?.images}
-            disabled={venue.isFetching}
+        {categories.isFetching ||
+        venue.isFetching ||
+        subcategoryQuery.isFetching ? (
+          <CircularProgress />
+        ) : categories.isError ? (
+          <ErrorBox error={categories.error} retry={categories.refetch} />
+        ) : venue.isError ? (
+          <ErrorBox error={venue.error} retry={venue.refetch} />
+        ) : subcategoryQuery.isError ? (
+          <ErrorBox
+            error={subcategoryQuery.error}
+            retry={subcategoryQuery.refetch}
           />
-        </ImageUploadBox>
+        ) : (
+          <>
+            <TextField
+              name="name"
+              label="Name"
+              autoFocus
+              required
+              variant="standard"
+              fullWidth
+              margin="dense"
+              autoComplete="false"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+            <DropDown
+              label="Category"
+              data={categories.data || []}
+              isFetching={categories.isFetching}
+              getLabel={(x) => x.name}
+              onChange={setCategory}
+              value={category}
+              required
+              fullWidth
+              disabled={categories.data == undefined}
+            />
+            <DropDown
+              label="Subcategory"
+              data={subcategories.data || []}
+              isFetching={subcategories.isFetching}
+              getLabel={(x) => x.name}
+              onChange={setSubcategory}
+              value={subcategory}
+              required
+              fullWidth
+              disabled={subcategories.data == undefined}
+            />
+            <CoordinatesInput
+              latitude={latitude}
+              longitude={longitude}
+              setLatitude={setLatitude}
+              setLongitude={setLongitude}
+            />
+            <TextField
+              label="Description"
+              name="description"
+              fullWidth
+              margin="dense"
+              multiline
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+            <TextField
+              label="Address"
+              name="address"
+              fullWidth
+              margin="dense"
+              multiline
+              value={address}
+              onChange={(event) => setAddress(event.target.value)}
+            />
+            <ImageUploadBox images={images} setImages={setImages}>
+              <ExistingImageButton
+                show={props.venueId != undefined}
+                images={venue.data?.images}
+              />
+            </ImageUploadBox>
+          </>
+        )}
       </DialogContent>
       <DialogActions>
         <Button type="button" onClick={props.onClose} disabled={submitting}>
@@ -267,7 +270,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
         <Button
           type="submit"
           variant="contained"
-          disabled={submitting || venue.isFetching}
+          disabled={submitting || venue.isFetching || isError}
         >
           {props.venueId ? 'Save' : 'Create'}
         </Button>
