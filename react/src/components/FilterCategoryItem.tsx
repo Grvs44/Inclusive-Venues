@@ -3,7 +3,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { ListItem, ListItemButton, ListItemText, Stack } from '@mui/material'
 import { useFilters } from '../providers/FilterProvider'
-import { VenueCategory } from '../redux/types'
+import type { VenueCategory } from '../redux/types'
 import SubcategoryFilterList from './SubcategoryFilterList'
 
 export type FilterCategoryItemProps = {
