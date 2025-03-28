@@ -1,6 +1,10 @@
+import type { SerializedError } from '@reduxjs/toolkit'
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import store from './store'
 
 export type State = ReturnType<typeof store.getState>
+
+export type ApiError = FetchBaseQueryError | SerializedError
 
 export type InstallState = {
   show: boolean

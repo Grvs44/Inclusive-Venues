@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import { useDispatch } from 'react-redux'
+import ErrorBox from '../components/ErrorBox'
 import ReviewDialog from '../containers/ReviewDialog'
 import ReviewList from '../containers/ReviewList'
 import VenueDetailDialog from '../containers/VenueDetailDialog'
@@ -18,7 +19,7 @@ export default function MyReviewsPage() {
   const [venueOpen, setVenueOpen] = React.useState<boolean>(false)
   const [page, setPage] = React.useState<number>(1)
   const user = useGetUserDetailsQuery()
-  const { data, isFetching } = useGetReviewsQuery(
+  const { data, error, isError, isFetching, refetch } = useGetReviewsQuery(
     { page },
     { skip: !user.data },
   )
@@ -39,13 +40,17 @@ export default function MyReviewsPage() {
 
   return user?.data ? (
     <Container>
-      <ReviewList
-        data={data}
-        isFetching={isFetching}
-        onEdit={onEdit}
-        onOpenVenue={onOpenVenue}
-      />
-      {data?.next ? (
+      {isError ? (
+        <ErrorBox error={error} retry={refetch} />
+      ) : (
+        <ReviewList
+          data={data}
+          isFetching={isFetching}
+          onEdit={onEdit}
+          onOpenVenue={onOpenVenue}
+        />
+      )}
+      {!isFetching && data?.next ? (
         <Button variant="contained" onClick={() => setPage((page) => page + 1)}>
           Load more
         </Button>

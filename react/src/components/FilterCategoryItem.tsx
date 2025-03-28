@@ -3,7 +3,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { ListItem, ListItemButton, ListItemText, Stack } from '@mui/material'
 import { useFilters } from '../providers/FilterProvider'
-import { VenueCategory } from '../redux/types'
+import type { VenueCategory } from '../redux/types'
 import SubcategoryFilterList from './SubcategoryFilterList'
 
 export type FilterCategoryItemProps = {
@@ -18,9 +18,12 @@ export default function FilterCategoryItem(props: FilterCategoryItemProps) {
   const [open, setOpen] = React.useState<boolean>(Boolean(subcatSelected))
 
   return (
-    <ListItem>
-      <Stack direction="column">
-        <ListItemButton onClick={() => setOpen((open) => !open)}>
+    <ListItem sx={{ width: '100%' }}>
+      <Stack direction="column" sx={{ width: '100%' }}>
+        <ListItemButton
+          onClick={() => setOpen((open) => !open)}
+          sx={{ width: '100%' }}
+        >
           <ListItemText
             primary={props.category.name}
             sx={{ fontStyle: subcatSelected ? 'italic' : 'normal' }}

@@ -16,6 +16,7 @@ import Grid from '@mui/material/Grid2'
 import ListItemText from '@mui/material/ListItemText'
 import toast from 'react-hot-toast'
 import DropDown from '../components/DropDown'
+import ErrorBox from '../components/ErrorBox'
 import RateBox from '../components/RateBox'
 import {
   useCreateReviewMutation,
@@ -34,9 +35,10 @@ export type ReviewDialogProps = {
 // Form dialog adapted from https://mui.com/material-ui/react-dialog/#form-dialogs
 export default function ReviewDialog(props: ReviewDialogProps) {
   const skip = !props.open || props.venueId == undefined
-  const { data, isFetching } = useGetVenueReviewQuery(props.venueId, {
-    skip,
-  })
+  const { data, error, isError, isFetching, refetch } = useGetVenueReviewQuery(
+    props.venueId,
+    { skip },
+  )
   const categories = useGetRatingCategoriesQuery(undefined, {
     skip,
   })
@@ -87,11 +89,11 @@ export default function ReviewDialog(props: ReviewDialogProps) {
     console.log(ratings)
     console.log(body)
     if (ratings.length == 0) {
-      alert('You must rate at least one category to leave a review')
+      toast.error('You must rate at least one category to leave a review')
       return
     }
     if (ratings.filter((r) => r.value == 0).length) {
-      alert('Please rate all the chosen categories')
+      toast.error('Please rate all the chosen categories')
       return
     }
     setSubmitting(true)
@@ -148,6 +150,8 @@ export default function ReviewDialog(props: ReviewDialogProps) {
       <DialogContent>
         {isFetching || categories.isFetching ? (
           <CircularProgress />
+        ) : isError ? (
+          <ErrorBox error={error} retry={refetch} />
         ) : (
           <>
             <Grid

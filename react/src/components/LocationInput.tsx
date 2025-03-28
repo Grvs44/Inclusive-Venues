@@ -7,6 +7,7 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material'
+import toast from 'react-hot-toast'
 import { getLocationErrorMessage } from './utils'
 
 // Coordinates regex (between |s) adapted from https://stackoverflow.com/a/3518546
@@ -50,11 +51,11 @@ export default function LocationInput(props: LocationInputProps) {
         (error) => {
           setLoading(false)
           if (props.onLoadChange) props.onLoadChange(false)
-          alert(getLocationErrorMessage(error))
+          toast.error(getLocationErrorMessage(error))
         },
       )
     } else {
-      alert("Your browser doesn't support location services")
+      toast.error("Your browser doesn't support location services")
     }
   }
   return (

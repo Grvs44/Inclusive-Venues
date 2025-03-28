@@ -1,12 +1,10 @@
 import React from 'react'
-import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
-import { SerializedError } from '@reduxjs/toolkit'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { AzureMapsProvider } from 'react-azure-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import ErrorBox from '../components/ErrorBox'
 import NewVenueFab from '../components/NewVenueFab'
 import ListResultsView from '../containers/ListResultsView'
 import MapResultsView from '../containers/MapResultsView'
@@ -19,21 +17,6 @@ import { useGetVenuesQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import type { State } from '../redux/types'
 
-export const getErrorMessage = (
-  error: FetchBaseQueryError | SerializedError,
-) => {
-  if ('data' in error) {
-    if (Array.isArray(error.data)) {
-      return error.data[0]
-    } else if ('detail' in (error.data as any)) {
-      return (error.data as any).detail
-    }
-  } else if ('error' in error) {
-    return error.error
-  }
-  return 'Unknown error'
-}
-
 export default function VenueResultsPage() {
   const dispatch = useDispatch()
   const filters = useFilters()
@@ -45,7 +28,7 @@ export default function VenueResultsPage() {
   const [detailId, setDetailId] = React.useState<number | undefined>(undefined)
   const [reviewOpen, setReviewOpen] = React.useState<boolean>(false)
   const [newVenueOpen, setNewVenueOpen] = React.useState<boolean>(false)
-  const { data, isFetching, error, isError } = useGetVenuesQuery({
+  const { data, isFetching, error, isError, refetch } = useGetVenuesQuery({
     page,
     ...filterSelection,
   })
@@ -75,12 +58,7 @@ export default function VenueResultsPage() {
     <Container>
       <ResultsFilters />
       {isError ? (
-        <Box>
-          <Typography component="h2" variant="h4">
-            Error
-          </Typography>
-          <Typography>{getErrorMessage(error)}</Typography>
-        </Box>
+        <ErrorBox error={error} retry={refetch} />
       ) : showMap ? (
         <AzureMapsProvider>
           <MapResultsView

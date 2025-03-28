@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Stack, TextField, Typography } from '@mui/material'
+import toast from 'react-hot-toast'
 import LocationPicker from './LocationPicker'
 import { getLocationErrorMessage } from './utils'
 
@@ -32,11 +33,11 @@ export default function CoordinatesInput({
         },
         (error) => {
           setLoading(false)
-          alert(getLocationErrorMessage(error))
+          toast.error(getLocationErrorMessage(error))
         },
       )
     } else {
-      alert("Your browser doesn't support location services")
+      toast.error("Your browser doesn't support location services")
     }
   }
 
