@@ -13,7 +13,7 @@ const offlineMiddleware: Middleware =
       (action.payload as any)?.status == 'FETCH_ERROR'
     ) {
       ;(action.payload as any).error = offlineMessage
-      toast.error(offlineMessage, { duration: 5000 })
+      toast.error(offlineMessage, { duration: 5000, id: 'o' })
     }
 
     return next(action)
