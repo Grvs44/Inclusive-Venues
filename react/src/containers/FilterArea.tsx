@@ -8,13 +8,12 @@ import { useGetVenueCategoriesQuery } from '../redux/apiSlice'
 export default function FilterArea() {
   const { data, error, isError, isFetching, refetch } =
     useGetVenueCategoriesQuery()
-  return (
+
+  return isError ? (
+    <ErrorBox error={error} retry={refetch} sx={{ textAlign: 'center' }} />
+  ) : (
     <List>
-      {isError ? (
-        <ErrorBox error={error} retry={refetch} />
-      ) : (
-        data?.map((c) => <FilterCategoryItem key={c.id} category={c} />)
-      )}
+      {data?.map((c) => <FilterCategoryItem key={c.id} category={c} />)}
       <LoadingSkeleton isFetching={isFetching} />
     </List>
   )
