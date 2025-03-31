@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { SettingsState } from './types'
 
-const initialState: SettingsState = (() => {
-  const saved = localStorage.getItem('inclusivevenues')
-  return saved ? JSON.parse(saved) : { autoLocation: false }
-})()
+const initialState: SettingsState = {
+  autoLocation: false,
+  ...(() => {
+    const saved = localStorage.getItem('inclusivevenues')
+    return saved ? JSON.parse(saved) : null
+  })(),
+}
 
 export const settingsSlice = createSlice({
   name: 'settings',
