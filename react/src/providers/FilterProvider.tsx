@@ -33,11 +33,6 @@ export default function FilterProvider(props: FilterProviderProps) {
 
   // Apply initial settings
   React.useEffect(() => {
-    if (settings.defaultLocation) {
-      setLocation(
-        `${settings.defaultLocation[0]},${settings.defaultLocation[1]}`,
-      )
-    }
     if (settings.autoLocation && navigator.geolocation) {
       const id = toast.loading('Fetching your location...')
       navigator.geolocation.getCurrentPosition(
@@ -52,7 +47,17 @@ export default function FilterProvider(props: FilterProviderProps) {
           toast.error(
             'Error auto-detecting location:\n' + getLocationErrorMessage(error),
           )
+          if (settings.defaultLocation) {
+            toast('Using default location')
+            setLocation(
+              `${settings.defaultLocation[0]},${settings.defaultLocation[1]}`,
+            )
+          }
         },
+      )
+    } else if (settings.defaultLocation) {
+      setLocation(
+        `${settings.defaultLocation[0]},${settings.defaultLocation[1]}`,
       )
     }
   }, [])
