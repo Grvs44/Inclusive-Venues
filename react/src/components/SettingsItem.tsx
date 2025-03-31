@@ -1,11 +1,15 @@
 import React from 'react'
-import { FormControlLabel, ListItem, ListItemText, Switch } from '@mui/material'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import Switch from '@mui/material/Switch'
 
 export type SettingsItemProps = {
   checked: boolean
   onChange: (checked: boolean) => void
   primary: string
   secondary: string
+  children?: React.ReactNode
 }
 
 export default function SettingsItem(props: SettingsItemProps) {
@@ -22,6 +26,7 @@ export default function SettingsItem(props: SettingsItemProps) {
           <ListItemText primary={props.primary} secondary={props.secondary} />
         }
       />
+      {props.checked ? props.children : undefined}
     </ListItem>
   )
 }

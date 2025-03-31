@@ -5,26 +5,52 @@ import Divider from '@mui/material/Divider'
 import Fab from '@mui/material/Fab'
 import FormGroup from '@mui/material/FormGroup'
 import List from '@mui/material/List'
+import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
+import CoordinatesInput from '../components/CoordinatesInput'
 import SettingsItem from '../components/SettingsItem'
+import { to_number } from '../components/utils'
 import { updateSettings } from '../redux/settingsSlice'
 import type { SettingsState, State } from '../redux/types'
-import toast from 'react-hot-toast'
 
 export default function SettingsContainer() {
   const dispatch = useDispatch()
-  const [settings, setSettings] = React.useState<SettingsState>(
-    useSelector((state: State) => state.settings),
+  const settings = useSelector((state: State) => state.settings)
+  const [autoLocation, setAutoLocation] = React.useState<boolean>(
+    settings.autoLocation,
+  )
+  const [showDefaultLocation, setShowDefaultLocation] = React.useState<boolean>(
+    settings.defaultLocation != undefined,
+  )
+  const [defaultLatitude, setDefaultLatitude] = React.useState<string>(
+    settings.defaultLocation?.[0].toString() || '',
+  )
+  const [defaultLongitude, setDefaultLongitude] = React.useState<string>(
+    settings.defaultLocation?.[1].toString() || '',
   )
   const [changed, setChanged] = React.useState<boolean>(false)
 
-  const changeSetting = (change: Partial<SettingsState>) => {
-    setChanged(true)
-    setSettings((settings) => ({ ...settings, ...change }))
-  }
+  React.useEffect(
+    () => setChanged(true),
+    [autoLocation, showDefaultLocation, defaultLatitude, defaultLongitude],
+  )
 
   const onSave = () => {
-    dispatch(updateSettings(settings))
+    let defaultLocation: [number, number] | undefined
+    if (showDefaultLocation) {
+      const latitudeValue = to_number(defaultLatitude)
+      const longitudeValue = to_number(defaultLongitude)
+      if (isNaN(latitudeValue) || isNaN(longitudeValue)) {
+        toast.error('Coordinates must be valid numbers')
+        return
+      }
+      defaultLocation = [latitudeValue, longitudeValue]
+    } else {
+      defaultLocation = undefined
+    }
+
+    const newSettings: SettingsState = { autoLocation, defaultLocation }
+    dispatch(updateSettings(newSettings))
     toast.success('Saved settings')
     setChanged(false)
   }
@@ -34,22 +60,25 @@ export default function SettingsContainer() {
       <FormGroup>
         <List>
           <SettingsItem
-            checked={settings.autoLocation}
-            onChange={(autoLocation) => changeSetting({ autoLocation })}
+            checked={autoLocation}
+            onChange={setAutoLocation}
             primary="Auto-detect location"
             secondary="Auto-detect your location when you open the app"
           />
           <Divider variant="middle" />
           <SettingsItem
-            checked={settings.defaultLocation != undefined}
-            onChange={(checked) =>
-              changeSetting({
-                defaultLocation: checked ? [0, 0] : undefined,
-              })
-            }
+            checked={showDefaultLocation}
+            onChange={setShowDefaultLocation}
             primary="Use default location"
             secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
-          />
+          >
+            <CoordinatesInput
+              latitude={defaultLatitude}
+              longitude={defaultLongitude}
+              setLatitude={setDefaultLatitude}
+              setLongitude={setDefaultLongitude}
+            />
+          </SettingsItem>
         </List>
       </FormGroup>
       {changed ? (
