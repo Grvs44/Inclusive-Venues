@@ -11,6 +11,7 @@ export type SettingsItemProps = {
   primary: string
   secondary: string
   children?: React.ReactNode
+  disabled?: boolean
 }
 
 export default function SettingsItem(props: SettingsItemProps) {
@@ -22,6 +23,7 @@ export default function SettingsItem(props: SettingsItemProps) {
             <Switch
               checked={props.checked}
               onChange={(event) => props.onChange(event.target.checked)}
+              disabled={props.disabled}
             />
           }
           label={

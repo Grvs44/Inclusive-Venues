@@ -30,11 +30,6 @@ export default function SettingsContainer() {
   )
   const [changed, setChanged] = React.useState<boolean>(false)
 
-  React.useEffect(
-    () => setChanged(true),
-    [autoLocation, showDefaultLocation, defaultLatitude, defaultLongitude],
-  )
-
   const onSave = () => {
     let defaultLocation: [number, number] | undefined
     if (showDefaultLocation) {
@@ -61,22 +56,39 @@ export default function SettingsContainer() {
         <List>
           <SettingsItem
             checked={autoLocation}
-            onChange={setAutoLocation}
+            onChange={(checked) => {
+              setChanged(true)
+              setAutoLocation(checked && 'geolocation' in navigator)
+            }}
             primary="Auto-detect location"
-            secondary="Auto-detect your location when you open the app"
+            secondary={
+              'geolocation' in navigator
+                ? 'Auto-detect your location when you open the app'
+                : "Your device doesn't support location"
+            }
+            disabled={!('geolocation' in navigator)}
           />
           <Divider variant="middle" />
           <SettingsItem
             checked={showDefaultLocation}
-            onChange={setShowDefaultLocation}
+            onChange={(checked) => {
+              setChanged(true)
+              setShowDefaultLocation(checked)
+            }}
             primary="Use default location"
             secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
           >
             <CoordinatesInput
               latitude={defaultLatitude}
               longitude={defaultLongitude}
-              setLatitude={setDefaultLatitude}
-              setLongitude={setDefaultLongitude}
+              setLatitude={(checked) => {
+                setChanged(true)
+                setDefaultLatitude(checked)
+              }}
+              setLongitude={(checked) => {
+                setChanged(true)
+                setDefaultLongitude(checked)
+              }}
             />
           </SettingsItem>
         </List>
