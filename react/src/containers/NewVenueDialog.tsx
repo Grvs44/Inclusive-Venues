@@ -230,12 +230,15 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
               fullWidth
               disabled={subcategories.data == undefined}
             />
-            <CoordinatesInput
-              latitude={latitude}
-              longitude={longitude}
-              setLatitude={setLatitude}
-              setLongitude={setLongitude}
-            />
+            <fieldset>
+              <legend>Location</legend>
+              <CoordinatesInput
+                latitude={latitude}
+                longitude={longitude}
+                setLatitude={setLatitude}
+                setLongitude={setLongitude}
+              />
+            </fieldset>
             <TextField
               label="Description"
               name="description"

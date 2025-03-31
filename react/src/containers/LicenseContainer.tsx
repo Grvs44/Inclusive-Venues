@@ -19,7 +19,12 @@ export default function LicenseContainer() {
     ) : (
       <textarea
         value={data}
-        style={{ height: 200, width: '100%', marginTop: '1em' }}
+        style={{
+          height: 200,
+          width: '100%',
+          marginTop: '1em',
+          resize: 'vertical',
+        }}
         readOnly
       />
     )

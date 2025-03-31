@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Stack, TextField } from '@mui/material'
 import toast from 'react-hot-toast'
 import LocationPicker from './LocationPicker'
 import { getLocationErrorMessage } from './utils'
@@ -48,10 +48,7 @@ export default function CoordinatesInput({
   }
 
   return (
-    <fieldset>
-      <legend>
-        <Typography>Location</Typography>
-      </legend>
+    <Box>
       <Button
         onClick={getLocation}
         loading={loading}
@@ -95,6 +92,6 @@ export default function CoordinatesInput({
           onSubmit={onLocationPicked}
         />
       </Stack>
-    </fieldset>
+    </Box>
   )
 }
