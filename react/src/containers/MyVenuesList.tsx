@@ -1,5 +1,6 @@
 import React from 'react'
 import List from '@mui/material/List'
+import Typography from '@mui/material/Typography'
 import LoadingSkeleton from '../components/LoadingSkeleton'
 import VenueListItem from '../components/VenueListItem'
 import type { ResultsViewProps } from './ListResultsView'
@@ -9,7 +10,7 @@ export default function MyVenuesList({
   isFetching,
   onClick,
 }: ResultsViewProps) {
-  return (
+  return data?.results.length || isFetching ? (
     <List>
       {data?.results.map((venue) => (
         <VenueListItem
@@ -20,5 +21,9 @@ export default function MyVenuesList({
       ))}
       <LoadingSkeleton isFetching={isFetching} />
     </List>
+  ) : (
+    <Typography>
+      You haven't added any venues yet. When you do, they'll appear here.
+    </Typography>
   )
 }
