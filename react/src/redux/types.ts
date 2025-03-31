@@ -19,6 +19,11 @@ export type ResultsState = {
   showMap: boolean
 }
 
+export type SettingsState = {
+  autoLocation: boolean
+  defaultLocation?: [number, number]
+}
+
 export type LoggedInUser = {
   firstName: string
   lastName: string

@@ -3,12 +3,14 @@ import { apiSlice } from './apiSlice'
 import installReducer from './installSlice'
 import offlineMiddleware from './offlineMiddleware'
 import resultsReducer from './resultsSlice'
+import settingsReducer from './settingsSlice'
 import titleReducer from './titleSlice'
 
 export default configureStore({
   reducer: {
     install: installReducer,
     results: resultsReducer,
+    settings: settingsReducer,
     title: titleReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
