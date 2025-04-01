@@ -123,21 +123,23 @@ class VenueTestCase(TestCase):
         invalid coordinates are provided'''
         data = self.client.get('/api/venue?location=here').json()
         self.assertListEqual(
-            data, ['Invalid coordinates: must be of the form (latitude, longitude)'])
+            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
 
     @tag('venue_list')
     def test_venue_list_with_invalid_latitude(self):
         '''Test that the correct error message is returned when
         a non-numeric latitude is given'''
         data = self.client.get('/api/venue?location=lat,-1.399776').json()
-        self.assertListEqual(data, ['Latitude must be a number'])
+        self.assertListEqual(
+            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
 
     @tag('venue_list')
     def test_venue_list_with_invalid_longitude(self):
         '''Test that the correct error message is returned when
         a non-numeric longitude is given'''
         data = self.client.get('/api/venue?location=50.934674,lon').json()
-        self.assertListEqual(data, ['Longitude must be a number'])
+        self.assertListEqual(
+            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
 
     @tag('venue_create')
     def test_create_venue(self):
