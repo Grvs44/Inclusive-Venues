@@ -70,7 +70,7 @@ export default function MyVenuesPage() {
     </Container>
   ) : (
     <Container>
-      <Typography>Sign in to view your reviews</Typography>
+      <Typography>Sign in to view your venues</Typography>
     </Container>
   )
 }
