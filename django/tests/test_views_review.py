@@ -50,8 +50,10 @@ class ReviewTestCase(TestCase):
         '''Test a user can view one of their reviews'''
         self.assertTrue(self.client.login(**self.credentials))
         response = self.client.get(f'/api/review/{self.review1.pk}')
-        review = {'id': self.review1.pk, 'author': self.review1.author.pk,
-                  'venue': self.review1.venue.pk, 'body': self.review1.body}
+        review = {
+            'id': self.review1.pk, 'author': self.review1.author.pk,
+            'date': self.review1.date.strftime('%Y-%m-%d'),
+            'venue': self.review1.venue.pk, 'body': self.review1.body}
         self.assertDictEqual(response.json(), review)
 
     @tag('review_detail')
@@ -88,6 +90,7 @@ class ReviewTestCase(TestCase):
             self.fail('Review was not created')
         self.assertDictEqual(data, {
             'id': review.pk, 'venue': self.venue1.pk,
+            'date': self.review1.date.strftime('%Y-%m-%d'),
             'venueName': self.venue1.name, 'body': review.body,
             'ratings': list(models.Rating.objects.filter(review=review).values('category', 'value'))
         })

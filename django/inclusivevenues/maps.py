@@ -4,7 +4,6 @@ Documentation for downloading map static image:
 https://learn.microsoft.com/en-us/rest/api/maps/render/get-map-static-image
 '''
 from decimal import Decimal
-import uuid
 import requests
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -36,13 +35,13 @@ def get_map_image(latitude: Decimal, longitude: Decimal):
     return response.content
 
 
-def save_map_image(image: bytes):
+def save_map_image(image: bytes, latitude, longitude):
     '''Save map preview image to storage'''
 # Adapted from https://docs.djangoproject.com/en/5.1/topics/files/#storage-objects
-    return default_storage.save(f'{uuid.uuid4()}.png', ContentFile(image))
+    return default_storage.save(f'{latitude}{longitude}.png', ContentFile(image))
 
 
 def get_map_image_url(latitude: Decimal, longitude: Decimal):
     '''Download map preview image from coordinates and save to storage'''
     image = get_map_image(latitude, longitude)
-    return None if image is None else save_map_image(image)
+    return None if image is None else save_map_image(image, latitude, longitude)
