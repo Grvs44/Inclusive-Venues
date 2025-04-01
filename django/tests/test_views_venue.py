@@ -313,6 +313,7 @@ class VenueTestCase(TestCase):
         data_ratings = data.pop('ratings')
 
         review = {'id': self.review.pk, 'venue': self.venue.pk,
+                  'date': self.review.date.strftime('%Y-%m-%d'),
                   'venueName': self.venue.name, 'body': self.review.body}
         self.assertDictEqual(data, review)
 
@@ -357,12 +358,16 @@ class VenueTestCase(TestCase):
         self.assertIsInstance(results, list)
         reviews = [
             {'id': self.review.pk, 'venue': self.venue.pk,
+             'author': self.user.username,
+             'date': self.review.date.strftime('%Y-%m-%d'),
              'venueName': self.venue.name, 'body': self.review.body,
              'ratings': [
                  {'category': self.ratingcat1.name, 'value': self.rating1.value},
                  {'category': self.ratingcat2.name, 'value': self.rating2.value},
              ]},
             {'id': self.review2.pk, 'venue': self.venue.pk,
+             'author': self.user2.username,
+             'date': self.review2.date.strftime('%Y-%m-%d'),
              'venueName': self.venue.name, 'body': self.review2.body,
              'ratings': [
                  {'category': self.ratingcat1.name, 'value': self.rating2_1.value},
