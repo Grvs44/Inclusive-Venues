@@ -13,7 +13,7 @@ import ResultsFilters from '../containers/ResultsFilters'
 import ReviewDialog from '../containers/ReviewDialog'
 import VenueDetailDialog from '../containers/VenueDetailDialog'
 import { useFilters } from '../providers/FilterProvider'
-import { useGetVenuesQuery } from '../redux/apiSlice'
+import { useGetUserDetailsQuery, useGetVenuesQuery } from '../redux/apiSlice'
 import { setTitle } from '../redux/titleSlice'
 import type { State } from '../redux/types'
 
@@ -32,6 +32,7 @@ export default function VenueResultsPage() {
     page,
     ...filterSelection,
   })
+  const user = useGetUserDetailsQuery()
 
   const onItemClick = (venueId: number) => {
     setDetailId(venueId)
@@ -79,22 +80,26 @@ export default function VenueResultsPage() {
           Load more
         </Button>
       ) : null}
-      <NewVenueFab onClick={() => setNewVenueOpen(true)} />
       <VenueDetailDialog
         open={detailOpen}
         onClose={() => setDetailOpen(false)}
         id={detailId}
         openReview={() => setReviewOpen(true)}
       />
-      <ReviewDialog
-        open={reviewOpen}
-        onClose={() => setReviewOpen(false)}
-        venueId={detailId}
-      />
-      <NewVenueDialog
-        open={newVenueOpen}
-        onClose={() => setNewVenueOpen(false)}
-      />
+      {user.data ? (
+        <>
+          <NewVenueFab onClick={() => setNewVenueOpen(true)} />
+          <ReviewDialog
+            open={reviewOpen}
+            onClose={() => setReviewOpen(false)}
+            venueId={detailId}
+          />
+          <NewVenueDialog
+            open={newVenueOpen}
+            onClose={() => setNewVenueOpen(false)}
+          />
+        </>
+      ) : null}
     </Container>
   )
 }
