@@ -4,7 +4,7 @@ from inclusivevenues import models
 
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, tag
 
 
 class ModelTestCase(TransactionTestCase):
@@ -17,6 +17,7 @@ class ModelTestCase(TransactionTestCase):
         self.rating_category = models.RatingCategory.objects.create(
             name='category1', description='rating category 1')
 
+    @tag('sprint1')
     def test_unique_constraints(self):
         '''Test the unique constraints prevent duplicate reviews and ratings from being created'''
         user = User.objects.create_user('constraint_user')
@@ -37,6 +38,7 @@ class ModelTestCase(TransactionTestCase):
             author=user, venue=venue
         )
 
+    @tag('sprint1')
     def test_venue_calculate_score(self):
         '''Test the Venue score is calculated correctly'''
         rating_category1 = models.RatingCategory.objects.create(

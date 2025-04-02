@@ -10,6 +10,8 @@ class VenueTestCase(TestCase):
     '''TestCase for inclusivevenues.views.VenueViewSet'''
     credentials = {'username': 'venue_user', 'password': 'password'}
     credentials2 = {'username': 'venue_user2', 'password': 'password2'}
+    location_error = [
+        'Invalid location: must be coordinates (latitude,longitude) or a postcode']
 
     @classmethod
     def setUpTestData(cls):
@@ -46,7 +48,7 @@ class VenueTestCase(TestCase):
         cls.rating2_2 = models.Rating.objects.create(
             category=cls.ratingcat2, review=cls.review2, value=2)
 
-    @tag('venue_detail')
+    @tag('sprint1', 'venue_detail')
     def test_venue_detail(self):
         '''Test the Venue detail view contains the correct properties'''
         result: dict = self.client.get(f'/api/venue/{self.venue.pk}').json()
@@ -73,75 +75,98 @@ class VenueTestCase(TestCase):
 
         self.assertDictEqual(result, venue)
 
-    @tag('venue_list')
+    @tag('sprint1', 'sprint4', 'venue_list')
     def test_venue_list(self):
         '''Test the Venue list view contains the correct properties'''
         data = self.client.get('/api/venue').json()
+        self._check_valid_venue_list(data, False)
+
+    def _check_valid_venue_list(self, data, location: bool):
+        '''Check each venue contains the correct properties
+        Optional 'distance' property added sprint 4 when location is provided'''
         self.assertIsInstance(data, dict)
         self.assertSetEqual(set(data.keys()), {
             'count', 'next', 'previous', 'results'
         })
         results = data['results']
         self.assertIsInstance(results, list)
+        item_set = {
+            'id',
+            'name',
+            'longitude',
+            'latitude',
+            'subcategory',
+            'score',
+        }
+        if location:
+            item_set.add('distance')
+        last_distance = 0.0
         for item in results:
             self.assertIsInstance(item, dict)
-            self.assertSetEqual(set(item.keys()), {
-                'id',
-                'name',
-                'longitude',
-                'latitude',
-                'subcategory',
-                'score',
-            })
+            self.assertSetEqual(set(item.keys()), item_set)
+            if location:
+                d = float(item['distance'])
+                self.assertLessEqual(last_distance, d)
+                last_distance = d
 
-    @tag('venue_list')
+    @tag('sprint1', 'sprint4', 'venue_list')
     def test_venue_list_with_location(self):
         '''Test the Venue list view contains the correct properties
         when the location is provided'''
         data = self.client.get(
             '/api/venue?location=50.934672,-1.399775').json()
-        self.assertIsInstance(data, dict)
-        self.assertSetEqual(set(data.keys()), {
-            'count', 'next', 'previous', 'results'
-        })
-        results = data['results']
-        self.assertIsInstance(results, list)
-        for item in results:
-            self.assertSetEqual(set(item.keys()), {
-                'id',
-                'name',
-                'longitude',
-                'latitude',
-                'distance',
-                'subcategory',
-                'score',
-            })
+        self._check_valid_venue_list(data, True)
 
-    @tag('venue_list')
+    @tag('sprint1', 'sprint4', 'venue_list')
     def test_venue_list_with_invalid_location(self):
         '''Test that the correct error message is returned when
         invalid coordinates are provided'''
         data = self.client.get('/api/venue?location=here').json()
-        self.assertListEqual(
-            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
+        self.assertListEqual(data, self.location_error)
 
-    @tag('venue_list')
+    @tag('sprint1', 'sprint5', 'venue_list')
     def test_venue_list_with_invalid_latitude(self):
         '''Test that the correct error message is returned when
         a non-numeric latitude is given'''
         data = self.client.get('/api/venue?location=lat,-1.399776').json()
-        self.assertListEqual(
-            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
+        self.assertListEqual(data, self.location_error)
 
-    @tag('venue_list')
+    @tag('sprint1', 'sprint5', 'venue_list')
     def test_venue_list_with_invalid_longitude(self):
         '''Test that the correct error message is returned when
         a non-numeric longitude is given'''
         data = self.client.get('/api/venue?location=50.934674,lon').json()
-        self.assertListEqual(
-            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
+        self.assertListEqual(data, self.location_error)
 
-    @tag('venue_create')
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_postcode(self):
+        '''Test the Venue list view contains the correct properties
+        when a valid postcode is provided'''
+        data = self.client.get('/api/venue?location=SO171BJ').json()
+        self._check_valid_venue_list(data, True)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_postcode_mixed_case(self):
+        '''Test the Venue list view contains the correct properties
+        when a valid mixed-case postcode is provided'''
+        data = self.client.get('/api/venue?location=sO17 1Bj').json()
+        self._check_valid_venue_list(data, True)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_invalid_postcode(self):
+        '''Test an error message is returned when an invalid postocde is given'''
+        data = self.client.get('/api/venue?location=SO171B').json()
+        self.assertListEqual(data, self.location_error)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_nonexistent_postcode(self):
+        '''Test an error message is returned if the postcode doesn't exist'''
+        response = self.client.get('/api/venue?location=SO171BB')
+        self.assertEqual(response.status_code, 400)
+        self.assertListEqual(
+            response.json(), ["Couldn't retrieve location from postcode"])
+
+    @tag('sprint1', 'venue_create')
     def test_create_venue(self):
         '''Test that a valid venue can be created'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -175,7 +200,7 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(data, venue)
         self.client.logout()
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue_empty(self):
         '''Test that an empty venue cannot be created'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -189,7 +214,7 @@ class VenueTestCase(TestCase):
         })
         self.client.logout()
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue_blank(self):
         '''Test that an empty venue cannot be created'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -206,7 +231,7 @@ class VenueTestCase(TestCase):
         })
         self.client.logout()
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue_anonymous(self):
         '''Test that a venue can't be created if the user isn't logged in'''
         self.client.logout()
@@ -218,7 +243,7 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
 
-    @tag('venue_update')
+    @tag('sprint1', 'venue_update')
     def test_update_venue_valid(self):
         '''Test that a user can update a venue they added'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -249,7 +274,7 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(response.json(), venue)
         self.client.logout()
 
-    @tag('venue_update')
+    @tag('sprint1', 'venue_update')
     def test_update_other_venue(self):
         '''Test a user can't update a venue added by someone else'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -261,7 +286,7 @@ class VenueTestCase(TestCase):
         })
         self.client.logout()
 
-    @tag('venue_update')
+    @tag('sprint1', 'venue_update')
     def test_update_venue_anonymous(self):
         '''Test a logged-out user can't update a venue'''
         self.client.logout()
@@ -272,7 +297,7 @@ class VenueTestCase(TestCase):
             'detail': 'Authentication credentials were not provided.'
         })
 
-    @tag('venue_delete')
+    @tag('sprint1', 'venue_delete')
     def test_delete_venue_creator(self):
         '''Test that the user who added a venue can't delete it'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -282,7 +307,7 @@ class VenueTestCase(TestCase):
             response.json(), {'detail': 'Method "DELETE" not allowed.'})
         self.client.logout()
 
-    @tag('venue_delete')
+    @tag('sprint1', 'venue_delete')
     def test_delete_venue_other(self):
         '''Test that a user can't delete a venue added by someone else'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -292,7 +317,7 @@ class VenueTestCase(TestCase):
             response.json(), {'detail': 'Method "DELETE" not allowed.'})
         self.client.logout()
 
-    @tag('venue_delete')
+    @tag('sprint1', 'venue_delete')
     def test_delete_venue_anonymous(self):
         '''Test that a logged-out user can't delete a venue'''
         self.client.logout()
@@ -302,7 +327,7 @@ class VenueTestCase(TestCase):
             'detail': 'Authentication credentials were not provided.'
         })
 
-    @tag('get_review')
+    @tag('sprint2', 'get_review')
     def test_venue_get_review_valid(self):
         '''Test that the user's review is returned for the venue'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -324,7 +349,7 @@ class VenueTestCase(TestCase):
         self.assertListEqual(data_ratings, ratings)
         self.client.logout()
 
-    @tag('get_review')
+    @tag('sprint2', 'get_review')
     def test_venue_get_review_empty(self):
         '''Test that no content is returned if the user hasn't left a review for this venue'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -333,7 +358,7 @@ class VenueTestCase(TestCase):
         self.assertEqual(len(response.content), 0)
         self.client.logout()
 
-    @tag('get_review')
+    @tag('sprint2', 'get_review')
     def test_venue_get_review_anonymous(self):
         '''Test that an error is returned if the user is logged-out
         and tries to fetch their review for a venue'''
@@ -342,7 +367,7 @@ class VenueTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(response.content), 0)
 
-    @tag('list_reviews')
+    @tag('sprint2', 'list_reviews')
     def test_venue_list_reviews(self):
         '''Test that the correct list of reviews is returned for this venue'''
         data = self.client.get(f'/api/venue/{self.venue.pk}/reviews').json()
@@ -376,6 +401,7 @@ class VenueTestCase(TestCase):
         ]
         self.assertListEqual(results, reviews)
 
+    @tag('sprint5', 'rating_aggregation')
     def test_venue_rating_aggregation(self):
         '''Test the rating aggregation returns the expected values'''
         data = self.client.get(f'/api/venue/{self.venue.pk}/reviewavg').json()
@@ -386,3 +412,44 @@ class VenueTestCase(TestCase):
              'value': (self.rating2.value + self.rating2_2.value) / 2}
         ]
         self.assertListEqual(data, expected)
+
+    @tag('sprint5', 'rating_aggregation')
+    def test_venue_rating_aggregation_not_found(self):
+        '''Test empty results are returned when trying to get rating aggregation
+        for a venue that doesn't exist'''
+        data = self.client.get('/api/venue/100/reviewavg').json()
+        self.assertListEqual(data, [])
+
+    @tag('sprint5', 'myvenues')
+    def test_venue_my_filter(self):
+        '''Test a logged-in user can view a list of venues they have added'''
+        self.assertTrue(self.client.login(**self.credentials))
+        data = self.client.get('/api/venue?my').json()
+        self.assertIsInstance(data, dict)
+        self.assertIn('results', data)
+        results = data.pop('results')
+        self.assertDictEqual(
+            data, {'count': 2, 'next': None, 'previous': None})
+        self.assertListEqual(results, [
+            {'id': self.venue.pk,
+             'name': self.venue.name,
+             'longitude': str(self.venue.longitude),
+             'latitude': str(self.venue.latitude),
+             'subcategory': self.venue.subcategory.pk,
+             'score': self.venue.score},
+            {'id': self.venue2.pk,
+             'name': self.venue2.name,
+             'longitude': str(self.venue2.longitude),
+             'latitude': str(self.venue2.latitude),
+             'subcategory': self.venue2.subcategory.pk,
+             'score': self.venue2.score},
+        ])
+        self.client.logout()
+
+    @tag('sprint5', 'myvenues')
+    def test_venue_my_filter_anonymous(self):
+        '''Test a logged-out user gets empty results for venues they have added'''
+        self.client.logout()
+        data = self.client.get('/api/venue?my').json()
+        self.assertDictEqual(
+            data, {'count': 0, 'next': None, 'previous': None, 'results': []})
