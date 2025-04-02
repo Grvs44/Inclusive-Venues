@@ -3,7 +3,6 @@ import SaveIcon from '@mui/icons-material/Save'
 import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
 import Fab from '@mui/material/Fab'
-import FormGroup from '@mui/material/FormGroup'
 import List from '@mui/material/List'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
@@ -52,47 +51,45 @@ export default function SettingsContainer() {
 
   return (
     <Container>
-      <FormGroup>
-        <List>
-          <SettingsItem
-            checked={autoLocation}
-            onChange={(checked) => {
+      <List>
+        <SettingsItem
+          checked={autoLocation}
+          onChange={(checked) => {
+            setChanged(true)
+            setAutoLocation(checked && 'geolocation' in navigator)
+          }}
+          primary="Auto-detect location"
+          secondary={
+            'geolocation' in navigator
+              ? 'Auto-detect your location when you open the app'
+              : "Your device doesn't support location"
+          }
+          disabled={!('geolocation' in navigator)}
+        />
+        <Divider variant="middle" />
+        <SettingsItem
+          checked={showDefaultLocation}
+          onChange={(checked) => {
+            setChanged(true)
+            setShowDefaultLocation(checked)
+          }}
+          primary="Use default location"
+          secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
+        >
+          <CoordinatesInput
+            latitude={defaultLatitude}
+            longitude={defaultLongitude}
+            setLatitude={(checked) => {
               setChanged(true)
-              setAutoLocation(checked && 'geolocation' in navigator)
+              setDefaultLatitude(checked)
             }}
-            primary="Auto-detect location"
-            secondary={
-              'geolocation' in navigator
-                ? 'Auto-detect your location when you open the app'
-                : "Your device doesn't support location"
-            }
-            disabled={!('geolocation' in navigator)}
+            setLongitude={(checked) => {
+              setChanged(true)
+              setDefaultLongitude(checked)
+            }}
           />
-          <Divider variant="middle" />
-          <SettingsItem
-            checked={showDefaultLocation}
-            onChange={(checked) => {
-              setChanged(true)
-              setShowDefaultLocation(checked)
-            }}
-            primary="Use default location"
-            secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
-          >
-            <CoordinatesInput
-              latitude={defaultLatitude}
-              longitude={defaultLongitude}
-              setLatitude={(checked) => {
-                setChanged(true)
-                setDefaultLatitude(checked)
-              }}
-              setLongitude={(checked) => {
-                setChanged(true)
-                setDefaultLongitude(checked)
-              }}
-            />
-          </SettingsItem>
-        </List>
-      </FormGroup>
+        </SettingsItem>
+      </List>
       {changed ? (
         <Fab
           // Fab adapted from https://mui.com/material-ui/react-floating-action-button/
