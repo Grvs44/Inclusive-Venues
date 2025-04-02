@@ -376,7 +376,7 @@ class VenueTestCase(TestCase):
         ]
         self.assertListEqual(results, reviews)
 
-    @tag('sprint5')
+    @tag('sprint5', 'rating_aggregation')
     def test_venue_rating_aggregation(self):
         '''Test the rating aggregation returns the expected values'''
         data = self.client.get(f'/api/venue/{self.venue.pk}/reviewavg').json()
@@ -387,6 +387,13 @@ class VenueTestCase(TestCase):
              'value': (self.rating2.value + self.rating2_2.value) / 2}
         ]
         self.assertListEqual(data, expected)
+
+    @tag('sprint5', 'rating_aggregation')
+    def test_venue_rating_aggregation_not_found(self):
+        '''Test empty results are returned when trying to get rating aggregation
+        for a venue that doesn't exist'''
+        data = self.client.get('/api/venue/100/reviewavg').json()
+        self.assertListEqual(data, [])
 
     @tag('sprint5', 'myvenues')
     def test_venue_my_filter(self):
