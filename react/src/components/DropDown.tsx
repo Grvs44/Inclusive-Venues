@@ -47,7 +47,6 @@ export default function DropDown<T extends Entity>(props: DropDownProps<T>) {
       value={props.value}
       disabled={props.disabled}
       fullWidth={props.fullWidth}
-      sx={{ width: 300 }}
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
