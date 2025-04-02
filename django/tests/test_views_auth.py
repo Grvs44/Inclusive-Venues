@@ -1,6 +1,6 @@
 '''Module to test UserView, LoginView, and LogoutView from inclusivevenues.views'''
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, tag
 
 
 class UserViewTestCase(TestCase):
@@ -10,12 +10,14 @@ class UserViewTestCase(TestCase):
         User.objects.create_user(
             'userview', password='user-password', first_name='user', last_name='view')
 
+    @tag('sprint1')
     def test_user_anonymous(self):
         '''Test view when not logged in'''
         self.client.logout()
         response = self.client.get('/api/user')
         self.assertEqual(len(response.content), 0)
 
+    @tag('sprint1')
     def test_user_valid(self):
         '''Test view when logged in'''
         self.assertTrue(self.client.login(
@@ -33,6 +35,7 @@ class LoginViewTestCase(TestCase):
         User.objects.create_user('loginview', password='login-password')
         User.objects.create_user('loginview2', password='login-password2')
 
+    @tag('sprint1')
     def test_login_valid(self):
         '''Log in with valid credentials'''
         data = self.client.post(
@@ -41,6 +44,7 @@ class LoginViewTestCase(TestCase):
             data, {'firstName': '', 'lastName': '', 'username': 'loginview'})
         self.client.logout()
 
+    @tag('sprint1')
     def test_login_logged_in(self):
         '''Log in as another user when already logged in'''
         self.assertTrue(self.client.login(
@@ -51,6 +55,7 @@ class LoginViewTestCase(TestCase):
             data, {'firstName': '', 'lastName': '', 'username': 'loginview2'})
         self.client.logout()
 
+    @tag('sprint1')
     def test_login_empty(self):
         '''Log in with empty request body'''
         response = self.client.post('/api/login', {})
@@ -58,6 +63,7 @@ class LoginViewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Incorrect username or password'})
 
+    @tag('sprint1')
     def test_login_blank(self):
         '''Log in with blank credentials'''
         response = self.client.post(
@@ -66,6 +72,7 @@ class LoginViewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Incorrect username or password'})
 
+    @tag('sprint1')
     def test_login_wrong_username(self):
         '''Log in with wrong username'''
         response = self.client.post(
@@ -74,6 +81,7 @@ class LoginViewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Incorrect username or password'})
 
+    @tag('sprint1')
     def test_login_wrong_password(self):
         '''Log in with wrong password'''
         response = self.client.post(
@@ -82,6 +90,7 @@ class LoginViewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Incorrect username or password'})
 
+    @tag('sprint1')
     def test_login_wrong_details(self):
         '''Log in with wrong username and password'''
         response = self.client.post(
@@ -97,6 +106,7 @@ class LogoutViewTestCase(TestCase):
     def setUpTestData(cls) -> None:
         User.objects.create_user('logoutview', password='logout-password')
 
+    @tag('sprint1')
     def test_logout_valid(self):
         '''Log out logged-in user'''
         self.assertTrue(self.client.login(
@@ -105,6 +115,7 @@ class LogoutViewTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(len(response.content), 0)
 
+    @tag('sprint1')
     def test_logout_anonymous(self):
         '''Try to log out logged-out user'''
         self.client.logout()

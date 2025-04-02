@@ -46,7 +46,7 @@ class VenueTestCase(TestCase):
         cls.rating2_2 = models.Rating.objects.create(
             category=cls.ratingcat2, review=cls.review2, value=2)
 
-    @tag('venue_detail')
+    @tag('sprint1', 'venue_detail')
     def test_venue_detail(self):
         '''Test the Venue detail view contains the correct properties'''
         result: dict = self.client.get(f'/api/venue/{self.venue.pk}').json()
@@ -73,7 +73,7 @@ class VenueTestCase(TestCase):
 
         self.assertDictEqual(result, venue)
 
-    @tag('venue_list')
+    @tag('sprint1', 'venue_list')
     def test_venue_list(self):
         '''Test the Venue list view contains the correct properties'''
         data = self.client.get('/api/venue').json()
@@ -94,7 +94,7 @@ class VenueTestCase(TestCase):
                 'score',
             })
 
-    @tag('venue_list')
+    @tag('sprint1', 'venue_list')
     def test_venue_list_with_location(self):
         '''Test the Venue list view contains the correct properties
         when the location is provided'''
@@ -117,7 +117,7 @@ class VenueTestCase(TestCase):
                 'score',
             })
 
-    @tag('venue_list')
+    @tag('sprint1', 'venue_list')
     def test_venue_list_with_invalid_location(self):
         '''Test that the correct error message is returned when
         invalid coordinates are provided'''
@@ -125,7 +125,7 @@ class VenueTestCase(TestCase):
         self.assertListEqual(
             data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
 
-    @tag('venue_list')
+    @tag('sprint1', 'venue_list')
     def test_venue_list_with_invalid_latitude(self):
         '''Test that the correct error message is returned when
         a non-numeric latitude is given'''
@@ -133,7 +133,7 @@ class VenueTestCase(TestCase):
         self.assertListEqual(
             data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
 
-    @tag('venue_list')
+    @tag('sprint1', 'venue_list')
     def test_venue_list_with_invalid_longitude(self):
         '''Test that the correct error message is returned when
         a non-numeric longitude is given'''
@@ -141,7 +141,7 @@ class VenueTestCase(TestCase):
         self.assertListEqual(
             data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue(self):
         '''Test that a valid venue can be created'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -175,7 +175,7 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(data, venue)
         self.client.logout()
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue_empty(self):
         '''Test that an empty venue cannot be created'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -189,7 +189,7 @@ class VenueTestCase(TestCase):
         })
         self.client.logout()
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue_blank(self):
         '''Test that an empty venue cannot be created'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -206,7 +206,7 @@ class VenueTestCase(TestCase):
         })
         self.client.logout()
 
-    @tag('venue_create')
+    @tag('sprint1', 'venue_create')
     def test_create_venue_anonymous(self):
         '''Test that a venue can't be created if the user isn't logged in'''
         self.client.logout()
@@ -218,7 +218,7 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
 
-    @tag('venue_update')
+    @tag('sprint1', 'venue_update')
     def test_update_venue_valid(self):
         '''Test that a user can update a venue they added'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -249,7 +249,7 @@ class VenueTestCase(TestCase):
         self.assertDictEqual(response.json(), venue)
         self.client.logout()
 
-    @tag('venue_update')
+    @tag('sprint1', 'venue_update')
     def test_update_other_venue(self):
         '''Test a user can't update a venue added by someone else'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -261,7 +261,7 @@ class VenueTestCase(TestCase):
         })
         self.client.logout()
 
-    @tag('venue_update')
+    @tag('sprint1', 'venue_update')
     def test_update_venue_anonymous(self):
         '''Test a logged-out user can't update a venue'''
         self.client.logout()
@@ -272,7 +272,7 @@ class VenueTestCase(TestCase):
             'detail': 'Authentication credentials were not provided.'
         })
 
-    @tag('venue_delete')
+    @tag('sprint1', 'venue_delete')
     def test_delete_venue_creator(self):
         '''Test that the user who added a venue can't delete it'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -282,7 +282,7 @@ class VenueTestCase(TestCase):
             response.json(), {'detail': 'Method "DELETE" not allowed.'})
         self.client.logout()
 
-    @tag('venue_delete')
+    @tag('sprint1', 'venue_delete')
     def test_delete_venue_other(self):
         '''Test that a user can't delete a venue added by someone else'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -292,7 +292,7 @@ class VenueTestCase(TestCase):
             response.json(), {'detail': 'Method "DELETE" not allowed.'})
         self.client.logout()
 
-    @tag('venue_delete')
+    @tag('sprint1', 'venue_delete')
     def test_delete_venue_anonymous(self):
         '''Test that a logged-out user can't delete a venue'''
         self.client.logout()
@@ -302,7 +302,7 @@ class VenueTestCase(TestCase):
             'detail': 'Authentication credentials were not provided.'
         })
 
-    @tag('get_review')
+    @tag('sprint1', 'get_review')
     def test_venue_get_review_valid(self):
         '''Test that the user's review is returned for the venue'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -324,7 +324,7 @@ class VenueTestCase(TestCase):
         self.assertListEqual(data_ratings, ratings)
         self.client.logout()
 
-    @tag('get_review')
+    @tag('sprint1', 'get_review')
     def test_venue_get_review_empty(self):
         '''Test that no content is returned if the user hasn't left a review for this venue'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -333,7 +333,7 @@ class VenueTestCase(TestCase):
         self.assertEqual(len(response.content), 0)
         self.client.logout()
 
-    @tag('get_review')
+    @tag('sprint1', 'get_review')
     def test_venue_get_review_anonymous(self):
         '''Test that an error is returned if the user is logged-out
         and tries to fetch their review for a venue'''
@@ -342,7 +342,7 @@ class VenueTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(response.content), 0)
 
-    @tag('list_reviews')
+    @tag('sprint1', 'list_reviews')
     def test_venue_list_reviews(self):
         '''Test that the correct list of reviews is returned for this venue'''
         data = self.client.get(f'/api/venue/{self.venue.pk}/reviews').json()

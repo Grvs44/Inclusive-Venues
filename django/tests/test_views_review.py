@@ -45,7 +45,7 @@ class ReviewTestCase(TestCase):
         # Log out after each test
         self.client.logout()
 
-    @tag('review_detail')
+    @tag('sprint1', 'review_detail')
     def test_review_detail_valid(self):
         '''Test a user can view one of their reviews'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -56,7 +56,7 @@ class ReviewTestCase(TestCase):
             'venue': self.review1.venue.pk, 'body': self.review1.body}
         self.assertDictEqual(response.json(), review)
 
-    @tag('review_detail')
+    @tag('sprint1', 'review_detail')
     def test_review_detail_other(self):
         '''Test a user cannot view another user's review'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -65,7 +65,7 @@ class ReviewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'No Review matches the given query.'})
 
-    @tag('review_detail')
+    @tag('sprint1', 'review_detail')
     def test_review_detail_anonymous(self):
         '''Test a logged-out user cannot view a user's review'''
         response = self.client.get(f'/api/review/{self.review1.pk}')
@@ -73,7 +73,7 @@ class ReviewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
 
-    @tag('review_create')
+    @tag('sprint1', 'review_create')
     def test_review_create_valid(self):
         '''Test a user can leave a review'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -95,7 +95,7 @@ class ReviewTestCase(TestCase):
             'ratings': list(models.Rating.objects.filter(review=review).values('category', 'value'))
         })
 
-    @tag('review_create')
+    @tag('sprint1', 'review_create')
     def test_review_create_no_ratings(self):
         '''Test a user can't leave a review with no ratings (via API)'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -105,7 +105,7 @@ class ReviewTestCase(TestCase):
         self.assertListEqual(
             response.json(), ['You must rate at least one category to leave a review'])
 
-    @tag('review_create')
+    @tag('sprint1', 'review_create')
     def test_review_create_existing(self):
         '''Test a user can't create a new review for a venue they have already reviewed'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -117,7 +117,7 @@ class ReviewTestCase(TestCase):
         self.assertListEqual(
             response.json(), ['You have already left a review for this venue'])
 
-    @tag('review_create')
+    @tag('sprint1', 'review_create')
     def test_review_create_anonymous(self):
         '''Test a logged-out user can't create a review'''
         response = self.client.post('/api/review', {
@@ -129,7 +129,7 @@ class ReviewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
 
-    @tag('review_update')
+    @tag('sprint1', 'review_update')
     def test_review_update_valid(self):
         '''Test a user can update their review'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -149,7 +149,7 @@ class ReviewTestCase(TestCase):
             'ratings': list(models.Rating.objects.filter(review=review).values('category', 'value'))
         })
 
-    @tag('review_update')
+    @tag('sprint1', 'review_update')
     def test_review_update_other(self):
         '''Test a user can't update another user's review'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -162,7 +162,7 @@ class ReviewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'No Review matches the given query.'})
 
-    @tag('review_update')
+    @tag('sprint1', 'review_update')
     def test_review_update_anonymous(self):
         '''Test a logged-out user can't update a user's review'''
         response = self.client.put(f'/api/review/{self.review1.pk}', {
@@ -174,7 +174,7 @@ class ReviewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'Authentication credentials were not provided.'})
 
-    @tag('review_delete')
+    @tag('sprint1', 'review_delete')
     def test_review_delete_creator(self):
         '''Test a user can delete their own review'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -184,7 +184,7 @@ class ReviewTestCase(TestCase):
         self.assertIsNone(models.Review.objects.filter(
             pk=self.review2.pk).first())
 
-    @tag('review_delete')
+    @tag('sprint1', 'review_delete')
     def test_review_delete_other(self):
         '''Test a user cannot delete another user's review'''
         self.assertTrue(self.client.login(**self.credentials2))
@@ -193,7 +193,7 @@ class ReviewTestCase(TestCase):
         self.assertDictEqual(
             response.json(), {'detail': 'No Review matches the given query.'})
 
-    @tag('review_delete')
+    @tag('sprint1', 'review_delete')
     def test_review_delete_anonymous(self):
         '''Test a logged-out user cannot delete a user's review'''
         response = self.client.delete(f'/api/review/{self.review1.pk}')
