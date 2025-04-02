@@ -7,6 +7,7 @@ import List from '@mui/material/List'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import CoordinatesInput from '../components/CoordinatesInput'
+import SetThemeItem from '../components/SetThemeItem'
 import SettingsItem from '../components/SettingsItem'
 import { to_number } from '../components/utils'
 import { updateSettings } from '../redux/settingsSlice'
@@ -52,6 +53,7 @@ export default function SettingsContainer() {
   return (
     <Container>
       <List>
+        <SetThemeItem />
         <SettingsItem
           checked={autoLocation}
           onChange={(checked) => {

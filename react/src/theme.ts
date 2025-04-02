@@ -1,18 +1,9 @@
-import { red } from '@mui/material/colors'
 import { createTheme } from '@mui/material/styles'
 
 // Material UI theming: https://mui.com/material-ui/customization/theming/
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#556cd6',
-    },
-    secondary: {
-      main: '#19857b',
-    },
-    error: {
-      main: red.A400,
-    },
+  colorSchemes: {
+    dark: true,
   },
   typography: {
     fontFamily: [
