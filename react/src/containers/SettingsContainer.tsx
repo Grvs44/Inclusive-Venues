@@ -1,24 +1,21 @@
 import React from 'react'
-import SaveIcon from '@mui/icons-material/Save'
+import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
-import Fab from '@mui/material/Fab'
 import List from '@mui/material/List'
+import ListSubheader from '@mui/material/ListSubheader'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import CoordinatesInput from '../components/CoordinatesInput'
 import SetThemeItem from '../components/SetThemeItem'
 import SettingsItem from '../components/SettingsItem'
 import { to_number } from '../components/utils'
-import { updateSettings } from '../redux/settingsSlice'
-import type { SettingsState, State } from '../redux/types'
+import { setAutoLocation, setDefaultLocation } from '../redux/settingsSlice'
+import type { State } from '../redux/types'
 
 export default function SettingsContainer() {
   const dispatch = useDispatch()
   const settings = useSelector((state: State) => state.settings)
-  const [autoLocation, setAutoLocation] = React.useState<boolean>(
-    settings.autoLocation,
-  )
   const [showDefaultLocation, setShowDefaultLocation] = React.useState<boolean>(
     settings.defaultLocation != undefined,
   )
@@ -44,21 +41,22 @@ export default function SettingsContainer() {
       defaultLocation = undefined
     }
 
-    const newSettings: SettingsState = { autoLocation, defaultLocation }
-    dispatch(updateSettings(newSettings))
-    toast.success('Saved settings')
+    dispatch(setDefaultLocation(defaultLocation))
+    toast.success('Saved default location')
     setChanged(false)
   }
 
   return (
     <Container>
       <List>
+        <ListSubheader>Appearance</ListSubheader>
         <SetThemeItem />
+        <Divider />
+        <ListSubheader>Location</ListSubheader>
         <SettingsItem
-          checked={autoLocation}
+          checked={settings.autoLocation}
           onChange={(checked) => {
-            setChanged(true)
-            setAutoLocation(checked && 'geolocation' in navigator)
+            dispatch(setAutoLocation(checked && 'geolocation' in navigator))
           }}
           primary="Auto-detect location"
           secondary={
@@ -72,12 +70,18 @@ export default function SettingsContainer() {
         <SettingsItem
           checked={showDefaultLocation}
           onChange={(checked) => {
-            setChanged(true)
+            setChanged(checked)
             setShowDefaultLocation(checked)
+            if (!checked) dispatch(setDefaultLocation(undefined))
           }}
           primary="Use default location"
           secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
         >
+          {changed ? (
+            <Button variant="contained" onClick={onSave}>
+              Save
+            </Button>
+          ) : null}
           <CoordinatesInput
             latitude={defaultLatitude}
             longitude={defaultLongitude}
@@ -92,18 +96,6 @@ export default function SettingsContainer() {
           />
         </SettingsItem>
       </List>
-      {changed ? (
-        <Fab
-          // Fab adapted from https://mui.com/material-ui/react-floating-action-button/
-          color="primary"
-          onClick={onSave}
-          variant="extended"
-          sx={{ position: 'fixed', right: 16, bottom: 16 }}
-        >
-          <SaveIcon sx={{ mr: 1 }} />
-          Save
-        </Fab>
-      ) : null}
     </Container>
   )
 }
