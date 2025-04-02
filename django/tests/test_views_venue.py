@@ -10,6 +10,8 @@ class VenueTestCase(TestCase):
     '''TestCase for inclusivevenues.views.VenueViewSet'''
     credentials = {'username': 'venue_user', 'password': 'password'}
     credentials2 = {'username': 'venue_user2', 'password': 'password2'}
+    location_error = [
+        'Invalid location: must be coordinates (latitude,longitude) or a postcode']
 
     @classmethod
     def setUpTestData(cls):
@@ -77,6 +79,9 @@ class VenueTestCase(TestCase):
     def test_venue_list(self):
         '''Test the Venue list view contains the correct properties'''
         data = self.client.get('/api/venue').json()
+        self._check_valid_venue_list(data)
+
+    def _check_valid_venue_list(self, data):
         self.assertIsInstance(data, dict)
         self.assertSetEqual(set(data.keys()), {
             'count', 'next', 'previous', 'results'
@@ -100,46 +105,56 @@ class VenueTestCase(TestCase):
         when the location is provided'''
         data = self.client.get(
             '/api/venue?location=50.934672,-1.399775').json()
-        self.assertIsInstance(data, dict)
-        self.assertSetEqual(set(data.keys()), {
-            'count', 'next', 'previous', 'results'
-        })
-        results = data['results']
-        self.assertIsInstance(results, list)
-        for item in results:
-            self.assertSetEqual(set(item.keys()), {
-                'id',
-                'name',
-                'longitude',
-                'latitude',
-                'distance',
-                'subcategory',
-                'score',
-            })
+        self._check_valid_venue_list(data)
 
     @tag('sprint1', 'venue_list')
     def test_venue_list_with_invalid_location(self):
         '''Test that the correct error message is returned when
         invalid coordinates are provided'''
         data = self.client.get('/api/venue?location=here').json()
-        self.assertListEqual(
-            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
+        self.assertListEqual(data, self.location_error)
 
-    @tag('sprint1', 'venue_list')
+    @tag('sprint1', 'sprint5', 'venue_list')
     def test_venue_list_with_invalid_latitude(self):
         '''Test that the correct error message is returned when
         a non-numeric latitude is given'''
         data = self.client.get('/api/venue?location=lat,-1.399776').json()
-        self.assertListEqual(
-            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
+        self.assertListEqual(data, self.location_error)
 
-    @tag('sprint1', 'venue_list')
+    @tag('sprint1', 'sprint5', 'venue_list')
     def test_venue_list_with_invalid_longitude(self):
         '''Test that the correct error message is returned when
         a non-numeric longitude is given'''
         data = self.client.get('/api/venue?location=50.934674,lon').json()
+        self.assertListEqual(data, self.location_error)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_postcode(self):
+        '''Test the Venue list view contains the correct properties
+        when a valid postcode is provided'''
+        data = self.client.get('/api/venue?location=SO171BJ').json()
+        self._check_valid_venue_list(data)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_postcode_mixed_case(self):
+        '''Test the Venue list view contains the correct properties
+        when a valid mixed-case postcode is provided'''
+        data = self.client.get('/api/venue?location=sO17 1Bj').json()
+        self._check_valid_venue_list(data)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_invalid_postcode(self):
+        '''Test an error message is returned when an invalid postocde is given'''
+        data = self.client.get('/api/venue?location=SO171B').json()
+        self.assertListEqual(data, self.location_error)
+
+    @tag('sprint5', 'venue_list')
+    def test_venue_list_with_nonexistent_postcode(self):
+        '''Test an error message is returned if the postcode doesn't exist'''
+        response = self.client.get('/api/venue?location=SO171BB')
+        self.assertEqual(response.status_code, 400)
         self.assertListEqual(
-            data, ['Invalid location: must be coordinates (latitude,longitude) or a postcode'])
+            response.json(), ["Couldn't retrieve location from postcode"])
 
     @tag('sprint1', 'venue_create')
     def test_create_venue(self):
