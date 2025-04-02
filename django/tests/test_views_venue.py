@@ -75,13 +75,15 @@ class VenueTestCase(TestCase):
 
         self.assertDictEqual(result, venue)
 
-    @tag('sprint1', 'venue_list')
+    @tag('sprint1', 'sprint4', 'venue_list')
     def test_venue_list(self):
         '''Test the Venue list view contains the correct properties'''
         data = self.client.get('/api/venue').json()
         self._check_valid_venue_list(data, False)
 
     def _check_valid_venue_list(self, data, location: bool):
+        '''Check each venue contains the correct properties
+        Optional 'distance' property added sprint 4 when location is provided'''
         self.assertIsInstance(data, dict)
         self.assertSetEqual(set(data.keys()), {
             'count', 'next', 'previous', 'results'
@@ -98,11 +100,16 @@ class VenueTestCase(TestCase):
         }
         if location:
             item_set.add('distance')
+        last_distance = 0.0
         for item in results:
             self.assertIsInstance(item, dict)
             self.assertSetEqual(set(item.keys()), item_set)
+            if location:
+                d = float(item['distance'])
+                self.assertLessEqual(last_distance, d)
+                last_distance = d
 
-    @tag('sprint1', 'venue_list')
+    @tag('sprint1', 'sprint4', 'venue_list')
     def test_venue_list_with_location(self):
         '''Test the Venue list view contains the correct properties
         when the location is provided'''
@@ -110,7 +117,7 @@ class VenueTestCase(TestCase):
             '/api/venue?location=50.934672,-1.399775').json()
         self._check_valid_venue_list(data, True)
 
-    @tag('sprint1', 'venue_list')
+    @tag('sprint1', 'sprint4', 'venue_list')
     def test_venue_list_with_invalid_location(self):
         '''Test that the correct error message is returned when
         invalid coordinates are provided'''
@@ -320,7 +327,7 @@ class VenueTestCase(TestCase):
             'detail': 'Authentication credentials were not provided.'
         })
 
-    @tag('sprint1', 'get_review')
+    @tag('sprint2', 'get_review')
     def test_venue_get_review_valid(self):
         '''Test that the user's review is returned for the venue'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -342,7 +349,7 @@ class VenueTestCase(TestCase):
         self.assertListEqual(data_ratings, ratings)
         self.client.logout()
 
-    @tag('sprint1', 'get_review')
+    @tag('sprint2', 'get_review')
     def test_venue_get_review_empty(self):
         '''Test that no content is returned if the user hasn't left a review for this venue'''
         self.assertTrue(self.client.login(**self.credentials))
@@ -351,7 +358,7 @@ class VenueTestCase(TestCase):
         self.assertEqual(len(response.content), 0)
         self.client.logout()
 
-    @tag('sprint1', 'get_review')
+    @tag('sprint2', 'get_review')
     def test_venue_get_review_anonymous(self):
         '''Test that an error is returned if the user is logged-out
         and tries to fetch their review for a venue'''
@@ -360,7 +367,7 @@ class VenueTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(response.content), 0)
 
-    @tag('sprint1', 'list_reviews')
+    @tag('sprint2', 'list_reviews')
     def test_venue_list_reviews(self):
         '''Test that the correct list of reviews is returned for this venue'''
         data = self.client.get(f'/api/venue/{self.venue.pk}/reviews').json()
