@@ -79,25 +79,28 @@ class VenueTestCase(TestCase):
     def test_venue_list(self):
         '''Test the Venue list view contains the correct properties'''
         data = self.client.get('/api/venue').json()
-        self._check_valid_venue_list(data)
+        self._check_valid_venue_list(data, False)
 
-    def _check_valid_venue_list(self, data):
+    def _check_valid_venue_list(self, data, location: bool):
         self.assertIsInstance(data, dict)
         self.assertSetEqual(set(data.keys()), {
             'count', 'next', 'previous', 'results'
         })
         results = data['results']
         self.assertIsInstance(results, list)
+        item_set = {
+            'id',
+            'name',
+            'longitude',
+            'latitude',
+            'subcategory',
+            'score',
+        }
+        if location:
+            item_set.add('distance')
         for item in results:
             self.assertIsInstance(item, dict)
-            self.assertSetEqual(set(item.keys()), {
-                'id',
-                'name',
-                'longitude',
-                'latitude',
-                'subcategory',
-                'score',
-            })
+            self.assertSetEqual(set(item.keys()), item_set)
 
     @tag('sprint1', 'venue_list')
     def test_venue_list_with_location(self):
@@ -105,7 +108,7 @@ class VenueTestCase(TestCase):
         when the location is provided'''
         data = self.client.get(
             '/api/venue?location=50.934672,-1.399775').json()
-        self._check_valid_venue_list(data)
+        self._check_valid_venue_list(data, True)
 
     @tag('sprint1', 'venue_list')
     def test_venue_list_with_invalid_location(self):
@@ -133,14 +136,14 @@ class VenueTestCase(TestCase):
         '''Test the Venue list view contains the correct properties
         when a valid postcode is provided'''
         data = self.client.get('/api/venue?location=SO171BJ').json()
-        self._check_valid_venue_list(data)
+        self._check_valid_venue_list(data, True)
 
     @tag('sprint5', 'venue_list')
     def test_venue_list_with_postcode_mixed_case(self):
         '''Test the Venue list view contains the correct properties
         when a valid mixed-case postcode is provided'''
         data = self.client.get('/api/venue?location=sO17 1Bj').json()
-        self._check_valid_venue_list(data)
+        self._check_valid_venue_list(data, True)
 
     @tag('sprint5', 'venue_list')
     def test_venue_list_with_invalid_postcode(self):
