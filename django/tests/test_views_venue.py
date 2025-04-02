@@ -376,6 +376,7 @@ class VenueTestCase(TestCase):
         ]
         self.assertListEqual(results, reviews)
 
+    @tag('sprint5')
     def test_venue_rating_aggregation(self):
         '''Test the rating aggregation returns the expected values'''
         data = self.client.get(f'/api/venue/{self.venue.pk}/reviewavg').json()
@@ -386,3 +387,37 @@ class VenueTestCase(TestCase):
              'value': (self.rating2.value + self.rating2_2.value) / 2}
         ]
         self.assertListEqual(data, expected)
+
+    @tag('sprint5', 'myvenues')
+    def test_venue_my_filter(self):
+        '''Test a logged-in user can view a list of venues they have added'''
+        self.assertTrue(self.client.login(**self.credentials))
+        data = self.client.get('/api/venue?my').json()
+        self.assertIsInstance(data, dict)
+        self.assertIn('results', data)
+        results = data.pop('results')
+        self.assertDictEqual(
+            data, {'count': 2, 'next': None, 'previous': None})
+        self.assertListEqual(results, [
+            {'id': self.venue.pk,
+             'name': self.venue.name,
+             'longitude': str(self.venue.longitude),
+             'latitude': str(self.venue.latitude),
+             'subcategory': self.venue.subcategory.pk,
+             'score': self.venue.score},
+            {'id': self.venue2.pk,
+             'name': self.venue2.name,
+             'longitude': str(self.venue2.longitude),
+             'latitude': str(self.venue2.latitude),
+             'subcategory': self.venue2.subcategory.pk,
+             'score': self.venue2.score},
+        ])
+        self.client.logout()
+
+    @tag('sprint5', 'myvenues')
+    def test_venue_my_filter_anonymous(self):
+        '''Test a logged-out user gets empty results for venues they have added'''
+        self.client.logout()
+        data = self.client.get('/api/venue?my').json()
+        self.assertDictEqual(
+            data, {'count': 0, 'next': None, 'previous': None, 'results': []})
