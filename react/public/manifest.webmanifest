@@ -22,6 +22,6 @@
   "start_url": ".",
   "scope": ".",
   "display_override": ["window-controls-overlay", "standalone"],
-  "theme_color": "#556cd6",
+  "theme_color": "#1976d2",
   "background_color": "#ffffff"
 }
