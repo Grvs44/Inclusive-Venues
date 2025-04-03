@@ -9,16 +9,26 @@ const initialState: SettingsState = {
   })(),
 }
 
+const saveState = (state: SettingsState) =>
+  localStorage.setItem('inclusivevenues', JSON.stringify(state))
+
 export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    updateSettings(state, { payload }: { payload: SettingsState }) {
-      state = payload
-      localStorage.setItem('inclusivevenues', JSON.stringify(payload))
+    setAutoLocation(state, action: { payload: boolean }) {
+      state.autoLocation = action.payload
+      saveState(state)
+    },
+    setDefaultLocation(
+      state,
+      action: { payload: SettingsState['defaultLocation'] },
+    ) {
+      state.defaultLocation = action.payload
+      saveState(state)
     },
   },
 })
 
 export default settingsSlice.reducer
-export const { updateSettings } = settingsSlice.actions
+export const { setAutoLocation, setDefaultLocation } = settingsSlice.actions

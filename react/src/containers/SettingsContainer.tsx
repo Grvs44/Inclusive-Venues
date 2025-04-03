@@ -1,24 +1,21 @@
 import React from 'react'
-import SaveIcon from '@mui/icons-material/Save'
+import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
-import Fab from '@mui/material/Fab'
 import List from '@mui/material/List'
+import ListSubheader from '@mui/material/ListSubheader'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import CoordinatesInput from '../components/CoordinatesInput'
 import SetThemeItem from '../components/SetThemeItem'
 import SettingsItem from '../components/SettingsItem'
 import { to_number } from '../components/utils'
-import { updateSettings } from '../redux/settingsSlice'
-import type { SettingsState, State } from '../redux/types'
+import { setAutoLocation, setDefaultLocation } from '../redux/settingsSlice'
+import type { State } from '../redux/types'
 
 export default function SettingsContainer() {
   const dispatch = useDispatch()
   const settings = useSelector((state: State) => state.settings)
-  const [autoLocation, setAutoLocation] = React.useState<boolean>(
-    settings.autoLocation,
-  )
   const [showDefaultLocation, setShowDefaultLocation] = React.useState<boolean>(
     settings.defaultLocation != undefined,
   )
@@ -30,35 +27,42 @@ export default function SettingsContainer() {
   )
   const [changed, setChanged] = React.useState<boolean>(false)
 
-  const onSave = () => {
+  const trySave = (on: boolean) => {
     let defaultLocation: [number, number] | undefined
-    if (showDefaultLocation) {
+    if (on) {
       const latitudeValue = to_number(defaultLatitude)
       const longitudeValue = to_number(defaultLongitude)
       if (isNaN(latitudeValue) || isNaN(longitudeValue)) {
-        toast.error('Coordinates must be valid numbers')
-        return
+        return false
       }
       defaultLocation = [latitudeValue, longitudeValue]
     } else {
       defaultLocation = undefined
     }
-
-    const newSettings: SettingsState = { autoLocation, defaultLocation }
-    dispatch(updateSettings(newSettings))
-    toast.success('Saved settings')
+    dispatch(setDefaultLocation(defaultLocation))
     setChanged(false)
+    return true
+  }
+
+  const onSave = () => {
+    if (trySave(showDefaultLocation)) {
+      toast.success('Saved default location')
+    } else {
+      toast.error('Coordinates must be valid numbers')
+    }
   }
 
   return (
     <Container>
       <List>
+        <ListSubheader>Appearance</ListSubheader>
         <SetThemeItem />
+        <Divider />
+        <ListSubheader>Location</ListSubheader>
         <SettingsItem
-          checked={autoLocation}
+          checked={settings.autoLocation}
           onChange={(checked) => {
-            setChanged(true)
-            setAutoLocation(checked && 'geolocation' in navigator)
+            dispatch(setAutoLocation(checked && 'geolocation' in navigator))
           }}
           primary="Auto-detect location"
           secondary={
@@ -72,12 +76,18 @@ export default function SettingsContainer() {
         <SettingsItem
           checked={showDefaultLocation}
           onChange={(checked) => {
-            setChanged(true)
+            setChanged(checked)
             setShowDefaultLocation(checked)
+            trySave(checked)
           }}
           primary="Use default location"
           secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
         >
+          {changed ? (
+            <Button variant="contained" onClick={onSave}>
+              Save
+            </Button>
+          ) : null}
           <CoordinatesInput
             latitude={defaultLatitude}
             longitude={defaultLongitude}
@@ -92,18 +102,6 @@ export default function SettingsContainer() {
           />
         </SettingsItem>
       </List>
-      {changed ? (
-        <Fab
-          // Fab adapted from https://mui.com/material-ui/react-floating-action-button/
-          color="primary"
-          onClick={onSave}
-          variant="extended"
-          sx={{ position: 'fixed', right: 16, bottom: 16 }}
-        >
-          <SaveIcon sx={{ mr: 1 }} />
-          Save
-        </Fab>
-      ) : null}
     </Container>
   )
 }
