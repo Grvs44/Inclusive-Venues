@@ -27,23 +27,29 @@ export default function SettingsContainer() {
   )
   const [changed, setChanged] = React.useState<boolean>(false)
 
-  const onSave = () => {
+  const trySave = (on: boolean) => {
     let defaultLocation: [number, number] | undefined
-    if (showDefaultLocation) {
+    if (on) {
       const latitudeValue = to_number(defaultLatitude)
       const longitudeValue = to_number(defaultLongitude)
       if (isNaN(latitudeValue) || isNaN(longitudeValue)) {
-        toast.error('Coordinates must be valid numbers')
-        return
+        return false
       }
       defaultLocation = [latitudeValue, longitudeValue]
     } else {
       defaultLocation = undefined
     }
-
     dispatch(setDefaultLocation(defaultLocation))
-    toast.success('Saved default location')
     setChanged(false)
+    return true
+  }
+
+  const onSave = () => {
+    if (trySave(showDefaultLocation)) {
+      toast.success('Saved default location')
+    } else {
+      toast.error('Coordinates must be valid numbers')
+    }
   }
 
   return (
@@ -72,7 +78,7 @@ export default function SettingsContainer() {
           onChange={(checked) => {
             setChanged(checked)
             setShowDefaultLocation(checked)
-            if (!checked) dispatch(setDefaultLocation(undefined))
+            trySave(checked)
           }}
           primary="Use default location"
           secondary="Set the initial location when you open the app (used if auto-location is off or location cannot be retrieved)"
