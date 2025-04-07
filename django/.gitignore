@@ -2,5 +2,4 @@ __pycache__
 media
 .env
 *.cnf
-*.json
 *.sqlite3
