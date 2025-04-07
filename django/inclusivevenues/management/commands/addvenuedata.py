@@ -15,7 +15,7 @@ USERNAMES = ['Alex', 'Ben', 'Carly', 'Derek', 'Ed', 'Felicity']
 
 
 @atomic
-def add_venue_data(import_data: list[dict]):
+def add_venue_data(import_data: list[dict], maps_exist: bool):
     user = User.objects.first()
     if user is None:
         user = User.objects.create_user('user1')
@@ -33,9 +33,13 @@ def add_venue_data(import_data: list[dict]):
                 images_data = venue_data.pop('images', [])
                 venue = models.Venue(
                     added_by=user, subcategory=subcategory, **venue_data)
-                venue.generate_map()
-                if venue.map.name is None:
+                if maps_exist:
+                    venue.map.name = f"{venue_data['latitude']}{venue_data['longitude']}.png"
                     venue.save()
+                else:
+                    venue.generate_map()
+                    if venue.map.name is None:
+                        venue.save()
                 venues.append(venue)
                 for image_data in images_data:
                     models.Image.objects.create(venue=venue, **image_data)
@@ -102,11 +106,15 @@ class Command(BaseCommand):
             '--no-review', action='store_true',
             help='Don\'t add any reviews'
         )
+        parser.add_argument(
+            '--maps-exist', action='store_true',
+            help='Instead of generating new map previews, link to existing images'
+        )
 
     def handle(self, *args, **options):
         with (open(options['venue_file'])) as file:
             venue_data = json.load(file)
-        venues = add_venue_data(venue_data)
+        venues = add_venue_data(venue_data, options['maps_exist'])
         self.stdout.write(self.style.SUCCESS('Imported venue data'))
         if options['rating_file']:
             with (open(options['rating_file'])) as file:
