@@ -4,6 +4,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Card from '@mui/material/Card'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
+import ShareVenueButton from '../components/ShareVenueButton'
 import StarBox from '../components/StarBox'
 import {
   useGetVenueCategoriesQuery,
@@ -23,6 +24,7 @@ export default function VenueInfo({ venue }: { venue: Venue }) {
     <Card>
       <Typography component="h1" variant="h4">
         {venue.name}
+        <ShareVenueButton venue={venue} />
       </Typography>
       <Breadcrumbs separator={<NavigateNextIcon fontSize="inherit" />}>
         <>Venues</>
