@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandParser
 from django.db.transaction import atomic
 
+type UserTupleList = list[tuple[User, list[int]]]
+
 USERNAMES = ['Alex', 'Ben', 'Carly', 'Derek', 'Ed', 'Felicity']
 
 
@@ -65,9 +67,17 @@ def select_rating_categories(categories: list[models.RatingCategory]):
     return selection
 
 
+def select_users(users: UserTupleList):
+    selected: UserTupleList = []
+    for user in users:
+        if randint(0, 1) == 1:
+            selected.append(user)
+    return selected
+
+
 @atomic
 def add_reviews(venues: list[models.Venue], rating_categories: list[models.RatingCategory]):
-    users: list[tuple[User, list[int]]] = []
+    users: UserTupleList = []
     for username in USERNAMES:
         user = User.objects.filter(username=username).first()
         if user is None:
@@ -76,7 +86,8 @@ def add_reviews(venues: list[models.Venue], rating_categories: list[models.Ratin
     reviews: list[models.Review] = []
     ratings: list[models.Rating] = []
     for venue in venues:
-        for user, rating_selection in users:
+        user_selection = select_users(users)
+        for user, rating_selection in user_selection:
             review = models.Review.objects.create(
                 author=user, venue=venue, body=f'{user.username}\'s review for {venue.name}')
             reviews.append(review)
