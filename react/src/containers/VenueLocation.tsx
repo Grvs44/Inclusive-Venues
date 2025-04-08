@@ -24,7 +24,12 @@ export default function VenueLocation({ venue }: { venue: Venue }) {
             alt="Map preview"
             title="Click to open in Maps"
             onClick={click}
-            style={{ cursor: 'pointer', minWidth: '50%', maxWidth: 200 }}
+            style={{
+              cursor: 'pointer',
+              minWidth: '60%',
+              maxWidth: '100%',
+              width: 200,
+            }}
           />
         ) : null}
         {venue.address ? (
