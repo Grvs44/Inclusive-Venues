@@ -48,6 +48,7 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
         <Grid size={1} sx={{ minWidth: 'fit-content' }}>
           <Button
             aria-label="Scroll left"
+            title="Scroll left"
             onClick={() => scroll(-(stackRef.current?.clientWidth || 0))}
             disabled={controls.left}
           >
@@ -58,6 +59,7 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
         <Grid size={1} sx={{ minWidth: 'fit-content' }}>
           <Button
             aria-label="Scroll right"
+            title="Scroll right"
             onClick={() => scroll(stackRef.current?.clientWidth || 0)}
             disabled={controls.right}
           >
