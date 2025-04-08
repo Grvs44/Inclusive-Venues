@@ -1,43 +1,64 @@
 import React from 'react'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import type { VenueImage } from '../redux/types'
 
 export default function VenueImageList({ images }: { images?: VenueImage[] }) {
-  const [index, setIndex] = React.useState<number>(0)
+  const stackRef = React.useRef<HTMLDivElement | null>(null)
+  const [controls, setControls] = React.useState<{
+    left: boolean
+    right: boolean
+  }>({ left: true, right: true })
 
-  if (!images?.length) return null
-  const image = images[index]
-  return (
+  const scroll = (amount: number) =>
+    stackRef.current?.scrollBy({ left: amount, behavior: 'smooth' })
+
+  const updateControls = () => {
+    const e = stackRef.current
+    setControls({
+      left: e == null || e.scrollLeft == 0,
+      right: e == null || e.scrollLeft + e.clientWidth >= e.scrollWidth,
+    })
+  }
+
+  React.useEffect(() => {
+    if (stackRef.current) {
+      stackRef.current.onscroll = updateControls
+      updateControls()
+    }
+  }, [stackRef.current])
+
+  return images?.length ? (
     <Box>
-      <img
-        key={image.id}
-        src={image.src}
-        alt={image.alt}
-        title={image.alt}
-        height="200"
-        loading="lazy"
-      />
-      <Typography>{image.alt}</Typography>
+      <Stack
+        direction="row"
+        sx={{ overflowX: 'auto', overflowY: 'hidden' }}
+        spacing={1}
+        ref={stackRef}
+      >
+        {images.map(({ id, src, alt }) => (
+          <img key={id} src={src} alt={alt} title={alt} height={200} />
+        ))}
+      </Stack>
       <Stack direction="row">
         <Button
-          onClick={() => setIndex((index) => index - 1)}
-          disabled={index == 0}
+          aria-label="Scroll left"
+          onClick={() => scroll(-200)}
+          disabled={controls.left}
         >
-          Previous
+          <ArrowBackIcon />
         </Button>
-        <Typography>
-          {index + 1} of {images.length}
-        </Typography>
         <Button
-          onClick={() => setIndex((index) => index + 1)}
-          disabled={index + 1 == images.length}
+          aria-label="Scroll right"
+          onClick={() => scroll(200)}
+          disabled={controls.right}
         >
-          Next
+          <ArrowForwardIcon />
         </Button>
       </Stack>
     </Box>
-  )
+  ) : null
 }
