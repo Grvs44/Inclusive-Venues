@@ -46,14 +46,14 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
       <Stack direction="row">
         <Button
           aria-label="Scroll left"
-          onClick={() => scroll(-200)}
+          onClick={() => scroll(-(stackRef.current?.clientWidth || 0))}
           disabled={controls.left}
         >
           <ArrowBackIcon />
         </Button>
         <Button
           aria-label="Scroll right"
-          onClick={() => scroll(200)}
+          onClick={() => scroll(stackRef.current?.clientWidth || 0)}
           disabled={controls.right}
         >
           <ArrowForwardIcon />
