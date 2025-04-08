@@ -3,6 +3,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
 import type { VenueImage } from '../redux/types'
 
@@ -43,22 +44,27 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
           <img key={id} src={src} alt={alt} title={alt} height={200} />
         ))}
       </Stack>
-      <Stack direction="row">
-        <Button
-          aria-label="Scroll left"
-          onClick={() => scroll(-(stackRef.current?.clientWidth || 0))}
-          disabled={controls.left}
-        >
-          <ArrowBackIcon />
-        </Button>
-        <Button
-          aria-label="Scroll right"
-          onClick={() => scroll(stackRef.current?.clientWidth || 0)}
-          disabled={controls.right}
-        >
-          <ArrowForwardIcon />
-        </Button>
-      </Stack>
+      <Grid container size={12}>
+        <Grid size={1} sx={{ minWidth: 'fit-content' }}>
+          <Button
+            aria-label="Scroll left"
+            onClick={() => scroll(-(stackRef.current?.clientWidth || 0))}
+            disabled={controls.left}
+          >
+            <ArrowBackIcon />
+          </Button>
+        </Grid>
+        <Grid size="grow" />
+        <Grid size={1} sx={{ minWidth: 'fit-content' }}>
+          <Button
+            aria-label="Scroll right"
+            onClick={() => scroll(stackRef.current?.clientWidth || 0)}
+            disabled={controls.right}
+          >
+            <ArrowForwardIcon />
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   ) : null
 }
