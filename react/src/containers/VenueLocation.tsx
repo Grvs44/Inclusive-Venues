@@ -5,7 +5,7 @@ import Card from '@mui/material/Card'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import toast from 'react-hot-toast'
-import { Venue } from '../redux/types'
+import type { Venue } from '../redux/types'
 import { openMaps } from '../redux/utils'
 
 export default function VenueLocation({ venue }: { venue: Venue }) {
@@ -15,8 +15,8 @@ export default function VenueLocation({ venue }: { venue: Venue }) {
   }
 
   return (
-    <Card sx={{ width: '50%' }}>
-      <Stack>
+    <Card>
+      <Stack sx={{ alignContent: 'center', alignItems: 'center' }}>
         {venue.map ? (
           <img
             src={venue.map}
@@ -24,10 +24,14 @@ export default function VenueLocation({ venue }: { venue: Venue }) {
             alt="Map preview"
             title="Click to open in Maps"
             onClick={click}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', minWidth: '50%', maxWidth: 200 }}
           />
         ) : null}
-        {venue.address ? <Typography>{venue.address}</Typography> : null}
+        {venue.address ? (
+          <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+            {venue.address}
+          </Typography>
+        ) : null}
         <Button variant="contained" onClick={click}>
           Open in Maps
           <OpenInNewIcon fontSize="inherit" />
