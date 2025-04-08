@@ -151,11 +151,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           <ErrorBox error={error} retry={refetch} />
         ) : (
           <>
-            <Grid
-              container
-              spacing={2}
-              sx={{ overflowX: 'hidden', alignItems: 'center' }}
-            >
+            <Grid container sx={{ alignItems: 'center' }}>
               {ratings.map((rating) => (
                 <React.Fragment key={rating.category}>
                   <Grid size={7}>
@@ -168,15 +164,16 @@ export default function ReviewDialog(props: ReviewDialogProps) {
                         categories.data?.find((c) => c.id == rating.category)
                           ?.description
                       }
+                      sx={{ whiteSpace: 'pre-wrap' }}
                     />
                   </Grid>
-                  <Grid size={3}>
+                  <Grid size={3} sx={{ minWidth: 'fit-content' }}>
                     <RateBox
                       value={rating.value}
                       onRate={onRatingChange(rating)}
                     />
                   </Grid>
-                  <Grid size={1}>
+                  <Grid size={1} sx={{ minWidth: 'fit-content' }}>
                     <Button
                       onClick={() => deleteRating(rating.category)}
                       aria-label="Remove rating"
