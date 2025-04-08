@@ -28,6 +28,16 @@ class VenueImageSerializer(ModelSerializer):
 class VenueSerializer(ModelSerializer):
     images = VenueImageSerializer(many=True, read_only=True)
 
+    def create(self, validated_data):
+        venue = super().create(validated_data)
+        venue.generate_map()
+        return venue
+
+    def update(self, instance, validated_data):
+        venue = super().update(instance, validated_data)
+        venue.generate_map()
+        return venue
+
     class Meta:
         model = models.Venue
         fields = [
