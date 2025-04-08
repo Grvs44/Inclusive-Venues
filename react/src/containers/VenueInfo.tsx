@@ -32,7 +32,9 @@ export default function VenueInfo({ venue }: { venue: Venue }) {
         <>{subcategory.data?.name || <Skeleton width="6em" />}</>
       </Breadcrumbs>
       <StarBox value={venue.score} />
-      <Typography>{venue.description}</Typography>
+      <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+        {venue.description}
+      </Typography>
     </Card>
   )
 }
