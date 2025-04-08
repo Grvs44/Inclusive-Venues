@@ -151,10 +151,10 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           <ErrorBox error={error} retry={refetch} />
         ) : (
           <>
-            <Grid container sx={{ alignItems: 'center' }}>
+            <Grid container size={12} sx={{ alignItems: 'center' }}>
               {ratings.map((rating) => (
                 <React.Fragment key={rating.category}>
-                  <Grid size={7}>
+                  <Grid size={{ xs: 12, sm: 7 }}>
                     <ListItemText
                       primary={
                         categories.data?.find(({ id }) => id == rating.category)
