@@ -193,7 +193,7 @@ class VenueTestCase(TestCase):
         if venue_map:
             venue['map'] = 'http://testserver/media/' + venue_map
         else:
-            venue['map'] = None
+            self.fail('Created venue has no map preview')
         venue['images'] = list(
             models.Image.objects.filter(venue__name=name).values())
 
