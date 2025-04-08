@@ -4,20 +4,20 @@ import Button from '@mui/material/Button'
 import toast from 'react-hot-toast'
 import type { Venue } from '../redux/types'
 
-const share = async (venue: Venue) => {
+const share = (venue: Venue) => {
   const url = window.location.origin + '/venue/' + venue.id
-  if (navigator.share) {
-    return toast.promise(navigator.share({ url }), {
-      loading: 'Sharing...',
-      success: 'Venue URL shared',
-      error: "Couldn't share venue URL",
-    })
-  }
-  return toast.promise(navigator.clipboard.writeText(url), {
-    loading: 'Sharing...',
-    success: 'Copied venue URL to clipboard',
-    error: "Couldn't copy venue URL to clipboard",
-  })
+  const data = { url }
+  return navigator.canShare && navigator.canShare(data)
+    ? toast.promise(navigator.share(data), {
+        loading: 'Sharing...',
+        success: 'Venue URL shared',
+        error: (error: DOMException) => error.message,
+      })
+    : toast.promise(navigator.clipboard.writeText(url), {
+        loading: 'Sharing...',
+        success: 'Copied venue URL to clipboard',
+        error: (error: DOMException) => error.message,
+      })
 }
 
 export default function ShareVenueButton({ venue }: { venue: Venue }) {
