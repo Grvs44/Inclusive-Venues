@@ -1,15 +1,14 @@
 import React from 'react'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Skeleton,
-  TextField,
-} from '@mui/material'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Skeleton from '@mui/material/Skeleton'
+import TextField from '@mui/material/TextField'
 import toast from 'react-hot-toast'
+import CloseButton from '../components/CloseButton'
 import CoordinatesInput from '../components/CoordinatesInput'
 import DropDown from '../components/DropDown'
 import ErrorBox from '../components/ErrorBox'
@@ -180,6 +179,7 @@ export default function NewVenueDialog(props: NewVenueDialogProps) {
               )
             : 'New venue'}
       </DialogTitle>
+      <CloseButton onClick={props.onClose} />
       <DialogContent>
         {categories.isFetching ||
         venue.isFetching ||

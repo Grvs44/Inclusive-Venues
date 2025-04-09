@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import { useLoginMutation } from '../redux/apiSlice'
 import type { UserLogin } from '../redux/types'
 import { getErrorMessage } from '../redux/utils'
+import CloseButton from './CloseButton'
 
 export type LoginDialogProps = {
   open: boolean
@@ -45,6 +46,7 @@ export default function LoginDialog(props: LoginDialogProps) {
       slotProps={{ paper: { component: 'form', onSubmit } }}
     >
       <DialogTitle>Log in</DialogTitle>
+      <CloseButton onClick={props.onClose} />
       <DialogContent>
         <TextField
           name="username"

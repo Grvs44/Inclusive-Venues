@@ -1,14 +1,13 @@
 import React from 'react'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  ImageList,
-  ImageListItem,
-} from '@mui/material'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import ImageList from '@mui/material/ImageList'
+import ImageListItem from '@mui/material/ImageListItem'
 import type { VenueImage } from '../redux/types'
+import CloseButton from './CloseButton'
 
 export type ImageListViewerProps = {
   open: boolean
@@ -19,6 +18,7 @@ export type ImageListViewerProps = {
 const ImageListViewer: React.FC<ImageListViewerProps> = (props) => (
   <Dialog open={props.open} onClose={props.onClose}>
     <DialogTitle>Images</DialogTitle>
+    <CloseButton onClick={props.onClose} />
     <DialogContent>
       {props.images ? (
         <ImageList>
