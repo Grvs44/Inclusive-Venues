@@ -1,14 +1,11 @@
 import React from 'react'
-import CloseIcon from '@mui/icons-material/Close'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Skeleton,
-} from '@mui/material'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Skeleton from '@mui/material/Skeleton'
+import CloseButton from '../components/CloseButton'
 import ErrorBox from '../components/ErrorBox'
 import { useGetUserDetailsQuery, useGetVenueQuery } from '../redux/apiSlice'
 import AverageRatingsArea from './AverageRatingsArea'
@@ -36,19 +33,7 @@ export default function VenueDetailDialog(props: VenueDetailDialogProps) {
       <DialogTitle>
         {!isFetching && data ? data.name : <Skeleton sx={{ width: '10em' }} />}
       </DialogTitle>
-      <IconButton
-        // Adapted from https://mui.com/material-ui/react-dialog/#customization
-        aria-label="close"
-        onClick={props.onClose}
-        sx={(theme) => ({
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      >
-        <CloseIcon />
-      </IconButton>
+      <CloseButton onClick={props.onClose} />
       <DialogContent>
         {isFetching ? (
           <CircularProgress />
