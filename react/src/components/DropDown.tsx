@@ -1,4 +1,4 @@
-// From https://mui.com/material-ui/react-autocomplete
+// Adapted from https://mui.com/material-ui/react-autocomplete
 // and https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/src/components/DropDown.jsx
 import React from 'react'
 import Autocomplete from '@mui/material/Autocomplete'
