@@ -1,12 +1,11 @@
 import React from 'react'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@mui/material'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import TextField from '@mui/material/TextField'
+import CloseButton from './CloseButton'
 
 export type ImageFile = {
   alt: string
@@ -50,6 +49,7 @@ export default function ImageViewDialog(props: ImageViewDialogProps) {
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{props.image?.file.name}</DialogTitle>
+      <CloseButton onClick={props.onClose} />
       <DialogContent>
         <img
           alt={alt}

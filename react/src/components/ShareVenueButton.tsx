@@ -1,6 +1,6 @@
 import React from 'react'
 import ShareIcon from '@mui/icons-material/Share'
-import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import toast from 'react-hot-toast'
 import type { Venue } from '../redux/types'
 
@@ -20,10 +20,15 @@ const share = (venue: Venue) => {
       })
 }
 
-export default function ShareVenueButton({ venue }: { venue: Venue }) {
-  return (
-    <Button onClick={() => share(venue)} title="Share" aria-label="Share">
-      <ShareIcon />
-    </Button>
-  )
-}
+const ShareVenueButton: React.FC<{ venue: Venue }> = ({ venue }) => (
+  <IconButton
+    onClick={() => share(venue)}
+    title="Share"
+    aria-label="Share"
+    color="primary"
+  >
+    <ShareIcon />
+  </IconButton>
+)
+
+export default ShareVenueButton

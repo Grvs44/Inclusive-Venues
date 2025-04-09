@@ -1,20 +1,17 @@
 import React from 'react'
-import CloseIcon from '@mui/icons-material/Close'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Skeleton,
-  TextField,
-} from '@mui/material'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
 import Grid from '@mui/material/Grid2'
 import ListItemText from '@mui/material/ListItemText'
+import Skeleton from '@mui/material/Skeleton'
+import TextField from '@mui/material/TextField'
 import toast from 'react-hot-toast'
+import CloseButton from '../components/CloseButton'
 import DropDown from '../components/DropDown'
 import ErrorBox from '../components/ErrorBox'
 import RateBox from '../components/RateBox'
@@ -131,19 +128,7 @@ export default function ReviewDialog(props: ReviewDialogProps) {
           'New review'
         )}
       </DialogTitle>
-      <IconButton
-        // Adapted from https://mui.com/material-ui/react-dialog/#customization
-        aria-label="close"
-        onClick={props.onClose}
-        sx={(theme) => ({
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      >
-        <CloseIcon />
-      </IconButton>
+      <CloseButton onClick={props.onClose} />
       <DialogContent>
         {isFetching || categories.isFetching ? (
           <CircularProgress />

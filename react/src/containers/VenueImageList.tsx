@@ -2,8 +2,8 @@ import React from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid2'
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { VenueImage } from '../redux/types'
 
@@ -46,25 +46,27 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
       </Stack>
       <Grid container size={12}>
         <Grid size={1} sx={{ minWidth: 'fit-content' }}>
-          <Button
+          <IconButton
             aria-label="Scroll left"
             title="Scroll left"
             onClick={() => scroll(-(stackRef.current?.clientWidth || 0))}
             disabled={controls.left}
+            color="primary"
           >
             <ArrowBackIcon />
-          </Button>
+          </IconButton>
         </Grid>
         <Grid size="grow" />
         <Grid size={1} sx={{ minWidth: 'fit-content' }}>
-          <Button
+          <IconButton
             aria-label="Scroll right"
             title="Scroll right"
             onClick={() => scroll(stackRef.current?.clientWidth || 0)}
             disabled={controls.right}
+            color="primary"
           >
             <ArrowForwardIcon />
-          </Button>
+          </IconButton>
         </Grid>
       </Grid>
     </Box>

@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import { useLogoutMutation } from '../redux/apiSlice'
 import type { LoggedInUser } from '../redux/types'
 import { getErrorMessage } from '../redux/utils'
+import CloseButton from './CloseButton'
 
 export type AccountDialogProps = {
   open: boolean
@@ -35,6 +36,7 @@ export default function AccountDialog(props: AccountDialogProps) {
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>Account</DialogTitle>
+      <CloseButton onClick={props.onClose} />
       <DialogContent>
         <Typography>Username: {props.user.username}</Typography>
         {props.user.firstName || props.user.lastName ? (
