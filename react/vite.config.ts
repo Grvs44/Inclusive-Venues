@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import license from 'rollup-plugin-license'
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin } from 'vite'
 import jsconfigPaths from 'vite-jsconfig-paths'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -52,7 +52,7 @@ export default defineConfig({
             includeSelf: true,
             output: { file: 'build/licenses.txt' },
           },
-        }),
+        }) as Plugin,
       ],
     },
   },
