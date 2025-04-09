@@ -1,4 +1,4 @@
-// From https://vitejs.dev/guide/env-and-mode.html
+// Adapted from https://vitejs.dev/guide/env-and-mode.html
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {

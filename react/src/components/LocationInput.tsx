@@ -10,7 +10,7 @@ import {
 import toast from 'react-hot-toast'
 import { getLocationErrorMessage } from './utils'
 
-// Coordinates regex (between |s) adapted from https://stackoverflow.com/a/3518546
+// Coordinates regex (part between the two |) adapted from https://stackoverflow.com/a/3518546
 const locationPattern =
   /^$|^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$|^[A-Z][A-Z][0-9][0-9]?[ ]?[0-9][A-Z][A-Z]$/
 

@@ -1,4 +1,3 @@
-# Adapted from https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
 # pylint:disable=no-member
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, CharField, DecimalField

@@ -1,4 +1,3 @@
-# Adapted from https://docs.djangoproject.com/en/5.1/ref/contrib/admin/
 from django.contrib import admin
 from . import models
 
