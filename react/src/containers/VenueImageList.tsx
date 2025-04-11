@@ -22,7 +22,7 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
     const e = stackRef.current
     setControls({
       left: e == null || e.scrollLeft == 0,
-      right: e == null || e.scrollLeft + e.clientWidth >= e.scrollWidth,
+      right: e == null || e.scrollLeft + e.clientWidth + 1 >= e.scrollWidth,
     })
   }
 
@@ -43,7 +43,15 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
         id="imgStack"
       >
         {images.map(({ id, src, alt }) => (
-          <img key={id} src={src} alt={alt} title={alt} height={200} />
+          <img
+            key={id}
+            src={src}
+            alt={alt}
+            title={alt}
+            height={200}
+            loading="lazy"
+            onLoad={updateControls}
+          />
         ))}
       </Stack>
       <Grid container size={12}>
