@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid2'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { VenueImage } from '../redux/types'
+import './imageStack.css'
 
 export default function VenueImageList({ images }: { images?: VenueImage[] }) {
   const stackRef = React.useRef<HTMLDivElement | null>(null)
@@ -39,6 +40,7 @@ export default function VenueImageList({ images }: { images?: VenueImage[] }) {
         sx={{ overflowX: 'auto', overflowY: 'hidden' }}
         spacing={1}
         ref={stackRef}
+        id="imgStack"
       >
         {images.map(({ id, src, alt }) => (
           <img key={id} src={src} alt={alt} title={alt} height={200} />
