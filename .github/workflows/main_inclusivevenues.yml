@@ -6,8 +6,8 @@
 name: Build and deploy Python app to Azure Web App - inclusivevenues
 
 on:
-  #release:
-    #types: [published]
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
