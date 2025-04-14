@@ -1,6 +1,53 @@
 # Part 3 Project
 
-## Run development
+## Import data
+
+You can import venue and rating data with the `addvenuedata` command
+(`python -m manage addvenuedata` in the `django` directory).
+
+Venue and rating data must be JSON files.
+Below are the formats of the JSON files given as TypeScript types.
+
+`venues.json`:
+
+```typescript
+{
+  name: string;
+  subcategories: {
+    name: string;
+    venues: {
+      name: string;
+      description: string;
+      longitude: number;
+      latitude: number;
+      address: string;
+      images: {
+        order: number;
+        alt: string;
+        src: string;
+      }
+      [];
+    }
+    [];
+  }
+  [];
+}
+[];
+```
+
+`ratings.json`:
+
+```typescript
+{
+  name: string;
+  description: string;
+}
+[];
+```
+
+## Run
+
+### Development
 
 1. Start the Django development server (in Pipenv):
    ```sh
@@ -13,9 +60,9 @@
    npm start
    ```
 
-## Run `local-web-server`
+### Mock Production
 
-### Setup
+#### Setup
 
 1. Install `local-web-server`:
    ```sh
@@ -27,7 +74,7 @@
    npm run build
    ```
 
-### Run
+#### Run
 
 1. Start the Django server (see above)
 2. Run in the root of this repository with:
