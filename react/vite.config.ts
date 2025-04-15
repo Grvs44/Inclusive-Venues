@@ -13,7 +13,7 @@ export default defineConfig({
     VitePWA({
       injectRegister: 'inline',
       manifest: false,
-      workbox: { skipWaiting: true },
+      workbox: { clientsClaim: true, skipWaiting: true },
     }),
     createHtmlPlugin({ minify: true }),
   ],
