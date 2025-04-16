@@ -19,8 +19,10 @@ export const getErrorMessage = (error?: ApiError) => {
   } else if ('data' in error && error.data) {
     if (Array.isArray(error.data)) {
       return error.data[0]
-    } else if ('detail' in (error.data as any)) {
-      return (error.data as any).detail
+    } else if (typeof error.data == 'string') {
+      return Document.parseHTMLUnsafe(error.data).documentElement.innerText
+    } else if (typeof error.data == 'object' && 'detail' in error.data) {
+      return error.data.detail
     }
   } else if ('error' in error) {
     return error.error
