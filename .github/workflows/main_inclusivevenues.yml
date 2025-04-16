@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Move license file
         run: mv LICENSE django/LICENSE
@@ -37,7 +37,6 @@ jobs:
       - name: Install dependencies and run tests
         working-directory: ./django
         run: |
-          pipenv --python 3.12
           pipenv install
           pipenv run python manage.py test --settings tests.settings -v 0
 
