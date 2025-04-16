@@ -20,7 +20,7 @@ export const getErrorMessage = (error?: ApiError) => {
     if (Array.isArray(error.data)) {
       return error.data[0]
     } else if (typeof error.data == 'string') {
-      return Document.parseHTMLUnsafe(error.data).documentElement.innerText
+      return Document.parseHTMLUnsafe(error.data).documentElement.textContent
     } else if (typeof error.data == 'object' && 'detail' in error.data) {
       return error.data.detail
     }
