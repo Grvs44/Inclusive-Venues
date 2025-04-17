@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_DEFAULT_LATITUDE?: string
   readonly VITE_DEFAULT_LONGITUDE?: string
   readonly VITE_VERSION?: string
+  readonly VITE_MESSAGE?: string
 }
 
 interface ImportMeta {

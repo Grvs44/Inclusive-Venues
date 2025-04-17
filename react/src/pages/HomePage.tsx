@@ -17,6 +17,11 @@ export default function HomePage() {
   return (
     <Container>
       <Stack sx={{ alignItems: 'center' }} spacing={3}>
+        {import.meta.env.VITE_MESSAGE ? (
+          <div
+            dangerouslySetInnerHTML={{ __html: import.meta.env.VITE_MESSAGE }}
+          />
+        ) : null}
         <Typography variant="h3" component="h2">
           {user.data ? `Welcome, ${getDisplayName(user.data)}!` : 'Welcome!'}
         </Typography>
