@@ -11,7 +11,10 @@ CSRF_TRUSTED_ORIGINS = []
 if 'STATICAPP_URL' in os.environ:
     ALLOWED_HOSTS.append(os.environ['STATICAPP_URL'])
     CSRF_TRUSTED_ORIGINS.append('https://' + os.environ['STATICAPP_URL'])
-if 'WEBSITE_HOSTNAME' in os.environ:
+if 'APPSERVICE_URL' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['APPSERVICE_URL'])
+    CSRF_TRUSTED_ORIGINS.append('https://' + os.environ['APPSERVICE_URL'])
+elif 'WEBSITE_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ['WEBSITE_HOSTNAME'])
     CSRF_TRUSTED_ORIGINS.append('https://' + os.environ['WEBSITE_HOSTNAME'])
 DEBUG = 'DEBUG' in os.environ
