@@ -13,7 +13,7 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault(
     'DJANGO_SETTINGS_MODULE',
-    'project.production' if 'APPSERVICE_URL' in os.environ or 'WEBSITE_HOSTNAME' in os.environ else 'project.settings'
+    'project.production' if 'WEBSITE_HOSTNAME' in os.environ else 'project.settings'
 )
 
 application = get_wsgi_application()
