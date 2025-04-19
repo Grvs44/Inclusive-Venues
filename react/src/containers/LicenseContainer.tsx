@@ -2,7 +2,7 @@ import React from 'react'
 import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import ErrorBox from '../components/ErrorBox'
-import { useGetLicenseQuery } from '../redux/apiSlice'
+import { useGetLicenseQuery } from '../redux/licenseSlice'
 
 export default function LicenseContainer() {
   const [open, setOpen] = React.useState<boolean>(false)
