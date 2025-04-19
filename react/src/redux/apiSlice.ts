@@ -60,7 +60,7 @@ const forceRefetch = <T>({
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.BASE_URL + import.meta.env.VITE_API_URL,
+    baseUrl: import.meta.env.VITE_API_URL,
     // prepareHeaders adapted from https://redux-toolkit.js.org/rtk-query/api/fetchBaseQuery#setting-default-headers-on-requests
     prepareHeaders(headers) {
       const csrfToken = Cookies.get('csrftoken')
@@ -75,7 +75,6 @@ export const apiSlice = createApi({
     'ratingcat',
     'review',
     'reviewavg',
-    'license',
   ],
   keepUnusedDataFor: 120,
   endpoints: (builder) => ({
@@ -289,16 +288,6 @@ export const apiSlice = createApi({
         )
       },
     }),
-
-    // License
-    getLicense: builder.query<string, void>({
-      query: () => ({
-        url: '../licenses.txt',
-        responseHandler: (response) => response.text(),
-      }),
-      providesTags: [{ type: 'license' }],
-      keepUnusedDataFor: Infinity,
-    }),
   }),
 })
 
@@ -321,5 +310,4 @@ export const {
   useCreateReviewMutation,
   useUpdateReviewMutation,
   useCreateImageMutation,
-  useGetLicenseQuery,
 } = apiSlice
