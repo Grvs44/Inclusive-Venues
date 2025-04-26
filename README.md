@@ -81,3 +81,11 @@ Below are the formats of the JSON files given as TypeScript types.
    ```sh
    ws --config-file lws.config.js
    ```
+
+## Test
+
+In the `django` directory, run:
+
+```sh
+python -m manage test --settings tests.settings
+```
