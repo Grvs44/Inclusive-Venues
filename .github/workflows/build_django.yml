@@ -25,6 +25,8 @@ jobs:
           cd django
           python -m build -w
       - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           for file in django/dist/*; do
             gh release upload v1.0.1 $file;
