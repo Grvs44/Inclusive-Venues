@@ -1,5 +1,5 @@
 import { AuthenticationType } from 'azure-maps-control'
-import { IAzureMapOptions } from 'react-azure-maps'
+import type { IAzureMapOptions } from 'react-azure-maps'
 
 const mapOptions: IAzureMapOptions = {
   authOptions: {
