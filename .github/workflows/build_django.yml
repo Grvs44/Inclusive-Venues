@@ -27,4 +27,4 @@ jobs:
       - name: Upload to release
         uses: svenstaro/upload-release-action@v2
         with:
-          file: django/inclusivevenues-1.0.1-py3-none-any.whl
+          file: django/dist/*
