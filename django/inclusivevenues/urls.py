@@ -18,9 +18,8 @@ router.register(r'rating', views.RatingViewSet)
 router.register(r'image', views.ImageViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
-    path('api/user', views.UserView.as_view()),
-    path('api/login', views.LoginView.as_view()),
-    path('api/logout', views.LogoutView.as_view()),
-    path('', views.index_view),
+    path('', include(router.urls)),
+    path('user', views.UserView.as_view()),
+    path('login', views.LoginView.as_view()),
+    path('logout', views.LogoutView.as_view()),
 ]

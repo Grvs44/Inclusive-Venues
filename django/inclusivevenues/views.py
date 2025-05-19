@@ -15,7 +15,6 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Avg
 from django.db.utils import IntegrityError
-from django.shortcuts import render
 
 from . import models, permissions, serializers
 from .filters import CategoryFilter, CreatorFilter, LocationFilter
@@ -193,7 +192,3 @@ class LogoutView(APIView):
             logout(request)
             return Response(None, status.HTTP_204_NO_CONTENT)
         return Response({'detail': 'Not logged in'}, status.HTTP_401_UNAUTHORIZED)
-
-
-def index_view(request):
-    return render(request, 'inclusivevenues/index.html')

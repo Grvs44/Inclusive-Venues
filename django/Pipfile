@@ -12,6 +12,7 @@ requests = "*"
 
 [dev-packages]
 python-dotenv = "*"
+build = "*"
 
 [requires]
 python_version = "3.13"
