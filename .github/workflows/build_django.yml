@@ -25,6 +25,7 @@ jobs:
           cd django
           python -m build -w
       - name: Upload to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          file: django/dist/*
+        run: |
+          for file in django/dist/*; do
+            gh release upload v1.0.1 $file;
+          done
