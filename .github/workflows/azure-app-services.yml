@@ -6,8 +6,6 @@
 name: Azure App Services CI/CD
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
 
 jobs:
