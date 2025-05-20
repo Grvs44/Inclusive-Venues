@@ -35,6 +35,8 @@ jobs:
         working-directory: ./react/build
         run: zip ../../inclusivevenues-pwa-${{ env.APPVERSION }}.zip ./* -r
       - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           ref=${{ github.ref }}
           if [[ "$ref" == refs/tags/* ]]; then
