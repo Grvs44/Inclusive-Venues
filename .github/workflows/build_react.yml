@@ -1,0 +1,44 @@
+name: Build React
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move license file
+        run: mv LICENSE react/LICENSE
+      - name: Get React app version
+        id: appversion
+        working-directory: ./react
+        run: echo APPVERSION=$(npm pkg get version) >> $GITHUB_ENV
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_VITE_API_URL: /inclusiveapi/
+          envkey_VITE_DEFAULT_LATITUDE: 50.937494
+          envkey_VITE_DEFAULT_LONGITUDE: -1.395864
+          envkey_VITE_VERSION: ${{ env.APPVERSION }}
+          directory: react
+      - name: Install dependencies
+        working-directory: ./react
+        run: npm ci
+      - name: Build
+        working-directory: ./react
+        run: npm run build
+      - name: Package
+        working-directory: ./react/build
+        run: zip ../../inclusivevenues-pwa-${{ env.APPVERSION }}.zip
+      - name: Upload to release
+        run: |
+          ref=${{ github.ref }}
+          if [[ "$ref" == refs/tags/* ]]; then
+            tag="${ref#refs/tags/}"
+          else
+            tag=$(git ls-remote --tags --sort=committerdate | grep -o 'v.*' | sort -r | head -1)
+          fi
+          gh release upload $tag inclusivevenues-pwa-${{ env.APPVERSION }}.zip
