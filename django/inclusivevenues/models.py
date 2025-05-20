@@ -9,7 +9,7 @@ from .maps import get_map_image_url
 
 
 class VenueCategory(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=32)
 
     def __str__(self):
         return str(self.name)
@@ -19,7 +19,7 @@ class VenueCategory(models.Model):
 
 
 class VenueSubcategory(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=32)
     category = models.ForeignKey(VenueCategory, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -84,7 +84,7 @@ class Review(models.Model):
 
 
 class RatingCategory(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=64)
     description = models.TextField()
 
     def __str__(self):
