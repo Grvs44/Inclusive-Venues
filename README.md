@@ -1,5 +1,7 @@
 # Part 3 Project
 
+[View the version submitted for my dissertation here](https://github.com/Grvs44/Part-3-Project/tree/v1.0.0)
+
 ## Import data
 
 You can import venue and rating data with the `addvenuedata` command
