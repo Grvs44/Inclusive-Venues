@@ -31,8 +31,8 @@ jobs:
         run: |
           ref=${{ github.ref }}
           echo "Ref:$ref"
-          if [[ "$ref" == refs/heads/* ]]; then
-            tag="${ref#refs/heads/}"
+          if [[ "$ref" == refs/tags/* ]]; then
+            tag="${ref#refs/tags/}"
           else
             tag=$(git ls-remote --tags --sort=committerdate | grep -o 'v.*' | sort -r | head -1)
           fi
