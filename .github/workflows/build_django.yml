@@ -30,13 +30,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           ref=${{ github.ref }}
-          echo "Ref:$ref"
           if [[ "$ref" == refs/tags/* ]]; then
             tag="${ref#refs/tags/}"
           else
             tag=$(git ls-remote --tags --sort=committerdate | grep -o 'v.*' | sort -r | head -1)
           fi
-          echo "Tag:$tag"
           for file in django/dist/*; do
             gh release upload $tag $file;
           done
