@@ -33,7 +33,7 @@ jobs:
         run: npm run build
       - name: Package
         working-directory: ./react/build
-        run: zip ../../inclusivevenues-pwa-${{ env.APPVERSION }}.zip
+        run: zip ../../inclusivevenues-pwa-${{ env.APPVERSION }}.zip ./* -r
       - name: Upload to release
         run: |
           ref=${{ github.ref }}
