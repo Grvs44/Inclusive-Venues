@@ -7,6 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // Adapted from https://github.com/Grvs44/budgetmanager/blob/main/budgetmanagerpwa/vite.config.js
 export default defineConfig({
+  base: '/inclusivevenues/',
   plugins: [
     react(),
     jsconfigPaths(),
@@ -18,6 +19,7 @@ export default defineConfig({
     createHtmlPlugin({ minify: true }),
   ],
   server: {
+    open: '/inclusivevenues',
     port: 3000,
     proxy: {
       '/api': {
