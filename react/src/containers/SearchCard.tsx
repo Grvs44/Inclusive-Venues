@@ -14,7 +14,6 @@ export default function SearchCard() {
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
-    if (filters.location && !filters.radius) filters.setRadius('5')
     navigate('venue')
   }
 
