@@ -1,3 +1,4 @@
+# Tag command from https://gist.github.com/rponte/fdc0724dd984088606b0?permalink_comment_id=3246328#gistcomment-3246328
 name: Build Django
 
 on:
@@ -28,6 +29,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          ref=${{ github.ref }}
+          if [[ "$ref" == refs/heads/* ]]; then
+            tag="${ref#refs/heads/}"
+          else
+            tag=$(git ls-remote --tags --sort=committerdate | grep -o 'v.*' | sort -r | head -1)
+          fi
           for file in django/dist/*; do
-            gh release upload v1.0.1 $file;
+            gh release upload $tag $file;
           done
