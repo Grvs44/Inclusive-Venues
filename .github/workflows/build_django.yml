@@ -24,7 +24,7 @@ jobs:
       - name: Build Django app
         run: |
           cd django
-          python -m build -w
+          python -m build
       - name: Upload to release
         env:
           GH_TOKEN: ${{ github.token }}
