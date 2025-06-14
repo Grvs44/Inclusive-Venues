@@ -1,6 +1,6 @@
-# Part 3 Project
+# Inclusive Venues
 
-[View the version submitted for my dissertation here](https://github.com/Grvs44/Part-3-Project/tree/v1.0.0)
+[View the version submitted for my dissertation here](https://github.com/Grvs44/Inclusive-Venues/tree/v1.0.0)
 
 ## Import data
 
